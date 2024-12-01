@@ -12,13 +12,17 @@ import java.util.List;
 
 @Service
 public class TrainingServiceImpl implements TrainingService {
-    private final TrainingDAO dao;
+    private TrainingDAO dao;
     private static final Logger logger = LoggerFactory.getLogger(TrainingServiceImpl.class);
 
-    @Autowired
-    public TrainingServiceImpl(TrainingDAO dao) {
-        this.dao = dao;
+    public TrainingServiceImpl() {
         logger.info("TrainingServiceImpl initialized");
+    }
+
+    @Autowired
+    public void setDao(TrainingDAO dao) {
+        this.dao = dao;
+        logger.info("TrainingDAO injected into TrainingServiceImpl");
     }
 
     @Override

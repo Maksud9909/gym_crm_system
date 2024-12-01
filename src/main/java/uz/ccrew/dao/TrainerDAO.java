@@ -2,6 +2,7 @@ package uz.ccrew.dao;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import uz.ccrew.entity.Trainer;
 
@@ -12,13 +13,23 @@ import java.util.concurrent.atomic.AtomicLong;
 public class TrainerDAO {
     private static final Logger logger = LoggerFactory.getLogger(TrainerDAO.class);
 
-    private final Map<Long, Trainer> trainerStorage;
+    private Map<Long, Trainer> trainerStorage;
     private final AtomicLong idCounter = new AtomicLong(1);
-    private final Set<String> existingUsernames = new HashSet<>();
+    private Set<String> existingUsernames = new HashSet<>();
 
-    public TrainerDAO(Map<Long, Trainer> trainerStorage) {
-        this.trainerStorage = trainerStorage;
+    public TrainerDAO() {
         logger.info("TrainerDAO initialized");
+    }
+
+    @Autowired
+    public void setTrainerStorage(Map<Long, Trainer> trainerStorage) {
+        this.trainerStorage = trainerStorage;
+        logger.info("Trainer storage injected into TrainerDAO");
+    }
+
+    @Autowired
+    public void setExistingUsernames(Set<String> existingUsernames) {
+        this.existingUsernames = existingUsernames;
     }
 
     public Long create(Trainer trainer) {
