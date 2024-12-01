@@ -1,0 +1,10 @@
+data:
+  file:
+    path: src/main/resources/data.txt
+
+logging:
+  level:
+    org:
+      springframework: INFO
+    uz:
+      ccrew: DEBUG
