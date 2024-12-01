@@ -3,20 +3,33 @@ package uz.ccrew.entity;
 import java.time.LocalDate;
 
 public class Training {
+    private Long id;
     private String traineeId;
     private String trainerId;
     private String trainingName;
-    private String trainingType;
+    private TrainingType trainingType;
     private LocalDate trainingDate;
     private Integer trainingDuration;
 
-    public Training(String traineeId, String trainerId, String trainingName, String trainingType, LocalDate trainingDate, int trainingDuration) {
+    public Training() {
+    }
+
+    public Training(Long id, String traineeId, String trainerId, String trainingName, TrainingType trainingType, LocalDate trainingDate, Integer trainingDuration) {
+        this.id = id;
         this.traineeId = traineeId;
         this.trainerId = trainerId;
         this.trainingName = trainingName;
         this.trainingType = trainingType;
         this.trainingDate = trainingDate;
         this.trainingDuration = trainingDuration;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTraineeId() {
@@ -43,11 +56,11 @@ public class Training {
         this.trainingName = trainingName;
     }
 
-    public String getTrainingType() {
+    public TrainingType getTrainingType() {
         return trainingType;
     }
 
-    public void setTrainingType(String trainingType) {
+    public void setTrainingType(TrainingType trainingType) {
         this.trainingType = trainingType;
     }
 

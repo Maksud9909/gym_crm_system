@@ -2,6 +2,7 @@ package uz.ccrew.dao;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import uz.ccrew.entity.Trainee;
 
@@ -10,15 +11,26 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
 public class TraineeDAO {
-    private final Map<Long, Trainee> traineeStorage;
+    private Map<Long, Trainee> traineeStorage;
     private final AtomicLong idCounter = new AtomicLong(1);
-    private final Set<String> existingUsernames = new HashSet<>();
+    private Set<String> existingUsernames = new HashSet<>();
     private static final Logger logger = LoggerFactory.getLogger(TraineeDAO.class);
 
-    public TraineeDAO(Map<Long, Trainee> traineeStorage) {
-        this.traineeStorage = traineeStorage;
+    public TraineeDAO() {
         logger.info("TraineeDAO initialized");
     }
+
+    @Autowired
+    public void setTraineeStorage(Map<Long, Trainee> traineeStorage){
+        this.traineeStorage = traineeStorage;
+        logger.info("Trainee storage injected into TraineeDAO");
+    }
+
+    @Autowired
+    public void setExistingUsernames(Set<String> existingUsernames) {
+        this.existingUsernames = existingUsernames;
+    }
+
 
     public Long create(Trainee trainee) {
         String username = generateUniqueUsername(trainee.getFirstName(), trainee.getLastName());
