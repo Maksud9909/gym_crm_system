@@ -1,11 +1,12 @@
 package uz.ccrew.config;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.*;
 import uz.ccrew.dao.*;
 import uz.ccrew.entity.*;
 import uz.ccrew.service.*;
 import uz.ccrew.service.impl.*;
+
+import org.springframework.context.annotation.*;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.*;
 

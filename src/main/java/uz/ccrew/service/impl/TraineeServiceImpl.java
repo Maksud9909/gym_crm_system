@@ -1,12 +1,13 @@
 package uz.ccrew.service.impl;
 
+import uz.ccrew.dao.TraineeDAO;
+import uz.ccrew.entity.Trainee;
+import uz.ccrew.service.TraineeService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uz.ccrew.dao.TraineeDAO;
-import uz.ccrew.entity.Trainee;
-import uz.ccrew.service.TraineeService;
 
 import java.util.List;
 

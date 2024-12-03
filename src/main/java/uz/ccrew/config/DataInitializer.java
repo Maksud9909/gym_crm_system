@@ -1,15 +1,15 @@
 package uz.ccrew.config;
 
-import jakarta.annotation.PostConstruct;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import uz.ccrew.entity.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import jakarta.annotation.PostConstruct;
+
+import java.util.Map;
+import java.time.LocalDate;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.time.LocalDate;
-import java.util.Date;
-import java.util.Map;
 
 public class DataInitializer {
     private static final Logger logger = LoggerFactory.getLogger(DataInitializer.class);
@@ -59,7 +59,6 @@ public class DataInitializer {
                 getClass().getResourceAsStream(traineeDataFile)))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                // Example: id,firstName,lastName,dateOfBirth,address
                 String[] data = line.split(",");
                 Trainee trainee = new Trainee(
                         Long.parseLong(data[0]),
@@ -84,13 +83,12 @@ public class DataInitializer {
                 getClass().getResourceAsStream(trainerDataFile)))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                // Example: id,firstName,lastName,specialization
                 String[] data = line.split(",");
                 Trainer trainer = new Trainer(
                         Long.parseLong(data[0]),
                         data[1],
                         data[2],
-                        null, // Username will be generated
+                        null, // username will be generated
                         null, // Password will be generated
                         true,
                         data[3]
@@ -108,7 +106,6 @@ public class DataInitializer {
                 getClass().getResourceAsStream(trainingDataFile)))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                // Example: id,traineeId,trainerId,trainingName,trainingType,trainingDate,trainingDuration
                 String[] data = line.split(",");
                 Training training = new Training(
                         Long.parseLong(data[0]),

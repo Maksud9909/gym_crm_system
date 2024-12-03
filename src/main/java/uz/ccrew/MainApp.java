@@ -16,13 +16,10 @@ import java.util.List;
 
 public class MainApp {
     public static void main(String[] args) {
-        // Initialize Spring Application Context
-        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
 
-        // Get the Application Facade Bean
+        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
         ApplicationFacade facade = context.getBean(ApplicationFacade.class);
 
-        // Interact with Trainee Service
         System.out.println("---- Trainee Operations ----");
         List<Trainee> trainees = facade.getAllTrainees();
         trainees.forEach(t -> System.out.println("Trainee: " + t.getFirstName() + " " + t.getLastName()));
@@ -31,7 +28,6 @@ public class MainApp {
         Long traineeId = facade.createTrainee(newTrainee);
         System.out.println("Created Trainee ID: " + traineeId);
 
-        // Interact with Trainer Service
         System.out.println("---- Trainer Operations ----");
         List<Trainer> trainers = facade.getAllTrainers();
         trainers.forEach(t -> System.out.println("Trainer: " + t.getFirstName() + " " + t.getLastName()));
@@ -40,7 +36,6 @@ public class MainApp {
         Long trainerId = facade.createTrainer(newTrainer);
         System.out.println("Created Trainer ID: " + trainerId);
 
-        // Interact with Training Service
         System.out.println("---- Training Operations ----");
         List<Training> trainings = facade.getAllTrainings();
         trainings.forEach(t -> System.out.println("Training: " + t.getTrainingName()));
