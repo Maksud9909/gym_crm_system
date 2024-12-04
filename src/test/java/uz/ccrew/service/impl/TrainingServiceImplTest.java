@@ -1,4 +1,4 @@
-package uz.ccrew.dao;
+package uz.ccrew.service.impl;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,11 +8,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uz.ccrew.config.AppConfig;
 import uz.ccrew.entity.Training;
+import uz.ccrew.entity.TrainingType;
+import uz.ccrew.service.TrainingService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.extension.ExtendWith;
-import uz.ccrew.entity.TrainingType;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,10 +21,10 @@ import java.util.List;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {AppConfig.class})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-class TrainingDAOTest {
+class TrainingServiceImplTest {
 
     @Autowired
-    private TrainingDAO trainingDAO;
+    private TrainingService trainingService;
 
     private Training training;
 
@@ -39,39 +40,39 @@ class TrainingDAOTest {
 
     @Test
     void create_ShouldAddTraining() {
-        Long id = trainingDAO.create(training);
+        Long id = trainingService.create(training);
         assertNotNull(id);
-        Training savedTraining = trainingDAO.findById(id);
+        Training savedTraining = trainingService.findById(id);
         assertNotNull(savedTraining);
         assertEquals("Yoga Session", savedTraining.getTrainingName());
     }
 
     @Test
     void findById_ShouldReturnTraining() {
-        Long id = trainingDAO.create(training);
-        Training foundTraining = trainingDAO.findById(id);
+        Long id = trainingService.create(training);
+        Training foundTraining = trainingService.findById(id);
         assertNotNull(foundTraining);
         assertEquals(training.getTrainingName(), foundTraining.getTrainingName());
     }
 
     @Test
     void findById_ShouldReturnNullIfNotFound() {
-        Training foundTraining = trainingDAO.findById(999L);
+        Training foundTraining = trainingService.findById(999L);
         assertNull(foundTraining);
     }
 
     @Test
     void findAll_ShouldReturnAllTrainings() {
-        trainingDAO.create(training);
+        trainingService.create(training);
         Training anotherTraining = new Training();
         anotherTraining.setTrainingName("Strength Training");
         anotherTraining.setTrainerId(3L);
         anotherTraining.setTraineeId(4L);
         anotherTraining.setTrainingType(TrainingType.RUN);
         anotherTraining.setTrainingDate(LocalDate.of(2024, 12, 2));
-        trainingDAO.create(anotherTraining);
+        trainingService.create(anotherTraining);
 
-        List<Training> allTrainings = trainingDAO.findAll();
+        List<Training> allTrainings = trainingService.findAll();
         assertEquals(2, allTrainings.size());
     }
 }
