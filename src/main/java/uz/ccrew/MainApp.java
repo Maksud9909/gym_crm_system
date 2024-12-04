@@ -1,40 +1,53 @@
 package uz.ccrew;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import uz.ccrew.config.AppConfig;
-import uz.ccrew.config.ApplicationFacade;
 import uz.ccrew.entity.Trainee;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.entity.Training;
+import uz.ccrew.config.AppConfig;
 import uz.ccrew.entity.TrainingType;
+import uz.ccrew.config.ApplicationFacade;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
+import java.time.LocalDate;
 
 public class MainApp {
     public static void main(String[] args) {
-
         ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
         ApplicationFacade facade = context.getBean(ApplicationFacade.class);
+
 
         System.out.println("---- Trainee Operations ----");
         List<Trainee> trainees = facade.getAllTrainees();
         trainees.forEach(t -> System.out.println("Trainee: " + t.getFirstName() + " " + t.getLastName()));
 
-        Trainee newTrainee = new Trainee(null, "Michael", "Brown", null, null, true, new Date(), "789 Oak St");
+        Trainee newTrainee = new Trainee(null,
+                "Michael",
+                "Brown",
+                null,
+                null, true,
+                LocalDate.of(2005, 12, 4),
+                "789 Oak St");
         Long traineeId = facade.createTrainee(newTrainee);
         System.out.println("Created Trainee ID: " + traineeId);
+
 
         System.out.println("---- Trainer Operations ----");
         List<Trainer> trainers = facade.getAllTrainers();
         trainers.forEach(t -> System.out.println("Trainer: " + t.getFirstName() + " " + t.getLastName()));
 
-        Trainer newTrainer = new Trainer(null, "Emily", "Davis", null, null, true, "Pilates");
+        Trainer newTrainer = new Trainer(null,
+                "Emily",
+                "Davis",
+                null,
+                null,
+                true,
+                "Pilates");
         Long trainerId = facade.createTrainer(newTrainer);
         System.out.println("Created Trainer ID: " + trainerId);
+
 
         System.out.println("---- Training Operations ----");
         List<Training> trainings = facade.getAllTrainings();

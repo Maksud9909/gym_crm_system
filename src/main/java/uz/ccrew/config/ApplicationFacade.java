@@ -1,5 +1,6 @@
 package uz.ccrew.config;
 
+import org.springframework.stereotype.Component;
 import uz.ccrew.entity.Trainee;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.entity.Training;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
+@Component
 public class ApplicationFacade {
     private final TraineeService traineeService;
     private final TrainerService trainerService;

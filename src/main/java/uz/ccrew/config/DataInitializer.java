@@ -5,12 +5,16 @@ import uz.ccrew.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import jakarta.annotation.PostConstruct;
+import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
 import java.time.LocalDate;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+@Component
 public class DataInitializer {
     private static final Logger logger = LoggerFactory.getLogger(DataInitializer.class);
 
@@ -18,18 +22,26 @@ public class DataInitializer {
     private Map<Long, Trainer> trainerStorage;
     private Map<Long, Training> trainingStorage;
 
+    @Value("${trainee.data.file}")
     private String traineeDataFile;
+
+    @Value("${trainer.data.file}")
     private String trainerDataFile;
+
+    @Value("${training.data.file}")
     private String trainingDataFile;
 
+    @Autowired
     public void setTraineeStorage(Map<Long, Trainee> traineeStorage) {
         this.traineeStorage = traineeStorage;
     }
 
+    @Autowired
     public void setTrainerStorage(Map<Long, Trainer> trainerStorage) {
         this.trainerStorage = trainerStorage;
     }
 
+    @Autowired
     public void setTrainingStorage(Map<Long, Training> trainingStorage) {
         this.trainingStorage = trainingStorage;
     }
@@ -67,7 +79,7 @@ public class DataInitializer {
                         null, // Username will be generated
                         null, // Password will be generated
                         true,
-                        java.sql.Date.valueOf(data[3]), // Date of birth
+                        LocalDate.parse(data[3]), // Date of birth
                         data[4]
                 );
                 traineeStorage.put(trainee.getId(), trainee);
