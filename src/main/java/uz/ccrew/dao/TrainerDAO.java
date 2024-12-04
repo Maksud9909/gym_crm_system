@@ -2,6 +2,9 @@ package uz.ccrew.dao;
 
 import uz.ccrew.entity.Trainer;
 
+import static uz.ccrew.utils.UserUtils.generateRandomPassword;
+import static uz.ccrew.utils.UserUtils.generateUniqueUsername;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +15,10 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
 public class TrainerDAO {
-    private static final Logger logger = LoggerFactory.getLogger(TrainerDAO.class);
-
     private Map<Long, Trainer> trainerStorage;
-    private final AtomicLong idCounter = new AtomicLong(1);
     private Set<String> existingUsernames = new HashSet<>();
+    private final AtomicLong idCounter = new AtomicLong(1);
+    private static final Logger logger = LoggerFactory.getLogger(TrainerDAO.class);
 
     public TrainerDAO() {
         logger.info("TrainerDAO initialized");
@@ -34,7 +36,7 @@ public class TrainerDAO {
     }
 
     public Long create(Trainer trainer) {
-        String username = generateUniqueUsername(trainer.getFirstName(), trainer.getLastName());
+        String username = generateUniqueUsername(trainer.getFirstName(), trainer.getLastName(), existingUsernames);
         trainer.setUsername(username);
         trainer.setPassword(generateRandomPassword());
 
@@ -72,31 +74,5 @@ public class TrainerDAO {
     public List<Trainer> findAll() {
         logger.info("Fetching all Trainers");
         return new ArrayList<>(trainerStorage.values());
-    }
-
-    private String generateUniqueUsername(String firstName, String lastName) {
-        String baseUsername = firstName + "." + lastName;
-        String uniqueUsername = baseUsername;
-        int counter = 1;
-
-        while (existingUsernames.contains(uniqueUsername)) {
-            uniqueUsername = baseUsername + "." + counter;
-            counter++;
-        }
-
-        existingUsernames.add(uniqueUsername);
-        logger.debug("Generated unique username: {}", uniqueUsername);
-        return uniqueUsername;
-    }
-
-    private String generateRandomPassword() {
-        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        StringBuilder password = new StringBuilder(10);
-        for (int i = 0; i < 10; i++) {
-            int randomIndex = (int) (Math.random() * chars.length());
-            password.append(chars.charAt(randomIndex));
-        }
-        logger.debug("Generated random password");
-        return password.toString();
     }
 }

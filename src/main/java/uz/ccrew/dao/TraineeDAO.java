@@ -2,6 +2,9 @@ package uz.ccrew.dao;
 
 import uz.ccrew.entity.Trainee;
 
+import static uz.ccrew.utils.UserUtils.generateRandomPassword;
+import static uz.ccrew.utils.UserUtils.generateUniqueUsername;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -22,7 +25,7 @@ public class TraineeDAO {
     }
 
     @Autowired
-    public void setTraineeStorage(Map<Long, Trainee> traineeStorage){
+    public void setTraineeStorage(Map<Long, Trainee> traineeStorage) {
         this.traineeStorage = traineeStorage;
         logger.info("Trainee storage injected into TraineeDAO");
     }
@@ -34,7 +37,7 @@ public class TraineeDAO {
 
 
     public Long create(Trainee trainee) {
-        String username = generateUniqueUsername(trainee.getFirstName(), trainee.getLastName());
+        String username = generateUniqueUsername(trainee.getFirstName(), trainee.getLastName(), existingUsernames);
         trainee.setUsername(username);
         trainee.setPassword(generateRandomPassword());
 
@@ -71,29 +74,5 @@ public class TraineeDAO {
     public List<Trainee> findAll() {
         logger.info("Fetching all Trainees");
         return new ArrayList<>(traineeStorage.values());
-    }
-
-    private String generateUniqueUsername(String firstName, String lastName) {
-        String baseUsername = firstName + "." + lastName;
-        String uniqueUsername = baseUsername;
-        int counter = 1;
-
-        while (existingUsernames.contains(uniqueUsername)) {
-            uniqueUsername = baseUsername + "." + counter;
-            counter++;
-        }
-
-        existingUsernames.add(uniqueUsername);
-        return uniqueUsername;
-    }
-
-    private String generateRandomPassword() {
-        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        StringBuilder password = new StringBuilder(10);
-        for (int i = 0; i < 10; i++) {
-            int randomIndex = (int) (Math.random() * chars.length());
-            password.append(chars.charAt(randomIndex));
-        }
-        return password.toString();
     }
 }
