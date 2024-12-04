@@ -31,6 +31,7 @@ public class TrainingDAO {
 
     public Long create(Training training) {
         Long id = idCounter.getAndIncrement();
+        training.setId(id);
         trainingStorage.put(id, training);
         logger.info("Created Training: ID={}, Training={}", id, training);
         return id;

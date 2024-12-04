@@ -11,6 +11,9 @@ public class Trainee extends User {
         this.dateOfBirth = dateOfBirth;
         this.address = address;
     }
+    public Trainee() {
+
+    }
 
     public LocalDate getDateOfBirth() {
         return dateOfBirth;

@@ -55,8 +55,8 @@ public class MainApp {
 
         Training newTraining = new Training(
                 null,
-                traineeId.toString(),
-                trainerId.toString(),
+                traineeId,
+                trainerId,
                 "Pilates Session",
                 TrainingType.GYM,
                 LocalDate.now(),

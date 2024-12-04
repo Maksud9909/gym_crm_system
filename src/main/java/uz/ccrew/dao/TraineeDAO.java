@@ -42,6 +42,7 @@ public class TraineeDAO {
         trainee.setPassword(generateRandomPassword());
 
         Long id = idCounter.getAndIncrement();
+        trainee.setId(id);
         traineeStorage.put(id, trainee);
         logger.info("Created Trainee: ID={}, Trainee={}", id, trainee);
         return id;

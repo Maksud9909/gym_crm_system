@@ -121,8 +121,8 @@ public class DataInitializer {
                 String[] data = line.split(",");
                 Training training = new Training(
                         Long.parseLong(data[0]),
-                        data[1], // traineeId
-                        data[2], // trainerId
+                        Long.parseLong(data[1]), // traineeId
+                        Long.parseLong(data[2]), // trainerId
                         data[3], // trainingName
                         TrainingType.valueOf(data[4]), // trainingType
                         LocalDate.parse(data[5]), // trainingDate

@@ -8,6 +8,9 @@ public class User {
     private String password;
     private Boolean isActive;
 
+    public User() {
+    }
+
     public User(Long id, String firstName, String lastName, String username, String password, Boolean isActive) {
         this.id = id;
         this.firstName = firstName;
