@@ -18,16 +18,16 @@ public class TraineeDAO {
     private Map<Long, Trainee> traineeStorage;
     private final AtomicLong idCounter = new AtomicLong(1);
     private Set<String> existingUsernames = new HashSet<>();
-    private static final Logger logger = LoggerFactory.getLogger(TraineeDAO.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TraineeDAO.class);
 
     public TraineeDAO() {
-        logger.info("TraineeDAO initialized");
+        LOGGER.info("TraineeDAO initialized");
     }
 
     @Autowired
     public void setTraineeStorage(Map<Long, Trainee> traineeStorage) {
         this.traineeStorage = traineeStorage;
-        logger.info("Trainee storage injected into TraineeDAO");
+        LOGGER.info("Trainee storage injected into TraineeDAO");
     }
 
     @Autowired
@@ -44,36 +44,36 @@ public class TraineeDAO {
         Long id = idCounter.getAndIncrement();
         trainee.setId(id);
         traineeStorage.put(id, trainee);
-        logger.info("Created Trainee: ID={}, Trainee={}", id, trainee);
+        LOGGER.info("Created Trainee: ID={}, Trainee={}", id, trainee);
         return id;
     }
 
     public Trainee findById(Long id) {
         Trainee trainee = traineeStorage.get(id);
         if (trainee != null) {
-            logger.info("Found Trainee by ID={}: {}", id, trainee);
+            LOGGER.info("Found Trainee by ID={}: {}", id, trainee);
         } else {
-            logger.warn("Trainee not found for ID={}", id);
+            LOGGER.warn("Trainee not found for ID={}", id);
         }
         return trainee;
     }
 
     public void update(Long id, Trainee trainee) {
         traineeStorage.put(id, trainee);
-        logger.info("Updated Trainee: ID={}, Trainee={}", id, trainee);
+        LOGGER.info("Updated Trainee: ID={}, Trainee={}", id, trainee);
     }
 
     public void delete(Long id) {
         Trainee trainee = traineeStorage.remove(id);
         if (trainee != null) {
-            logger.info("Deleted Trainee: ID={}, Trainee={}", id, trainee);
+            LOGGER.info("Deleted Trainee: ID={}, Trainee={}", id, trainee);
         } else {
-            logger.warn("Failed to delete Trainee: ID={} not found", id);
+            LOGGER.warn("Failed to delete Trainee: ID={} not found", id);
         }
     }
 
     public List<Trainee> findAll() {
-        logger.info("Fetching all Trainees");
+        LOGGER.info("Fetching all Trainees");
         return new ArrayList<>(traineeStorage.values());
     }
 }

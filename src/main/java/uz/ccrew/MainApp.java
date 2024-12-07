@@ -15,6 +15,7 @@ import java.time.LocalDate;
 
 public class MainApp {
     public static void main(String[] args) {
+
         ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
         ApplicationFacade facade = context.getBean(ApplicationFacade.class);
 

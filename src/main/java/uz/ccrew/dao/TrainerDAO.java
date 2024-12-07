@@ -18,16 +18,16 @@ public class TrainerDAO {
     private Map<Long, Trainer> trainerStorage;
     private Set<String> existingUsernames = new HashSet<>();
     private final AtomicLong idCounter = new AtomicLong(1);
-    private static final Logger logger = LoggerFactory.getLogger(TrainerDAO.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TrainerDAO.class);
 
     public TrainerDAO() {
-        logger.info("TrainerDAO initialized");
+        LOGGER.info("TrainerDAO initialized");
     }
 
     @Autowired
     public void setTrainerStorage(Map<Long, Trainer> trainerStorage) {
         this.trainerStorage = trainerStorage;
-        logger.info("Trainer storage injected into TrainerDAO");
+        LOGGER.info("Trainer storage injected into TrainerDAO");
     }
 
     @Autowired
@@ -43,37 +43,37 @@ public class TrainerDAO {
         Long id = idCounter.getAndIncrement();
         trainer.setId(id);
         trainerStorage.put(id, trainer);
-        logger.info("Created Trainer: ID={}, Trainer={}", id, trainer);
+        LOGGER.info("Created Trainer: ID={}, Trainer={}", id, trainer);
         return id;
     }
 
     public Trainer findById(Long id) {
         Trainer trainer = trainerStorage.get(id);
         if (trainer != null) {
-            logger.info("Found Trainer by ID={}: {}", id, trainer);
+            LOGGER.info("Found Trainer by ID={}: {}", id, trainer);
         } else {
-            logger.warn("Trainer not found for ID={}", id);
+            LOGGER.warn("Trainer not found for ID={}", id);
         }
         return trainer;
     }
 
     public void update(Long id, Trainer trainer) {
         trainerStorage.put(id, trainer);
-        logger.info("Updated Trainer: ID={}, Trainer={}", id, trainer);
+        LOGGER.info("Updated Trainer: ID={}, Trainer={}", id, trainer);
     }
 
     public void delete(Long id) {
         Trainer trainer = trainerStorage.remove(id);
         if (trainer != null) {
             existingUsernames.remove(trainer.getUsername());
-            logger.info("Deleted Trainer: ID={}, Trainer={}", id, trainer);
+            LOGGER.info("Deleted Trainer: ID={}, Trainer={}", id, trainer);
         } else {
-            logger.warn("Failed to delete Trainer: ID={} not found", id);
+            LOGGER.warn("Failed to delete Trainer: ID={} not found", id);
         }
     }
 
     public List<Trainer> findAll() {
-        logger.info("Fetching all Trainers");
+        LOGGER.info("Fetching all Trainers");
         return new ArrayList<>(trainerStorage.values());
     }
 }

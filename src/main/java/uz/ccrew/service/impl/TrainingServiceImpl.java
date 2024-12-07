@@ -14,43 +14,43 @@ import java.util.List;
 @Service
 public class TrainingServiceImpl implements TrainingService {
     private TrainingDAO dao;
-    private static final Logger logger = LoggerFactory.getLogger(TrainingServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TrainingServiceImpl.class);
 
     public TrainingServiceImpl() {
-        logger.info("TrainingServiceImpl initialized");
+        LOGGER.info("TrainingServiceImpl initialized");
     }
 
     @Autowired
     public void setDao(TrainingDAO dao) {
         this.dao = dao;
-        logger.info("TrainingDAO injected into TrainingServiceImpl");
+        LOGGER.info("TrainingDAO injected into TrainingServiceImpl");
     }
 
     @Override
     public Long create(Training training) {
-        logger.info("Creating Training: {}", training);
+        LOGGER.info("Creating Training: {}", training);
         Long id = dao.create(training);
-        logger.info("Training created with ID={}", id);
+        LOGGER.info("Training created with ID={}", id);
         return id;
     }
 
     @Override
     public Training findById(Long id) {
-        logger.info("Finding Training by ID={}", id);
+        LOGGER.info("Finding Training by ID={}", id);
         Training training = dao.findById(id);
         if (training != null) {
-            logger.info("Found Training: {}", training);
+            LOGGER.info("Found Training: {}", training);
         } else {
-            logger.warn("Training with ID={} not found", id);
+            LOGGER.warn("Training with ID={} not found", id);
         }
         return training;
     }
 
     @Override
     public List<Training> findAll() {
-        logger.info("Fetching all Trainings");
+        LOGGER.info("Fetching all Trainings");
         List<Training> trainings = dao.findAll();
-        logger.info("Fetched {} Trainings", trainings.size());
+        LOGGER.info("Fetched {} Trainings", trainings.size());
         return trainings;
     }
 }

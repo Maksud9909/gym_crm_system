@@ -16,7 +16,7 @@ import java.io.InputStreamReader;
 
 @Component
 public class DataInitializer {
-    private static final Logger logger = LoggerFactory.getLogger(DataInitializer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataInitializer.class);
 
     private Map<Long, Trainee> traineeStorage;
     private Map<Long, Trainer> trainerStorage;
@@ -60,7 +60,7 @@ public class DataInitializer {
 
     @PostConstruct
     public void init() {
-        logger.info("Initializing storage with data from files");
+        LOGGER.info("Initializing storage with data from files");
         loadTraineeData();
         loadTrainerData();
         loadTrainingData();
@@ -84,9 +84,9 @@ public class DataInitializer {
                 );
                 traineeStorage.put(trainee.getId(), trainee);
             }
-            logger.info("Loaded Trainee data from file");
+            LOGGER.info("Loaded Trainee data from file");
         } catch (Exception e) {
-            logger.error("Error loading Trainee data", e);
+            LOGGER.error("Error loading Trainee data", e);
         }
     }
 
@@ -107,9 +107,9 @@ public class DataInitializer {
                 );
                 trainerStorage.put(trainer.getId(), trainer);
             }
-            logger.info("Loaded Trainer data from file");
+            LOGGER.info("Loaded Trainer data from file");
         } catch (Exception e) {
-            logger.error("Error loading Trainer data", e);
+            LOGGER.error("Error loading Trainer data", e);
         }
     }
 
@@ -130,9 +130,9 @@ public class DataInitializer {
                 );
                 trainingStorage.put(training.getId(), training);
             }
-            logger.info("Loaded Training data from file");
+            LOGGER.info("Loaded Training data from file");
         } catch (Exception e) {
-            logger.error("Error loading Training data", e);
+            LOGGER.error("Error loading Training data", e);
         }
     }
 }
