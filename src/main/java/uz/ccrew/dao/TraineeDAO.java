@@ -16,8 +16,8 @@ import java.util.concurrent.atomic.AtomicLong;
 @Repository
 public class TraineeDAO {
     private Map<Long, Trainee> traineeStorage;
-    private final AtomicLong idCounter = new AtomicLong(1);
     private Set<String> existingUsernames = new HashSet<>();
+    private final AtomicLong idCounter = new AtomicLong(1);
     private static final Logger LOGGER = LoggerFactory.getLogger(TraineeDAO.class);
 
     public TraineeDAO() {

@@ -16,11 +16,10 @@ import java.io.InputStreamReader;
 
 @Component
 public class DataInitializer {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DataInitializer.class);
-
     private Map<Long, Trainee> traineeStorage;
     private Map<Long, Trainer> trainerStorage;
     private Map<Long, Training> trainingStorage;
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataInitializer.class);
 
     @Value("${trainee.data.file}")
     private String traineeDataFile;
