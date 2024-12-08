@@ -1,12 +1,10 @@
 package uz.ccrew;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.stereotype.Component;
-import uz.ccrew.config.AppConfig;
-import uz.ccrew.config.ApplicationFacade;
 import uz.ccrew.entity.*;
+import uz.ccrew.config.ApplicationFacade;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
