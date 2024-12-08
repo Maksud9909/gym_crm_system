@@ -7,12 +7,14 @@ import uz.ccrew.config.AppConfig;
 import uz.ccrew.entity.TrainingType;
 import uz.ccrew.config.ApplicationFacade;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.List;
 import java.time.LocalDate;
 
+@Slf4j
 public class MainApp {
     public static void main(String[] args) {
 
@@ -20,7 +22,7 @@ public class MainApp {
         ApplicationFacade facade = context.getBean(ApplicationFacade.class);
 
 
-        System.out.println("---- Trainee Operations ----");
+        log.info("---- Trainee Operations ----");
         List<Trainee> trainees = facade.getAllTrainees();
         trainees.forEach(t -> System.out.println("Trainee: " + t.getFirstName() + " " + t.getLastName()));
 
@@ -35,7 +37,7 @@ public class MainApp {
         System.out.println("Created Trainee ID: " + traineeId);
 
 
-        System.out.println("---- Trainer Operations ----");
+        log.info("---- Trainer Operations ----");
         List<Trainer> trainers = facade.getAllTrainers();
         trainers.forEach(t -> System.out.println("Trainer: " + t.getFirstName() + " " + t.getLastName()));
 
@@ -50,7 +52,7 @@ public class MainApp {
         System.out.println("Created Trainer ID: " + trainerId);
 
 
-        System.out.println("---- Training Operations ----");
+        log.info("---- Training Operations ----");
         List<Training> trainings = facade.getAllTrainings();
         trainings.forEach(t -> System.out.println("Training: " + t.getTrainingName()));
 
