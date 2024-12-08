@@ -1,79 +1,71 @@
 package uz.ccrew.dao;
 
+import uz.ccrew.dao.base.AbstractBaseDAO;
 import uz.ccrew.entity.Trainee;
 
 import static uz.ccrew.utils.UserUtils.generateRandomPassword;
 import static uz.ccrew.utils.UserUtils.generateUniqueUsername;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Repository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
+@Slf4j
 @Repository
-public class TraineeDAO {
-    private Map<Long, Trainee> traineeStorage;
-    private final AtomicLong idCounter = new AtomicLong(1);
+public class TraineeDAO extends AbstractBaseDAO<Trainee> {
     private Set<String> existingUsernames = new HashSet<>();
-    private static final Logger LOGGER = LoggerFactory.getLogger(TraineeDAO.class);
-
-    public TraineeDAO() {
-        LOGGER.info("TraineeDAO initialized");
-    }
 
     @Autowired
     public void setTraineeStorage(Map<Long, Trainee> traineeStorage) {
-        this.traineeStorage = traineeStorage;
-        LOGGER.info("Trainee storage injected into TraineeDAO");
+        this.storage = traineeStorage;
+        log.info("Trainee storage injected into TraineeDAO");
     }
 
     @Autowired
     public void setExistingUsernames(Set<String> existingUsernames) {
         this.existingUsernames = existingUsernames;
+        log.info("existingUsernames injected into TraineeDAO");
     }
 
-
+    @Override
     public Long create(Trainee trainee) {
         String username = generateUniqueUsername(trainee.getFirstName(), trainee.getLastName(), existingUsernames);
         trainee.setUsername(username);
         trainee.setPassword(generateRandomPassword());
 
-        Long id = idCounter.getAndIncrement();
+        Long id = getNextId();
         trainee.setId(id);
-        traineeStorage.put(id, trainee);
-        LOGGER.info("Created Trainee: ID={}, Trainee={}", id, trainee);
+        storage.put(id, trainee);
+        log.info("Created Trainee: ID={}, Trainee={}", id, trainee);
         return id;
     }
 
-    public Trainee findById(Long id) {
-        Trainee trainee = traineeStorage.get(id);
-        if (trainee != null) {
-            LOGGER.info("Found Trainee by ID={}: {}", id, trainee);
-        } else {
-            LOGGER.warn("Trainee not found for ID={}", id);
-        }
-        return trainee;
-    }
-
     public void update(Long id, Trainee trainee) {
-        traineeStorage.put(id, trainee);
-        LOGGER.info("Updated Trainee: ID={}, Trainee={}", id, trainee);
+        if (storage.containsKey(id)) {
+            trainee.setId(id);
+            storage.put(id, trainee);
+            log.info("Updated Trainee: ID={}, Trainee={}", id, trainee);
+        } else {
+            log.warn("Trainee with ID={} not found for update", id);
+        }
     }
 
     public void delete(Long id) {
-        Trainee trainee = traineeStorage.remove(id);
+        Trainee trainee = storage.remove(id);
         if (trainee != null) {
-            LOGGER.info("Deleted Trainee: ID={}, Trainee={}", id, trainee);
+            existingUsernames.remove(trainee.getUsername());
+            log.info("Deleted Trainee: ID={}, Trainee={}", id, trainee);
         } else {
-            LOGGER.warn("Failed to delete Trainee: ID={} not found", id);
+            log.warn("Trainee with ID={} not found", id);
         }
     }
 
-    public List<Trainee> findAll() {
-        LOGGER.info("Fetching all Trainees");
-        return new ArrayList<>(traineeStorage.values());
+    @Override
+    protected String getEntityName() {
+        return "Trainee";
     }
 }
