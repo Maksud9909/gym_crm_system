@@ -1,7 +1,7 @@
 package uz.ccrew.dao;
 
-import uz.ccrew.dao.base.AbstractBaseDAO;
 import uz.ccrew.entity.Trainee;
+import uz.ccrew.dao.base.AbstractBaseDAO;
 
 import static uz.ccrew.utils.UserUtils.generateRandomPassword;
 import static uz.ccrew.utils.UserUtils.generateUniqueUsername;

@@ -48,6 +48,11 @@ public class TrainerDAO extends AbstractBaseDAO<Trainer> {
         log.info("Updated Trainer: ID={}, Trainer={}", id, trainer);
     }
 
+    public void delete(Long id) {
+        storage.remove(id);
+        log.info("Deleted Trainer: ID={}", id);
+    }
+
     @Override
     protected String getEntityName() {
         return "Trainer";

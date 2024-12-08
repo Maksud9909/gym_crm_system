@@ -8,6 +8,7 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Training {
     private Long id;
     private Long traineeId;
@@ -16,17 +17,4 @@ public class Training {
     private TrainingType trainingType;
     private LocalDate trainingDate;
     private Integer trainingDuration;
-
-    @Override
-    public String toString() {
-        return "Training{" +
-                "id=" + id +
-                ", traineeId=" + traineeId +
-                ", trainerId=" + trainerId +
-                ", trainingName='" + trainingName + '\'' +
-                ", trainingType=" + trainingType +
-                ", trainingDate=" + trainingDate +
-                ", trainingDuration=" + trainingDuration +
-                '}';
-    }
 }
