@@ -1,4 +1,4 @@
-package uz.ccrew.service.impl;
+package uz.ccrew.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -7,18 +7,18 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uz.ccrew.config.AppConfig;
 import uz.ccrew.entity.Trainee;
-import uz.ccrew.service.TraineeService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.extension.ExtendWith;
+import uz.ccrew.service.TraineeService;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {AppConfig.class})
-class TraineeServiceImplTest {
+class TraineeServiceTest {
 
     @Autowired
     private TraineeService traineeService;

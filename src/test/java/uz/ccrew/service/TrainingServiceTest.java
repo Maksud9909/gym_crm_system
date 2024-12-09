@@ -1,4 +1,4 @@
-package uz.ccrew.service.impl;
+package uz.ccrew.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,11 +9,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uz.ccrew.config.AppConfig;
 import uz.ccrew.entity.Training;
 import uz.ccrew.entity.TrainingType;
-import uz.ccrew.service.TrainingService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.extension.ExtendWith;
+import uz.ccrew.service.TrainingService;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,7 +21,7 @@ import java.util.List;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {AppConfig.class})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-class TrainingServiceImplTest {
+class TrainingServiceTest {
 
     @Autowired
     private TrainingService trainingService;

@@ -1,13 +1,29 @@
 package uz.ccrew.service;
 
+import uz.ccrew.dao.TrainingDAO;
 import uz.ccrew.entity.Training;
+import uz.ccrew.service.base.AbstractBaseService;
 
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 
-public interface TrainingService {
-    Long create(Training training);
+@Slf4j
+@Service
+public class TrainingService extends AbstractBaseService<Training,Long> {
 
-    Training findById(Long id);
+    public TrainingService() {
+        log.info("TrainingServiceImpl initialized");
+    }
 
-    List<Training> findAll();
+    @Autowired
+    public void setDao(TrainingDAO dao) {
+        super.dao = dao;
+        log.info("TrainingDAO injected into TrainingServiceImpl");
+    }
+
+    @Override
+    protected String getEntityName() {
+        return "Training";
+    }
 }

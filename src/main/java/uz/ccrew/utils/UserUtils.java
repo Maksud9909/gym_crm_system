@@ -6,14 +6,16 @@ import java.util.Set;
 import java.security.SecureRandom;
 
 public class UserUtils {
+    private static final String DOT = ".";
+    private static final String CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
     public static String generateUniqueUsername(String firstName, String lastName, @NotNull Set<String> existingUsernames) {
-        String baseUsername = firstName + "." + lastName;
+        String baseUsername = firstName + DOT + lastName;
         String uniqueUsername = baseUsername;
         int counter = 1;
 
         while (existingUsernames.contains(uniqueUsername)) {
-            uniqueUsername = baseUsername + "." + counter;
+            uniqueUsername = baseUsername + DOT + counter;
             counter++;
         }
 
@@ -22,12 +24,11 @@ public class UserUtils {
     }
 
     public static String generateRandomPassword() {
-        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         StringBuilder password = new StringBuilder(10);
-        SecureRandom random = new SecureRandom(); // генерирует криптографически стойкие случайные числа
+        SecureRandom random = new SecureRandom();
         for (int i = 0; i < 10; i++) {
-            int randomIndex = random.nextInt(chars.length());
-            password.append(chars.charAt(randomIndex));
+            int randomIndex = random.nextInt(CHARS.length());
+            password.append(CHARS.charAt(randomIndex));
         }
         return password.toString();
     }
