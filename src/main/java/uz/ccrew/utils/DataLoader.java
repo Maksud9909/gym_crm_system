@@ -1,18 +1,19 @@
 package uz.ccrew.utils;
 
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.Map;
+import java.util.Objects;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.Map;
 import java.util.function.Function;
-
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class DataLoader {
 
     public static <T> void loadData(String filePath, Map<Long, T> storage, Function<String[], T> mapper, Function<T, Long> idExtractor) {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-                DataLoader.class.getResourceAsStream(filePath)))) {
+                Objects.requireNonNull(DataLoader.class.getResourceAsStream(filePath))))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
