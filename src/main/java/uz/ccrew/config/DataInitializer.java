@@ -4,7 +4,6 @@ import uz.ccrew.entity.*;
 import uz.ccrew.utils.DataLoader;
 import uz.ccrew.utils.EntityMapper;
 
-import lombok.extern.slf4j.Slf4j;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
 
-@Slf4j
 @Component
 public class DataInitializer {
     private Map<Long, Trainee> traineeStorage;

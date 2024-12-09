@@ -7,26 +7,25 @@ import uz.ccrew.service.TraineeService;
 import uz.ccrew.service.TrainerService;
 import uz.ccrew.service.TrainingService;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
+@Slf4j
 @Component
 public class ApplicationFacade {
     private final TraineeService traineeService;
     private final TrainerService trainerService;
     private final TrainingService trainingService;
-    private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationFacade.class);
 
     @Autowired
     public ApplicationFacade(TraineeService traineeService, TrainerService trainerService, TrainingService trainingService) {
         this.traineeService = traineeService;
         this.trainerService = trainerService;
         this.trainingService = trainingService;
-        LOGGER.info("ApplicationFacade initialized with services");
+        log.info("ApplicationFacade initialized with services");
     }
 
     public Long createTrainee(Trainee trainee) {
