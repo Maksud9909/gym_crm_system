@@ -8,6 +8,7 @@ import java.security.SecureRandom;
 public class UserUtils {
     private static final String DOT = ".";
     private static final String CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    private static final byte PASSWORD_LENGTH = 10;
 
     public static String generateUniqueUsername(String firstName, String lastName, @NotNull Set<String> existingUsernames) {
         String baseUsername = firstName + DOT + lastName;
@@ -24,7 +25,7 @@ public class UserUtils {
     }
 
     public static String generateRandomPassword() {
-        StringBuilder password = new StringBuilder(10);
+        StringBuilder password = new StringBuilder(PASSWORD_LENGTH);
         SecureRandom random = new SecureRandom();
         for (int i = 0; i < 10; i++) {
             int randomIndex = random.nextInt(CHARS.length());

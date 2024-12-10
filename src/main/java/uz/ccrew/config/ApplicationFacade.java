@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 @Slf4j
 @Component
@@ -19,6 +20,7 @@ public class ApplicationFacade {
     private final TraineeService traineeService;
     private final TrainerService trainerService;
     private final TrainingService trainingService;
+    private static final Logger LOGGER = Logger.getLogger(ApplicationFacade.class.getName());
 
     @Autowired
     public ApplicationFacade(TraineeService traineeService, TrainerService trainerService, TrainingService trainingService) {

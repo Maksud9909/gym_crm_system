@@ -1,16 +1,14 @@
 package uz.ccrew.entity;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
+@SuperBuilder
 @NoArgsConstructor
+@AllArgsConstructor
 @ToString(callSuper = true)
 public class Trainer extends User {
     private String specialization;
-
-    public Trainer(Long id, String firstName, String lastName, String username, String password, Boolean isActive, String specialization) {
-        super(id, firstName, lastName, username, password, isActive);
-        this.specialization = specialization;
-    }
 }

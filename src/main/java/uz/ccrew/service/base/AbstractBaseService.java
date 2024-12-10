@@ -2,13 +2,15 @@ package uz.ccrew.service.base;
 
 import uz.ccrew.dao.base.BaseDAO;
 
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+@Setter
 @Slf4j
 public abstract class AbstractBaseService<T, ID> implements BaseService<T, ID> {
-    protected BaseDAO<T, ID> dao;
+    private BaseDAO<T, ID> dao;
 
     public AbstractBaseService(BaseDAO<T, ID> dao) {
         this.dao = dao;

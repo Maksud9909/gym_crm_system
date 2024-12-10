@@ -16,11 +16,12 @@ import java.util.Set;
 @Slf4j
 @Repository
 public class TrainerDAO extends AbstractBaseDAO<Trainer> {
+    private static final String ENTITY_NAME = "Trainer";
     private Set<String> existingUsernames;
 
     @Autowired
     public void setTrainerStorage(Map<Long, Trainer> trainerStorage) {
-        this.storage = trainerStorage;
+        setStorage(trainerStorage);
         log.info("Trainer storage injected into TrainerDAO");
     }
 
@@ -38,23 +39,23 @@ public class TrainerDAO extends AbstractBaseDAO<Trainer> {
 
         Long id = getNextId();
         trainer.setId(id);
-        storage.put(id, trainer);
+        getStorage().put(id, trainer);
         log.info("Created Trainer: ID={}, Trainer={}", id, trainer);
         return id;
     }
 
     public void update(Long id, Trainer trainer) {
-        storage.put(id, trainer);
+        getStorage().put(id, trainer);
         log.info("Updated Trainer: ID={}, Trainer={}", id, trainer);
     }
 
     public void delete(Long id) {
-        storage.remove(id);
+        getStorage().remove(id);
         log.info("Deleted Trainer: ID={}", id);
     }
 
     @Override
     protected String getEntityName() {
-        return "Trainer";
+        return ENTITY_NAME;
     }
 }

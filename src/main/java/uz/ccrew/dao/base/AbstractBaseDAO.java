@@ -5,11 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Getter
 public abstract class AbstractBaseDAO<T> implements BaseDAO<T, Long> {
-    protected Map<Long, T> storage = new HashMap<>();
+    private Map<Long, T> storage = new HashMap<>();
     private long idCounter = 0;
 
     @Override
@@ -36,5 +38,9 @@ public abstract class AbstractBaseDAO<T> implements BaseDAO<T, Long> {
 
     protected Long getNextId() {
         return ++idCounter;
+    }
+
+    protected void setStorage(Map<Long, T> storage) {
+        this.storage = storage;
     }
 }

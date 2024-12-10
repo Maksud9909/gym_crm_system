@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Service
 public class TrainerService extends AbstractBaseService<Trainer, Long> {
     private TrainerDAO dao;
+    private static final String ENTITY_NAME = "Trainer";
 
     public TrainerService() {
         log.info("TrainerServiceImpl initialized");
@@ -19,7 +20,7 @@ public class TrainerService extends AbstractBaseService<Trainer, Long> {
 
     @Autowired
     public void setDao(TrainerDAO dao) {
-        super.dao = dao;
+        super.setDao(dao);
         this.dao = dao;
         log.info("TrainerDAO injected into TrainerServiceImpl");
     }
@@ -40,6 +41,6 @@ public class TrainerService extends AbstractBaseService<Trainer, Long> {
 
     @Override
     protected String getEntityName() {
-        return "";
+        return ENTITY_NAME;
     }
 }

@@ -7,8 +7,8 @@ import static uz.ccrew.utils.UserUtils.generateRandomPassword;
 import static uz.ccrew.utils.UserUtils.generateUniqueUsername;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -17,11 +17,12 @@ import java.util.Set;
 @Slf4j
 @Repository
 public class TraineeDAO extends AbstractBaseDAO<Trainee> {
+    private static final String ENTITY_NAME = "Trainee";
     private Set<String> existingUsernames = new HashSet<>();
 
     @Autowired
     public void setTraineeStorage(Map<Long, Trainee> traineeStorage) {
-        this.storage = traineeStorage;
+        setStorage(traineeStorage);
         log.info("Trainee storage injected into TraineeDAO");
     }
 
@@ -39,15 +40,15 @@ public class TraineeDAO extends AbstractBaseDAO<Trainee> {
 
         Long id = getNextId();
         trainee.setId(id);
-        storage.put(id, trainee);
+        getStorage().put(id, trainee);
         log.info("Created Trainee: ID={}, Trainee={}", id, trainee);
         return id;
     }
 
     public void update(Long id, Trainee trainee) {
-        if (storage.containsKey(id)) {
+        if (getStorage().containsKey(id)) {
             trainee.setId(id);
-            storage.put(id, trainee);
+            getStorage().put(id, trainee);
             log.info("Updated Trainee: ID={}, Trainee={}", id, trainee);
         } else {
             log.warn("Trainee with ID={} not found for update", id);
@@ -55,7 +56,7 @@ public class TraineeDAO extends AbstractBaseDAO<Trainee> {
     }
 
     public void delete(Long id) {
-        Trainee trainee = storage.remove(id);
+        Trainee trainee = getStorage().remove(id);
         if (trainee != null) {
             existingUsernames.remove(trainee.getUsername());
             log.info("Deleted Trainee: ID={}, Trainee={}", id, trainee);
@@ -66,6 +67,6 @@ public class TraineeDAO extends AbstractBaseDAO<Trainee> {
 
     @Override
     protected String getEntityName() {
-        return "Trainee";
+        return ENTITY_NAME;
     }
 }

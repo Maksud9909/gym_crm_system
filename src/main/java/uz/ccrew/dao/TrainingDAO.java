@@ -12,6 +12,7 @@ import java.util.Map;
 @Slf4j
 @Repository
 public class TrainingDAO extends AbstractBaseDAO<Training> {
+    private static final String ENTITY_NAME = "Training";
 
     public TrainingDAO() {
         log.info("TrainingDAO initialized");
@@ -19,7 +20,7 @@ public class TrainingDAO extends AbstractBaseDAO<Training> {
 
     @Autowired
     public void setTrainingStorage(Map<Long, Training> trainingStorage) {
-        this.storage = trainingStorage;
+        setStorage(trainingStorage);
         log.info("Training storage injected into TrainingDAO");
     }
 
@@ -27,13 +28,13 @@ public class TrainingDAO extends AbstractBaseDAO<Training> {
     public Long create(Training training) {
         Long id = getNextId();
         training.setId(id);
-        storage.put(id, training);
+        getStorage().put(id, training);
         log.info("Created Training: ID={}, Training={}", id, training);
         return id;
     }
 
     @Override
     protected String getEntityName() {
-        return "Training";
+        return ENTITY_NAME;
     }
 }

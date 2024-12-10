@@ -1,14 +1,16 @@
 package uz.ccrew.entity;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
+import uz.ccrew.entity.base.BaseEntity;
 
 @Getter
 @Setter
 @ToString
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
-    private Long id;
+public class User extends BaseEntity {
     private String firstName;
     private String lastName;
     private String username;

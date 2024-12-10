@@ -1,10 +1,13 @@
 package uz.ccrew;
 
 import uz.ccrew.entity.*;
+import uz.ccrew.config.AppConfig;
 import uz.ccrew.config.ApplicationFacade;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,14 +29,13 @@ public class ApplicationRunner {
         List<Trainee> trainees = facade.getAllTrainees();
         trainees.forEach(t -> log.info("Trainee: {} {}", t.getFirstName(), t.getLastName()));
 
-        Trainee newTrainee = new Trainee(null,
-                "Michael",
-                "Brown",
-                null,
-                null,
-                true,
-                LocalDate.of(2005, 12, 4),
-                "789 Oak St");
+        Trainee newTrainee = Trainee.builder()
+                .firstName("Michael")
+                .lastName("Brown")
+                .isActive(true)
+                .dateOfBirth(LocalDate.of(2005, 12, 4))
+                .address("789 Oak St")
+                .build();
         Long traineeId = facade.createTrainee(newTrainee);
         log.info("Created Trainee ID: {}", traineeId);
 
@@ -41,13 +43,16 @@ public class ApplicationRunner {
         List<Trainer> trainers = facade.getAllTrainers();
         trainers.forEach(t -> log.info("Trainer: {} {}", t.getFirstName(), t.getLastName()));
 
-        Trainer newTrainer = new Trainer(null,
-                "Emily",
-                "Davis",
-                null,
-                null,
-                true,
-                "Pilates");
+        Trainer newTrainer = Trainer.builder()
+                .id(null)
+                .firstName("Emily")
+                .lastName("Davis")
+                .username(null)
+                .password(null)
+                .isActive(true)
+                .specialization("Pilates")
+                .build();
+
         Long trainerId = facade.createTrainer(newTrainer);
         log.info("Created Trainer ID: {}", trainerId);
 
@@ -55,18 +60,24 @@ public class ApplicationRunner {
         List<Training> trainings = facade.getAllTrainings();
         trainings.forEach(t -> log.info("Training: {}", t.getTrainingName()));
 
-        Training newTraining = new Training(
-                null,
-                traineeId,
-                trainerId,
-                "Pilates Session",
-                TrainingType.GYM,
-                LocalDate.now(),
-                90
-        );
+        Training newTraining = Training.builder()
+                .traineeId(traineeId)
+                .trainerId(trainerId)
+                .trainingName("Pilates Session")
+                .trainingType(TrainingType.GYM)
+                .trainingDate(LocalDate.now())
+                .trainingDuration(90)
+                .build();
+
         Long trainingId = facade.createTraining(newTraining);
         log.info("Created Training ID: {}", trainingId);
 
         log.info("---- Application Finished ----");
+    }
+
+    public static void main(String[] args) {
+        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+        ApplicationRunner runner = context.getBean(ApplicationRunner.class);
+        runner.start();
     }
 }
