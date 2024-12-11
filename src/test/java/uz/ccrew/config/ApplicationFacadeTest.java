@@ -13,6 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {AppConfig.class})
@@ -36,9 +37,9 @@ class ApplicationFacadeTest {
         Long id = applicationFacade.createTrainee(trainee);
         assertNotNull(id);
 
-        Trainee savedTrainee = applicationFacade.getTrainee(id);
+        Optional<Trainee> savedTrainee = applicationFacade.getTrainee(id);
         assertNotNull(savedTrainee);
-        assertEquals("John", savedTrainee.getFirstName());
+        assertEquals("John", savedTrainee.get().getFirstName());
     }
 
     @Test

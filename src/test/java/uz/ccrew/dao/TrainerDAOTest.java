@@ -13,6 +13,7 @@ import uz.ccrew.config.AppConfig;
 import uz.ccrew.entity.Trainer;
 
 import java.util.List;
+import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {AppConfig.class})
@@ -35,8 +36,6 @@ class TrainerDAOTest {
     void create_ShouldAddUniqueTrainer() {
         Long id = trainerDAO.create(trainer);
         assertNotNull(id);
-
-        // the same username
         Trainer duplicateTrainer = new Trainer();
         duplicateTrainer.setFirstName("Alice");
         duplicateTrainer.setLastName("Smith");
@@ -50,9 +49,9 @@ class TrainerDAOTest {
     @Test
     void findById_ShouldReturnTrainer() {
         Long id = trainerDAO.create(trainer);
-        Trainer foundTrainer = trainerDAO.findById(id);
-        assertNotNull(foundTrainer.getId());
-        assertEquals("Alice", foundTrainer.getFirstName());
+        Optional<Trainer> foundTrainer = trainerDAO.findById(id);
+        assertNotNull(foundTrainer.get().getId());
+        assertEquals("Alice", foundTrainer.get().getFirstName());
     }
 
     @Test
@@ -62,17 +61,17 @@ class TrainerDAOTest {
         updatedTrainer.setFirstName("Taylor");
         updatedTrainer.setLastName("Swift");
         trainerDAO.update(id, updatedTrainer);
-        Trainer savedTrainer = trainerDAO.findById(id);
-        assertNotNull(savedTrainer.getFirstName());
-        assertEquals("Taylor", savedTrainer.getFirstName());
-        assertEquals("Swift", savedTrainer.getLastName());
+        Optional<Trainer> savedTrainer = trainerDAO.findById(id);
+        assertNotNull(savedTrainer.get().getFirstName());
+        assertEquals("Taylor", savedTrainer.get().getFirstName());
+        assertEquals("Swift", savedTrainer.get().getLastName());
     }
 
     @Test
     void delete() {
         Long id = trainerDAO.create(trainer);
         trainerDAO.delete(id);
-        assertNull(trainerDAO.findById(id));
+        assertTrue(trainerDAO.findById(id).isEmpty());
     }
 
     @Test

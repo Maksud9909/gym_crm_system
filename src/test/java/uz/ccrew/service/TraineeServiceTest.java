@@ -11,6 +11,7 @@ import uz.ccrew.entity.Trainee;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.extension.ExtendWith;
+import uz.ccrew.exp.EntityNotFoundException;
 import uz.ccrew.service.TraineeService;
 
 import java.time.LocalDate;
@@ -68,9 +69,9 @@ class TraineeServiceTest {
     void delete_ShouldRemoveTrainee() {
         Long id = traineeService.create(trainee);
         traineeService.delete(id);
-        Trainee deletedTrainee = traineeService.findById(id);
-        assertNull(deletedTrainee);
+        assertThrows(EntityNotFoundException.class, () -> traineeService.findById(id));
     }
+
 
     @Test
     void findAll_ShouldReturnAllTrainees() {

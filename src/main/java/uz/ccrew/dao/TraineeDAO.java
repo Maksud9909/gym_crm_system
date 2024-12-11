@@ -1,7 +1,7 @@
 package uz.ccrew.dao;
 
 import uz.ccrew.entity.Trainee;
-import uz.ccrew.dao.base.AbstractBaseDAO;
+import uz.ccrew.dao.base.AbstractCRUDBaseDAO;
 
 import static uz.ccrew.utils.UserUtils.generateRandomPassword;
 import static uz.ccrew.utils.UserUtils.generateUniqueUsername;
@@ -16,7 +16,7 @@ import java.util.Set;
 
 @Slf4j
 @Repository
-public class TraineeDAO extends AbstractBaseDAO<Trainee> {
+public class TraineeDAO extends AbstractCRUDBaseDAO<Trainee> {
     private static final String ENTITY_NAME = "Trainee";
     private Set<String> existingUsernames = new HashSet<>();
 
@@ -43,26 +43,6 @@ public class TraineeDAO extends AbstractBaseDAO<Trainee> {
         getStorage().put(id, trainee);
         log.info("Created Trainee: ID={}, Trainee={}", id, trainee);
         return id;
-    }
-
-    public void update(Long id, Trainee trainee) {
-        if (getStorage().containsKey(id)) {
-            trainee.setId(id);
-            getStorage().put(id, trainee);
-            log.info("Updated Trainee: ID={}, Trainee={}", id, trainee);
-        } else {
-            log.warn("Trainee with ID={} not found for update", id);
-        }
-    }
-
-    public void delete(Long id) {
-        Trainee trainee = getStorage().remove(id);
-        if (trainee != null) {
-            existingUsernames.remove(trainee.getUsername());
-            log.info("Deleted Trainee: ID={}, Trainee={}", id, trainee);
-        } else {
-            log.warn("Trainee with ID={} not found", id);
-        }
     }
 
     @Override

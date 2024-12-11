@@ -1,9 +1,6 @@
 package uz.ccrew.dao.base;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +15,10 @@ public abstract class AbstractBaseDAO<T> implements BaseDAO<T, Long> {
     public abstract Long create(T entity);
 
     @Override
-    public T findById(Long id) {
-        T entity = storage.get(id);
-        if (entity != null) {
-            log.info("Found {} by ID={}: {}", getEntityName(), id, entity);
+    public Optional<T> findById(Long id) {
+        Optional<T> entity = Optional.ofNullable(storage.get(id));
+        if (entity.isPresent()) {
+            log.info("Found {} by ID={}: {}", getEntityName(), id, entity.get());
         } else {
             log.warn("{} not found for ID={}", getEntityName(), id);
         }

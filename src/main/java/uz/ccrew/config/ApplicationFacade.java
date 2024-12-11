@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -20,7 +20,6 @@ public class ApplicationFacade {
     private final TraineeService traineeService;
     private final TrainerService trainerService;
     private final TrainingService trainingService;
-    private static final Logger LOGGER = Logger.getLogger(ApplicationFacade.class.getName());
 
     @Autowired
     public ApplicationFacade(TraineeService traineeService, TrainerService trainerService, TrainingService trainingService) {
@@ -34,8 +33,8 @@ public class ApplicationFacade {
         return traineeService.create(trainee);
     }
 
-    public Trainee getTrainee(Long id) {
-        return traineeService.findById(id);
+    public Optional<Trainee> getTrainee(Long id) {
+        return Optional.ofNullable(traineeService.findById(id));
     }
 
     public List<Trainee> getAllTrainees() {

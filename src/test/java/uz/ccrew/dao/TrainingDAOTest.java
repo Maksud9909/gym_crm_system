@@ -16,6 +16,7 @@ import uz.ccrew.entity.TrainingType;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {AppConfig.class})
@@ -41,23 +42,23 @@ class TrainingDAOTest {
     void create_ShouldAddTraining() {
         Long id = trainingDAO.create(training);
         assertNotNull(id);
-        Training savedTraining = trainingDAO.findById(id);
+        Optional<Training> savedTraining = trainingDAO.findById(id);
         assertNotNull(savedTraining);
-        assertEquals("Yoga Session", savedTraining.getTrainingName());
+        assertEquals("Yoga Session", savedTraining.get().getTrainingName());
     }
 
     @Test
     void findById_ShouldReturnTraining() {
         Long id = trainingDAO.create(training);
-        Training foundTraining = trainingDAO.findById(id);
+        Optional<Training> foundTraining = trainingDAO.findById(id);
         assertNotNull(foundTraining);
-        assertEquals(training.getTrainingName(), foundTraining.getTrainingName());
+        assertEquals(training.getTrainingName(), foundTraining.get().getTrainingName());
     }
 
     @Test
     void findById_ShouldReturnNullIfNotFound() {
-        Training foundTraining = trainingDAO.findById(999L);
-        assertNull(foundTraining);
+        Optional<Training> foundTraining = trainingDAO.findById(999L);
+        assertTrue(foundTraining.isEmpty());
     }
 
     @Test

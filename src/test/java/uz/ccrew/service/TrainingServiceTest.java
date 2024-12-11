@@ -13,7 +13,7 @@ import uz.ccrew.entity.TrainingType;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.extension.ExtendWith;
-import uz.ccrew.service.TrainingService;
+import uz.ccrew.exp.EntityNotFoundException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -57,8 +57,7 @@ class TrainingServiceTest {
 
     @Test
     void findById_ShouldReturnNullIfNotFound() {
-        Training foundTraining = trainingService.findById(999L);
-        assertNull(foundTraining);
+        assertThrows(EntityNotFoundException.class, () -> trainingService.findById(999L));
     }
 
     @Test

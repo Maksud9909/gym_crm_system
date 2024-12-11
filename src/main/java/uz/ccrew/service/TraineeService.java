@@ -7,10 +7,11 @@ import uz.ccrew.service.base.AbstractBaseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import uz.ccrew.service.base.AbstractCRUDBaseService;
 
 @Slf4j
 @Service
-public class TraineeService extends AbstractBaseService<Trainee,Long> {
+public class TraineeService extends AbstractCRUDBaseService<Trainee, Long> {
     private TraineeDAO dao;
     private static final String ENTITY_NAME = "Trainee";
 
@@ -31,18 +32,6 @@ public class TraineeService extends AbstractBaseService<Trainee,Long> {
         Long id = dao.create(trainee);
         log.info("Trainee created with ID={}", id);
         return id;
-    }
-
-    public void delete(Long id) {
-        log.info("Deleting Trainee with ID={}", id);
-        dao.delete(id);
-        log.info("Trainee with ID={} deleted", id);
-    }
-
-    public void update(Long id, Trainee trainee) {
-        log.info("Updating Trainee with ID={} to new data: {}", id, trainee);
-        dao.update(id, trainee);
-        log.info("Trainee with ID={} updated", id);
     }
 
     @Override

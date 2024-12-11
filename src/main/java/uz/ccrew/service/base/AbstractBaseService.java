@@ -1,18 +1,21 @@
 package uz.ccrew.service.base;
 
+import lombok.Getter;
 import uz.ccrew.dao.base.BaseDAO;
+import uz.ccrew.exp.EntityNotFoundException;
 
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
-@Setter
 @Slf4j
-public abstract class AbstractBaseService<T, ID> implements BaseService<T, ID> {
-    private BaseDAO<T, ID> dao;
+@Setter
+@Getter
+public abstract class AbstractBaseService<T, Long> implements BaseService<T, Long> {
+    private BaseDAO<T, Long> dao;
 
-    public AbstractBaseService(BaseDAO<T, ID> dao) {
+    public AbstractBaseService(BaseDAO<T, Long> dao) {
         this.dao = dao;
     }
 
@@ -20,24 +23,20 @@ public abstract class AbstractBaseService<T, ID> implements BaseService<T, ID> {
     }
 
     @Override
-    public ID create(T entity) {
+    public Long create(T entity) {
         log.info("Creating {}: {}", getEntityName(), entity);
-        ID id = dao.create(entity);
+        Long id = dao.create(entity);
         log.info("{} created with ID={}", getEntityName(), id);
         return id;
     }
 
     @Override
-    public T findById(ID id) {
+    public T findById(Long id) {
         log.info("Finding {} by ID={}", getEntityName(), id);
-        T entity = dao.findById(id);
-        if (entity != null) {
-            log.info("Found {}: {}", getEntityName(), entity);
-        } else {
-            log.warn("{} with ID={} not found", getEntityName(), id);
-        }
-        return entity;
+        return dao.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(getEntityName() + " with ID=" + id + " not found"));
     }
+
 
     @Override
     public List<T> findAll() {
