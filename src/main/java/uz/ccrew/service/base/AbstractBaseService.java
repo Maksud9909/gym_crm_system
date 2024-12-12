@@ -19,7 +19,7 @@ public abstract class AbstractBaseService<T, Long> implements BaseService<T, Lon
         this.dao = dao;
     }
 
-    protected AbstractBaseService() {
+    public AbstractBaseService() {
     }
 
     @Override

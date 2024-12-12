@@ -10,36 +10,33 @@ import java.time.LocalDate;
 public class EntityMapper {
     public static Trainee mapToTrainee(String[] data) {
         return Trainee.builder()
-                .id(Long.parseLong(data[0]))
-                .firstName(data[1])
-                .lastName(data[2])
+                .firstName(data[0])
+                .lastName(data[1])
                 .isActive(true)
-                .dateOfBirth(LocalDate.parse(data[3]))
-                .address(data[4])
+                .dateOfBirth(LocalDate.parse(data[2]))
+                .address(data[3])
                 .build();
     }
 
 
     public static Trainer mapToTrainer(String[] data) {
         return Trainer.builder()
-                .id(Long.parseLong(data[0]))
-                .firstName(data[1])
-                .lastName(data[2])
+                .firstName(data[0])
+                .lastName(data[1])
                 .isActive(true)
-                .specialization(data[3])
+                .specialization(data[2])
                 .build();
     }
 
 
     public static Training mapToTraining(String[] data) {
         return Training.builder()
-                .id(Long.parseLong(data[0]))
-                .traineeId(Long.parseLong(data[1]))
-                .trainerId(Long.parseLong(data[2]))
-                .trainingName(data[3])
-                .trainingType(TrainingType.valueOf(data[4]))
-                .trainingDate(LocalDate.parse(data[5]))
-                .trainingDuration(Integer.parseInt(data[6]))
+                .traineeId(Long.parseLong(data[0]))
+                .trainerId(Long.parseLong(data[1]))
+                .trainingName(data[2])
+                .trainingType(TrainingType.valueOf(data[3]))
+                .trainingDate(LocalDate.parse(data[4]))
+                .trainingDuration(Integer.parseInt(data[5]))
                 .build();
     }
 }

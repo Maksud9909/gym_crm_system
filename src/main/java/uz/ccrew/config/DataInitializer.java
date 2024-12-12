@@ -1,21 +1,24 @@
 package uz.ccrew.config;
 
-import uz.ccrew.entity.*;
 import uz.ccrew.utils.DataLoader;
 import uz.ccrew.utils.EntityMapper;
+import uz.ccrew.service.TraineeService;
+import uz.ccrew.service.TrainerService;
+import uz.ccrew.service.TrainingService;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Map;
-
 @Component
 public class DataInitializer {
-    private Map<Long, Trainee> traineeStorage;
-    private Map<Long, Trainer> trainerStorage;
-    private Map<Long, Training> trainingStorage;
+
+    private TraineeService traineeService;
+
+    private TrainerService trainerService;
+
+    private TrainingService trainingService;
 
     @Value("${trainee.data.file}")
     private String traineeDataFile;
@@ -27,24 +30,25 @@ public class DataInitializer {
     private String trainingDataFile;
 
     @Autowired
-    public void setTraineeStorage(Map<Long, Trainee> traineeStorage) {
-        this.traineeStorage = traineeStorage;
+    public void setTrainingService(TrainingService trainingService) {
+        this.trainingService = trainingService;
     }
 
     @Autowired
-    public void setTrainerStorage(Map<Long, Trainer> trainerStorage) {
-        this.trainerStorage = trainerStorage;
+    public void setTrainerService(TrainerService trainerService) {
+        this.trainerService = trainerService;
     }
 
     @Autowired
-    public void setTrainingStorage(Map<Long, Training> trainingStorage) {
-        this.trainingStorage = trainingStorage;
+    public void setTraineeService(TraineeService traineeService) {
+        this.traineeService = traineeService;
     }
 
     @PostConstruct
     public void init() {
-        DataLoader.loadData(traineeDataFile, traineeStorage, EntityMapper::mapToTrainee, Trainee::getId);
-        DataLoader.loadData(trainerDataFile, trainerStorage, EntityMapper::mapToTrainer, Trainer::getId);
-        DataLoader.loadData(trainingDataFile, trainingStorage, EntityMapper::mapToTraining, Training::getId);
+        DataLoader.loadData(traineeDataFile, EntityMapper::mapToTrainee, traineeService::create);
+        DataLoader.loadData(trainerDataFile, EntityMapper::mapToTrainer, trainerService::create);
+        DataLoader.loadData(trainingDataFile, EntityMapper::mapToTraining, trainingService::create);
     }
+
 }
