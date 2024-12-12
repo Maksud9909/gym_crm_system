@@ -6,7 +6,7 @@ import uz.ccrew.entity.base.BaseEntity;
 
 @Getter
 @Setter
-@ToString
+@ToString(callSuper = true)
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
