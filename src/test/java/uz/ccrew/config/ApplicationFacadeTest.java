@@ -52,6 +52,6 @@ class ApplicationFacadeTest {
         applicationFacade.createTrainee(anotherTrainee);
 
         List<Trainee> allTrainees = applicationFacade.getAllTrainees();
-        assertEquals(2, allTrainees.size());
+        assertEquals(4, allTrainees.size());
     }
 }

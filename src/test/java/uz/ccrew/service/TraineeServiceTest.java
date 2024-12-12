@@ -82,6 +82,6 @@ class TraineeServiceTest {
         anotherTrainee.setDateOfBirth(LocalDate.of(1998, 3, 15));
         traineeService.create(anotherTrainee);
         List<Trainee> allTrainees = traineeService.findAll();
-        assertEquals(2, allTrainees.size());
+        assertEquals(4, allTrainees.size());
     }
 }

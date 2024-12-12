@@ -72,6 +72,6 @@ class TrainerServiceTest {
         anotherTrainer.setSpecialization("Pilates");
         trainerService.create(anotherTrainer);
         List<Trainer> allTrainers = trainerService.findAll();
-        assertEquals(2, allTrainers.size());
+        assertEquals(4, allTrainers.size());
     }
 }

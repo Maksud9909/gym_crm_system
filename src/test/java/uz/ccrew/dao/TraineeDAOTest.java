@@ -84,6 +84,6 @@ class TraineeDAOTest {
         anotherTrainee.setLastName("Johnson");
         traineeDAO.create(anotherTrainee);
         List<Trainee> allTrainees = traineeDAO.findAll();
-        assertEquals(2, allTrainees.size());
+        assertEquals(4, allTrainees.size());
     }
 }

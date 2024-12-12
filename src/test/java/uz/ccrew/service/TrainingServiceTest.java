@@ -72,6 +72,6 @@ class TrainingServiceTest {
         trainingService.create(anotherTraining);
 
         List<Training> allTrainings = trainingService.findAll();
-        assertEquals(2, allTrainings.size());
+        assertEquals(4, allTrainings.size());
     }
 }

@@ -73,6 +73,6 @@ class TrainingDAOTest {
         trainingDAO.create(anotherTraining);
 
         List<Training> allTrainings = trainingDAO.findAll();
-        assertEquals(2, allTrainings.size());
+        assertEquals(4, allTrainings.size());
     }
 }

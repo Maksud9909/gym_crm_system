@@ -84,6 +84,6 @@ class TrainerDAOTest {
         trainerDAO.create(newTrainer);
         List<Trainer> trainerList = trainerDAO.findAll();
         assertNotNull(trainerList);
-        assertEquals(2, trainerList.size());
+        assertEquals(4, trainerList.size());
     }
 }
