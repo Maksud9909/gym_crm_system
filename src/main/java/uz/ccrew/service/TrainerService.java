@@ -11,7 +11,6 @@ import uz.ccrew.service.base.AbstractCRUDBaseService;
 @Slf4j
 @Service
 public class TrainerService extends AbstractCRUDBaseService<Trainer, Long> {
-    private TrainerDAO dao;
     private static final String ENTITY_NAME = "Trainer";
 
     public TrainerService() {
@@ -21,16 +20,7 @@ public class TrainerService extends AbstractCRUDBaseService<Trainer, Long> {
     @Autowired
     public void setDao(TrainerDAO dao) {
         super.setDao(dao);
-        this.dao = dao;
         log.info("TrainerDAO injected into TrainerServiceImpl");
-    }
-
-    @Override
-    public Long create(Trainer trainer) {
-        log.info("Creating Trainer: {}", trainer);
-        Long id = dao.create(trainer);
-        log.info("Trainer created with ID={}", id);
-        return id;
     }
 
     @Override
