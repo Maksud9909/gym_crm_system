@@ -7,9 +7,9 @@ import uz.ccrew.dao.base.BaseDAO;
 import uz.ccrew.exp.EntityNotFoundException;
 
 @Slf4j
-public abstract class AbstractCRUDBaseService<T, Long> extends AbstractBaseService<T, Long> implements BaseCRUDService<T, Long> {
+public abstract class AbstractCRUDBaseService<T> extends AbstractBaseService<T> implements BaseCRUDService<T> {
 
-    public AbstractCRUDBaseService(BaseCRUDDAO<T, Long> dao) {
+    public AbstractCRUDBaseService(BaseCRUDDAO<T> dao) {
         super(dao);
     }
 
@@ -22,7 +22,7 @@ public abstract class AbstractCRUDBaseService<T, Long> extends AbstractBaseServi
         getDao().findById(id)
                 .ifPresentOrElse(
                         existing -> {
-                            ((BaseCRUDDAO<T, Long>) getDao()).update(id, entity);
+                            ((BaseCRUDDAO<T>) getDao()).update(id, entity);
                             log.info("{} updated with ID={}", getEntityName(), id);
                         },
                         () -> {
@@ -37,7 +37,7 @@ public abstract class AbstractCRUDBaseService<T, Long> extends AbstractBaseServi
         getDao().findById(id)
                 .ifPresentOrElse(
                         existing -> {
-                            ((BaseCRUDDAO<T, Long>) getDao()).delete(id);
+                            ((BaseCRUDDAO<T>) getDao()).delete(id);
                             log.info("{} deleted with ID={}", getEntityName(), id);
                         },
                         () -> {
@@ -46,7 +46,7 @@ public abstract class AbstractCRUDBaseService<T, Long> extends AbstractBaseServi
                 );
     }
 
-    public BaseDAO<T, Long> getDao() {
+    public BaseDAO<T> getDao() {
         return super.getDao();
     }
 }

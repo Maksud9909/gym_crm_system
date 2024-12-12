@@ -12,10 +12,10 @@ import java.util.List;
 @Slf4j
 @Setter
 @Getter
-public abstract class AbstractBaseService<T, Long> implements BaseService<T, Long> {
-    private BaseDAO<T, Long> dao;
+public abstract class AbstractBaseService<T> implements BaseService<T> {
+    private BaseDAO<T> dao;
 
-    public AbstractBaseService(BaseDAO<T, Long> dao) {
+    public AbstractBaseService(BaseDAO<T> dao) {
         this.dao = dao;
     }
 

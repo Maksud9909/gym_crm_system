@@ -1,6 +1,6 @@
 package uz.ccrew.service.base;
 
-public interface BaseCRUDService<T, Long> extends BaseService<T, Long> {
+public interface BaseCRUDService<T> extends BaseService<T> {
     void update(Long id,T entity);
 
     void delete(Long id);

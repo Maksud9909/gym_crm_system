@@ -10,7 +10,7 @@ import uz.ccrew.service.base.AbstractCRUDBaseService;
 
 @Slf4j
 @Service
-public class TrainerService extends AbstractCRUDBaseService<Trainer, Long> {
+public class TrainerService extends AbstractCRUDBaseService<Trainer> {
     private static final String ENTITY_NAME = "Trainer";
 
     public TrainerService() {

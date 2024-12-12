@@ -27,7 +27,7 @@ public class UserUtils {
     public static String generateRandomPassword() {
         StringBuilder password = new StringBuilder(PASSWORD_LENGTH);
         SecureRandom random = new SecureRandom();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < PASSWORD_LENGTH; i++) {
             int randomIndex = random.nextInt(CHARS.length());
             password.append(CHARS.charAt(randomIndex));
         }

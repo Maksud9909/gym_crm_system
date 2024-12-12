@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
-public abstract class AbstractCRUDBaseDAO<T> extends AbstractBaseDAO<T> implements BaseCRUDDAO<T,Long>{
+public abstract class AbstractCRUDBaseDAO<T> extends AbstractBaseDAO<T> implements BaseCRUDDAO<T>{
 
     @Override
     public void update(Long id, T entity) {

@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
-public abstract class AbstractBaseDAO<T> implements BaseDAO<T, Long> {
+public abstract class AbstractBaseDAO<T> implements BaseDAO<T> {
     private Map<Long, T> storage = new HashMap<>();
     private long idCounter = 0;
 

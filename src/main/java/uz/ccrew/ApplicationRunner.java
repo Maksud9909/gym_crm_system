@@ -25,6 +25,14 @@ public class ApplicationRunner {
     public void start() {
         log.info("---- Starting Application ----");
 
+        handleTraineeOperations();
+        handleTrainerOperations();
+        handleTrainingOperations();
+
+        log.info("---- Application Finished ----");
+    }
+
+    private void handleTraineeOperations() {
         log.info("---- Trainee Operations ----");
         List<Trainee> trainees = facade.getAllTrainees();
         trainees.forEach(t -> log.info("Trainee: {} {}", t.getFirstName(), t.getLastName()));
@@ -38,7 +46,9 @@ public class ApplicationRunner {
                 .build();
         Long traineeId = facade.createTrainee(newTrainee);
         log.info("Created Trainee ID: {}", traineeId);
+    }
 
+    private void handleTrainerOperations() {
         log.info("---- Trainer Operations ----");
         List<Trainer> trainers = facade.getAllTrainers();
         trainers.forEach(t -> log.info("Trainer: {} {}", t.getFirstName(), t.getLastName()));
@@ -55,14 +65,16 @@ public class ApplicationRunner {
 
         Long trainerId = facade.createTrainer(newTrainer);
         log.info("Created Trainer ID: {}", trainerId);
+    }
 
+    private void handleTrainingOperations() {
         log.info("---- Training Operations ----");
         List<Training> trainings = facade.getAllTrainings();
         trainings.forEach(t -> log.info("Training: {}", t.getTrainingName()));
 
         Training newTraining = Training.builder()
-                .traineeId(traineeId)
-                .trainerId(trainerId)
+                .traineeId(1L)
+                .trainerId(1L)
                 .trainingName("Pilates Session")
                 .trainingType(TrainingType.GYM)
                 .trainingDate(LocalDate.now())
@@ -71,8 +83,6 @@ public class ApplicationRunner {
 
         Long trainingId = facade.createTraining(newTraining);
         log.info("Created Training ID: {}", trainingId);
-
-        log.info("---- Application Finished ----");
     }
 
     public static void main(String[] args) {

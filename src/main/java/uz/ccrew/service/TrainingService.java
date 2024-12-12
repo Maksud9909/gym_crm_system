@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @Slf4j
 @Service
-public class TrainingService extends AbstractBaseService<Training, Long> {
+public class TrainingService extends AbstractBaseService<Training> {
     private static final String ENTITY_NAME = "Training";
 
     public TrainingService() {
