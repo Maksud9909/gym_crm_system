@@ -38,7 +38,6 @@ class TraineeDAOTest {
         Long id = traineeDAO.create(trainee);
         assertNotNull(id);
 
-        // the same username
         Trainee duplicateTrainee = new Trainee();
         duplicateTrainee.setFirstName("John");
         duplicateTrainee.setLastName("Doe");

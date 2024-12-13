@@ -17,11 +17,15 @@ import uz.ccrew.service.TraineeService;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {AppConfig.class})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class TraineeServiceTest {
+
+    @Autowired
+    private Map<Long, Trainee> traineeStorage;
 
     @Autowired
     private TraineeService traineeService;
@@ -30,6 +34,7 @@ class TraineeServiceTest {
 
     @BeforeEach
     void setUp() {
+        traineeStorage.clear();
         trainee = new Trainee();
         trainee.setFirstName("Maksud");
         trainee.setLastName("Rustamov");
@@ -84,6 +89,6 @@ class TraineeServiceTest {
         anotherTrainee.setDateOfBirth(LocalDate.of(1998, 3, 15));
         traineeService.create(anotherTrainee);
         List<Trainee> allTrainees = traineeService.findAll();
-        assertEquals(4, allTrainees.size());
+        assertEquals(2, allTrainees.size());
     }
 }
