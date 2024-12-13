@@ -14,13 +14,13 @@ public class TraineeService extends AbstractCRUDBaseService<Trainee> {
     private static final String ENTITY_NAME = "Trainee";
 
     public TraineeService() {
-        log.info("TraineeServiceImpl initialized");
+        log.debug("TraineeServiceImpl initialized");
     }
 
     @Autowired
     public void setDao(TraineeDAO dao) {
         super.setDao(dao);
-        log.info("TraineeDAO injected into TraineeServiceImpl");
+        log.debug("TraineeDAO injected into TraineeServiceImpl");
     }
 
     @Override
