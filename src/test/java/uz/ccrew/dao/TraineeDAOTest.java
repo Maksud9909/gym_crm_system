@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {AppConfig.class})
@@ -37,23 +38,22 @@ class TraineeDAOTest {
         Long id = traineeDAO.create(trainee);
         assertNotNull(id);
 
-        // the same username
         Trainee duplicateTrainee = new Trainee();
         duplicateTrainee.setFirstName("John");
         duplicateTrainee.setLastName("Doe");
         duplicateTrainee.setDateOfBirth(LocalDate.of(1995, 5, 15));
 
         traineeDAO.create(duplicateTrainee);
-        assertTrue(duplicateTrainee.getUsername().matches("John\\.Doe\\.\\d+")); // checking does it contain the next unique digit
+        assertTrue(duplicateTrainee.getUsername().matches("John\\.Doe\\.\\d+"));
     }
 
 
     @Test
     void findById_ShouldReturnTrainee() {
         Long id = traineeDAO.create(trainee);
-        Trainee foundTrainee = traineeDAO.findById(id);
-        assertNotNull(foundTrainee.getId());
-        assertEquals("John", foundTrainee.getFirstName());
+        Optional<Trainee> foundTrainee = traineeDAO.findById(id);
+        assertNotNull(foundTrainee.get().getId());
+        assertEquals("John", foundTrainee.get().getFirstName());
     }
 
     @Test
@@ -63,16 +63,16 @@ class TraineeDAOTest {
         updatedTrainee.setFirstName("Jane");
         updatedTrainee.setLastName("Smith");
         traineeDAO.update(id, updatedTrainee);
-        Trainee savedTrainee = traineeDAO.findById(id);
-        assertEquals("Jane", savedTrainee.getFirstName());
-        assertEquals("Smith", savedTrainee.getLastName());
+        Optional<Trainee> savedTrainee = traineeDAO.findById(id);
+        assertEquals("Jane", savedTrainee.get().getFirstName());
+        assertEquals("Smith", savedTrainee.get().getLastName());
     }
 
     @Test
     void delete_ShouldRemoveTrainee() {
         Long id = traineeDAO.create(trainee);
         traineeDAO.delete(id);
-        assertNull(traineeDAO.findById(id));
+        assertTrue(traineeDAO.findById(id).isEmpty());
     }
 
     @Test
@@ -83,6 +83,6 @@ class TraineeDAOTest {
         anotherTrainee.setLastName("Johnson");
         traineeDAO.create(anotherTrainee);
         List<Trainee> allTrainees = traineeDAO.findAll();
-        assertEquals(2, allTrainees.size());
+        assertEquals(4, allTrainees.size());
     }
 }

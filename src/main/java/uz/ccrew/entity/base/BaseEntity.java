@@ -1,4 +1,4 @@
-package uz.ccrew.entity;
+package uz.ccrew.entity.base;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -6,9 +6,9 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(callSuper = true)
-public class Trainer extends User {
-    private String specialization;
+public class BaseEntity {
+    private Long id;
 }
