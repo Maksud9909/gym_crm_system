@@ -13,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.extension.ExtendWith;
 import uz.ccrew.exp.EntityNotFoundException;
-import uz.ccrew.service.TraineeService;
 
 import java.time.LocalDate;
 import java.util.List;
