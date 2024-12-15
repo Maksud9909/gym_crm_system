@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 public class Trainee extends User {
     @Column(name = "date_of_birth")
     private LocalDateTime dateOfBirth;
-    @Column(name = "adress")
+    @Column(name = "address")
     private String address;
     @ManyToMany(mappedBy = "trainees")
     private List<Trainer> trainers = new ArrayList<>();
