@@ -2,9 +2,9 @@ package uz.ccrew.entity;
 
 import uz.ccrew.entity.base.BaseEntity;
 
+import jakarta.persistence.*;
+
 import lombok.*;
-import jakarta.persistence.Table;
-import jakarta.persistence.Column;
 import lombok.experimental.SuperBuilder;
 
 @Getter
@@ -13,6 +13,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "users")
 public class User extends BaseEntity {
     @Column(name = "first_name", nullable = false)

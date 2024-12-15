@@ -10,6 +10,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -37,15 +38,15 @@ public class ApplicationRunner {
         List<Trainee> trainees = facade.getAllTrainees();
         trainees.forEach(t -> log.info("Trainee: {} {}", t.getFirstName(), t.getLastName()));
 
-        Trainee newTrainee = Trainee.builder()
-                .firstName("Michael")
-                .lastName("Brown")
-                .isActive(true)
-                .dateOfBirth(LocalDate.of(2005, 12, 4))
-                .address("789 Oak St")
-                .build();
-        Long traineeId = facade.createTrainee(newTrainee);
-        log.info("Created Trainee ID: {}", traineeId);
+//        Trainee newTrainee = Trainee.builder()
+//                .firstName("Michael")
+//                .lastName("Brown")
+//                .isActive(true)
+//                .dateOfBirth(LocalDateTime.of(LocalDate.now()))
+//                .address("789 Oak St")
+//                .build();
+//        Long traineeId = facade.createTrainee(newTrainee);
+//        log.info("Created Trainee ID: {}", traineeId);
     }
 
     private void handleTrainerOperations() {
@@ -72,17 +73,17 @@ public class ApplicationRunner {
         List<Training> trainings = facade.getAllTrainings();
         trainings.forEach(t -> log.info("Training: {}", t.getTrainingName()));
 
-        Training newTraining = Training.builder()
-                .traineeId(1L)
-                .trainerId(1L)
-                .trainingName("Pilates Session")
-                .trainingType(TrainingType.GYM)
-                .trainingDate(LocalDate.now())
-                .trainingDuration(90)
-                .build();
-
-        Long trainingId = facade.createTraining(newTraining);
-        log.info("Created Training ID: {}", trainingId);
+//        Training newTraining = Training.builder()
+//                .traineeId(1L)
+//                .trainerId(1L)
+//                .trainingName("Pilates Session")
+//                .trainingType(TrainingType.GYM)
+//                .trainingDate(LocalDate.now())
+//                .trainingDuration(90)
+//                .build();
+//
+//        Long trainingId = facade.createTraining(newTraining);
+//        log.info("Created Training ID: {}", trainingId);
     }
 
     public static void main(String[] args) {

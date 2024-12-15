@@ -21,10 +21,10 @@ public class Trainee extends User {
     private LocalDateTime dateOfBirth;
     @Column(name = "adress")
     private String address;
-    @ManyToMany(mappedBy = "trainers")
-    private List<Trainee> trainees = new ArrayList<>();
-    @OneToMany(mappedBy = "trainee_id")
-    private Training training;
+    @ManyToMany(mappedBy = "trainees")
+    private List<Trainer> trainers = new ArrayList<>();
+    @OneToMany(mappedBy = "trainee")
+    private List<Training> training = new ArrayList<>();
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;

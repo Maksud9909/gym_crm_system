@@ -23,9 +23,11 @@
         <jetbrains.annotations.version>24.1.0</jetbrains.annotations.version>
         <junit.jupiter.version>5.11.3</junit.jupiter.version>
         <lombok.version>1.18.36</lombok.version>
-
         <hibernate.version>6.6.3.Final</hibernate.version>
         <postgresql.version>42.7.4</postgresql.version>
+        <c3po.version>0.10.1</c3po.version>
+        <dotenv.version>5.2.2</dotenv.version>
+
 
         <maven.compiler.plugin.version>3.10.1</maven.compiler.plugin.version>
     </properties>
@@ -36,6 +38,13 @@
             <artifactId>spring-context</artifactId>
             <version>${spring.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.springframework</groupId>
@@ -100,6 +109,18 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>${postgresql.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.mchange</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>${c3po.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.cdimascio</groupId>
+            <artifactId>java-dotenv</artifactId>
+            <version>${dotenv.version}</version>
         </dependency>
 
     </dependencies>

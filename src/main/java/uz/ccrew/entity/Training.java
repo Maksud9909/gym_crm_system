@@ -19,10 +19,10 @@ import java.time.LocalDateTime;
 public class Training extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "trainee_id", nullable = false)
-    private Long traineeId;
+    private Trainee trainee;
     @ManyToOne
     @JoinColumn(name = "trainer_id", nullable = false)
-    private Long trainerId;
+    private Trainer trainer;
     @Column(name = "training_name", nullable = false)
     private String trainingName;
     @ManyToOne

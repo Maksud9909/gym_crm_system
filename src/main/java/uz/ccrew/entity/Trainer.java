@@ -18,12 +18,12 @@ import java.util.ArrayList;
 public class Trainer extends User {
     @ManyToMany
     @JoinTable(name = "trainee_trainer",
-            joinColumns = @JoinColumn(name = "trainee_id"),
-            inverseJoinColumns = @JoinColumn(name = "trainer_id"))
-    private List<Trainer> trainers = new ArrayList<>();
+            joinColumns = @JoinColumn(name = "trainer_id"),
+            inverseJoinColumns = @JoinColumn(name = "trainee_id"))
+    private List<Trainee> trainees = new ArrayList<>();
     private String specialization;
-    @OneToMany(mappedBy = "trainer_id")
-    private Training training;
+    @OneToMany(mappedBy = "trainer")
+    private List<Training> training = new ArrayList<>();
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
