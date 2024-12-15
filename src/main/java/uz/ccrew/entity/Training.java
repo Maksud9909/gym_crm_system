@@ -31,5 +31,5 @@ public class Training extends BaseEntity {
     @Column(name = "training_date", nullable = false)
     private LocalDateTime trainingDate;
     @Column(name = "training_duration", nullable = false)
-    private Integer trainingDuration;
+    private Double trainingDuration;
 }

@@ -17,13 +17,14 @@ import java.util.ArrayList;
 @Table(name = "trainers")
 public class Trainer extends User {
     @ManyToMany
-    @JoinTable(
-            name = "trainee_trainer",
+    @JoinTable(name = "trainee_trainer",
             joinColumns = @JoinColumn(name = "trainee_id"),
-            inverseJoinColumns = @JoinColumn(name = "trainer_id")
-    )
+            inverseJoinColumns = @JoinColumn(name = "trainer_id"))
     private List<Trainer> trainers = new ArrayList<>();
     private String specialization;
     @OneToMany(mappedBy = "trainer_id")
     private Training training;
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    private User user;
 }
