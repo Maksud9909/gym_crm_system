@@ -1,19 +1,17 @@
 package uz.ccrew.service.base;
 
 import uz.ccrew.dao.base.BaseCRUDDAO;
-
-import lombok.extern.slf4j.Slf4j;
-import uz.ccrew.dao.base.BaseDAO;
 import uz.ccrew.exp.EntityNotFoundException;
 
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
+@NoArgsConstructor
 public abstract class AbstractCRUDBaseService<T> extends AbstractBaseService<T> implements BaseCRUDService<T> {
 
     public AbstractCRUDBaseService(BaseCRUDDAO<T> dao) {
         super(dao);
-    }
-
-    public AbstractCRUDBaseService() {
     }
 
     @Override
@@ -44,9 +42,5 @@ public abstract class AbstractCRUDBaseService<T> extends AbstractBaseService<T> 
                             throw new EntityNotFoundException(getEntityName() + " with ID=" + id + " not found");
                         }
                 );
-    }
-
-    public BaseDAO<T> getDao() {
-        return super.getDao();
     }
 }

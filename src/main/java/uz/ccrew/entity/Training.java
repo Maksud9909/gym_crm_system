@@ -6,7 +6,7 @@ import lombok.*;
 import jakarta.persistence.*;
 import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -29,7 +29,7 @@ public class Training extends BaseEntity {
     @JoinColumn(name = "training_type_id", nullable = false)
     private TrainingTypeEntity trainingType;
     @Column(name = "training_date", nullable = false)
-    private LocalDateTime trainingDate;
+    private LocalDate trainingDate;
     @Column(name = "training_duration", nullable = false)
     private Double trainingDuration;
 }

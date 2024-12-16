@@ -17,14 +17,14 @@ public class EntityMapper {
     }
 
 
-    public static Trainer mapToTrainer(String[] data) {
-        return Trainer.builder()
-                .firstName(data[0])
-                .lastName(data[1])
-                .isActive(true)
-                .specialization(data[2])
-                .build();
-    }
+//    public static Trainer mapToTrainer(String[] data) {
+//        return Trainer.builder()
+//                .firstName(data[0])
+//                .lastName(data[1])
+//                .isActive(true)
+//                .specialization(data[2])
+//                .build();
+//    }
 
 
 //    public static Training mapToTraining(String[] data) {

@@ -2,11 +2,11 @@ package uz.ccrew.service;
 
 import uz.ccrew.dao.TrainerDAO;
 import uz.ccrew.entity.Trainer;
+import uz.ccrew.service.base.AbstractCRUDBaseService;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import uz.ccrew.service.base.AbstractCRUDBaseService;
 
 @Slf4j
 @Service

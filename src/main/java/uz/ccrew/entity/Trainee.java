@@ -5,8 +5,8 @@ import jakarta.persistence.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -18,12 +18,12 @@ import java.time.LocalDateTime;
 @Table(name = "trainees")
 public class Trainee extends User {
     @Column(name = "date_of_birth")
-    private LocalDateTime dateOfBirth;
+    private LocalDate dateOfBirth;
     @Column(name = "address")
     private String address;
     @ManyToMany(mappedBy = "trainees")
     private List<Trainer> trainers = new ArrayList<>();
-    @OneToMany(mappedBy = "trainee")
+    @OneToMany(mappedBy = "trainee",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Training> training = new ArrayList<>();
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)

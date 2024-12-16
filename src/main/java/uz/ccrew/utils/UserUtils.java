@@ -1,27 +1,38 @@
 package uz.ccrew.utils;
 
-import org.jetbrains.annotations.NotNull;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
-import java.util.Set;
 import java.security.SecureRandom;
 
 public class UserUtils {
     private static final String DOT = ".";
     private static final String CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private static final byte PASSWORD_LENGTH = 10;
+    private static final String CHECK_USERNAME_QUERY = "SELECT COUNT(u) FROM Trainee u WHERE u.username = :username";
 
-    public static String generateUniqueUsername(String firstName, String lastName, @NotNull Set<String> existingUsernames) {
+    public static String generateUniqueUsername(String firstName, String lastName, SessionFactory sessionFactory) {
         String baseUsername = firstName + DOT + lastName;
         String uniqueUsername = baseUsername;
         int counter = 1;
 
-        while (existingUsernames.contains(uniqueUsername)) {
-            uniqueUsername = baseUsername + DOT + counter;
-            counter++;
+        while (isUsernameExists(uniqueUsername, sessionFactory)) {
+            uniqueUsername = baseUsername + DOT + counter++;
         }
 
-        existingUsernames.add(uniqueUsername);
         return uniqueUsername;
+    }
+
+    public static boolean isUsernameExists(String username, SessionFactory sessionFactory) {
+        try (Session session = sessionFactory.getCurrentSession()) {
+            Long count = session.createQuery(
+                            CHECK_USERNAME_QUERY, Long.class)
+                    .setParameter("username", username)
+                    .uniqueResult();
+            return count > 0;
+        } catch (Exception e) {
+            throw new RuntimeException("Error checking username existence", e);
+        }
     }
 
     public static String generateRandomPassword() {

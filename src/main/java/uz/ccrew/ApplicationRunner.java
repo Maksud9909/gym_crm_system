@@ -10,7 +10,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -42,7 +41,7 @@ public class ApplicationRunner {
 //                .firstName("Michael")
 //                .lastName("Brown")
 //                .isActive(true)
-//                .dateOfBirth(LocalDateTime.of(LocalDate.now()))
+//                .dateOfBirth(LocalDate.of(LocalDate.now()))
 //                .address("789 Oak St")
 //                .build();
 //        Long traineeId = facade.createTrainee(newTrainee);
@@ -54,18 +53,18 @@ public class ApplicationRunner {
         List<Trainer> trainers = facade.getAllTrainers();
         trainers.forEach(t -> log.info("Trainer: {} {}", t.getFirstName(), t.getLastName()));
 
-        Trainer newTrainer = Trainer.builder()
-                .id(null)
-                .firstName("Emily")
-                .lastName("Davis")
-                .username(null)
-                .password(null)
-                .isActive(true)
-                .specialization("Pilates")
-                .build();
+//        Trainer newTrainer = Trainer.builder()
+//                .id(null)
+//                .firstName("Emily")
+//                .lastName("Davis")
+//                .username(null)
+//                .password(null)
+//                .isActive(true)
+//                .specialization("Pilates")
+//                .build();
 
-        Long trainerId = facade.createTrainer(newTrainer);
-        log.info("Created Trainer ID: {}", trainerId);
+//        Long trainerId = facade.createTrainer(newTrainer);
+//        log.info("Created Trainer ID: {}", trainerId);
     }
 
     private void handleTrainingOperations() {

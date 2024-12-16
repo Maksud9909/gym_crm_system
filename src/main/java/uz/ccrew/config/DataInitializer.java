@@ -47,7 +47,7 @@ public class DataInitializer {
     @PostConstruct
     public void init() {
         DataLoader.loadData(traineeDataFile, EntityMapper::mapToTrainee, traineeService::create);
-        DataLoader.loadData(trainerDataFile, EntityMapper::mapToTrainer, trainerService::create);
+//        DataLoader.loadData(trainerDataFile, EntityMapper::mapToTrainer, trainerService::create);
 //        DataLoader.loadData(trainingDataFile, EntityMapper::mapToTraining, trainingService::create);
     }
 

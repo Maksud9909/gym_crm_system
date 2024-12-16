@@ -21,7 +21,9 @@ public class Trainer extends User {
             joinColumns = @JoinColumn(name = "trainer_id"),
             inverseJoinColumns = @JoinColumn(name = "trainee_id"))
     private List<Trainee> trainees = new ArrayList<>();
-    private String specialization;
+    @ManyToOne
+    @JoinColumn(name = "specialization_id", nullable = false)
+    private Specialization specialization;
     @OneToMany(mappedBy = "trainer")
     private List<Training> training = new ArrayList<>();
     @OneToOne

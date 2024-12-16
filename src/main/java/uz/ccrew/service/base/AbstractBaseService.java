@@ -1,6 +1,8 @@
 package uz.ccrew.service.base;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import uz.ccrew.dao.base.BaseDAO;
 import uz.ccrew.exp.EntityNotFoundException;
 
@@ -12,15 +14,10 @@ import java.util.List;
 @Slf4j
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public abstract class AbstractBaseService<T> implements BaseService<T> {
     private BaseDAO<T> dao;
-
-    public AbstractBaseService(BaseDAO<T> dao) {
-        this.dao = dao;
-    }
-
-    public AbstractBaseService() {
-    }
 
     @Override
     public Long create(T entity) {
