@@ -2,7 +2,6 @@ package uz.ccrew.utils;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import uz.ccrew.entity.User;
 
 import java.security.SecureRandom;
 
@@ -46,20 +45,5 @@ public class UserUtils {
             password.append(CHARS.charAt(randomIndex));
         }
         return password.toString();
-    }
-
-    public boolean authenticateUser(String username, String password) {
-        try (Session session = getSessionFactory().getCurrentSession()) {
-            String hql = "FROM User u WHERE u.username = :username AND u.password = :password";
-            User user = session.createQuery(hql, User.class)
-                    .setParameter("username", username)
-                    .setParameter("password", password)
-                    .uniqueResult();
-
-            return user != null;
-        } catch (Exception e) {
-            log.error("Authentication failed for username: {}", username, e);
-            return false;
-        }
     }
 }
