@@ -1,21 +1,19 @@
 package uz.ccrew.dao;
 
-import org.hibernate.Transaction;
-import uz.ccrew.dao.base.impl.AbstractUserBaseDAO;
 import uz.ccrew.entity.Trainee;
+import uz.ccrew.entity.Trainer;
+import uz.ccrew.entity.Training;
+import uz.ccrew.entity.TrainingType;
+import uz.ccrew.dao.base.AbstractUserBaseDAO;
 
 import static uz.ccrew.utils.UserUtils.generateRandomPassword;
 import static uz.ccrew.utils.UserUtils.generateUniqueUsername;
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import uz.ccrew.entity.Trainer;
-import uz.ccrew.entity.Training;
-import uz.ccrew.entity.TrainingType;
 
 import java.time.LocalDate;
 import java.util.List;

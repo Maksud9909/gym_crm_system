@@ -2,7 +2,7 @@ package uz.ccrew.dao;
 
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.entity.Training;
-import uz.ccrew.dao.base.impl.AbstractUserBaseDAO;
+import uz.ccrew.dao.base.AbstractUserBaseDAO;
 
 import static uz.ccrew.utils.UserUtils.generateRandomPassword;
 import static uz.ccrew.utils.UserUtils.generateUniqueUsername;
@@ -22,7 +22,7 @@ public class TrainerDAO extends AbstractUserBaseDAO<Trainer> {
 
     public TrainerDAO(SessionFactory sessionFactory, Class<Trainer> entityClass) {
         super(sessionFactory, entityClass);
-        log.info("TrainerDAO instantiated");
+        log.debug("TrainerDAO instantiated");
     }
 
     @Override

@@ -1,7 +1,7 @@
 package uz.ccrew.dao;
 
 import uz.ccrew.entity.Training;
-import uz.ccrew.dao.base.impl.AbstractBaseDAO;
+import uz.ccrew.dao.base.AbstractBaseDAO;
 
 import org.hibernate.Session;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,7 @@ public class TrainingDAO extends AbstractBaseDAO<Training> {
 
     public TrainingDAO(SessionFactory sessionFactory, Class<Training> entityClass) {
         super(sessionFactory, entityClass);
-        log.info("TrainingDAO instantiated");
+        log.debug("TrainingDAO instantiated");
     }
 
 

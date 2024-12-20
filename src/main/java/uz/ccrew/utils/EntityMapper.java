@@ -6,15 +6,15 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class EntityMapper {
-    public static Trainee mapToTrainee(String[] data) {
-        return Trainee.builder()
-                .firstName(data[0])
-                .lastName(data[1])
-                .isActive(true)
-                .dateOfBirth(LocalDateTime.parse(data[2]))
-                .address(data[3])
-                .build();
-    }
+//    public static Trainee mapToTrainee(String[] data) {
+//        return Trainee.builder()
+//                .firstName(data[0])
+//                .lastName(data[1])
+//                .isActive(true)
+//                .dateOfBirth(LocalDateTime.parse(data[2]))
+//                .address(data[3])
+//                .build();
+//    }
 
 
 //    public static Trainer mapToTrainer(String[] data) {

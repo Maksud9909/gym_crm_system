@@ -2,6 +2,7 @@ package uz.ccrew.utils;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import uz.ccrew.entity.User;
 
 import java.security.SecureRandom;
 
@@ -9,7 +10,9 @@ public class UserUtils {
     private static final String DOT = ".";
     private static final String CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private static final byte PASSWORD_LENGTH = 10;
-    private static final String CHECK_USERNAME_QUERY = "SELECT COUNT(u) FROM Trainee u WHERE u.username = :username";
+    private static final String CHECK_USERNAME_QUERY = """
+                        SELECT COUNT(u) FROM Trainee u WHERE u.username = :username
+            """;
 
     public static String generateUniqueUsername(String firstName, String lastName, SessionFactory sessionFactory) {
         String baseUsername = firstName + DOT + lastName;
@@ -43,5 +46,20 @@ public class UserUtils {
             password.append(CHARS.charAt(randomIndex));
         }
         return password.toString();
+    }
+
+    public boolean authenticateUser(String username, String password) {
+        try (Session session = getSessionFactory().getCurrentSession()) {
+            String hql = "FROM User u WHERE u.username = :username AND u.password = :password";
+            User user = session.createQuery(hql, User.class)
+                    .setParameter("username", username)
+                    .setParameter("password", password)
+                    .uniqueResult();
+
+            return user != null;
+        } catch (Exception e) {
+            log.error("Authentication failed for username: {}", username, e);
+            return false;
+        }
     }
 }

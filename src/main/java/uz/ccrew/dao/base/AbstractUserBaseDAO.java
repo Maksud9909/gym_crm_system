@@ -1,10 +1,10 @@
-package uz.ccrew.dao.base.impl;
+package uz.ccrew.dao.base;
 
-import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import uz.ccrew.dao.base.BaseUserDAO;
 import uz.ccrew.entity.User;
+
+import org.hibernate.Session;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.SessionFactory;
 
 import java.util.Optional;
 
@@ -52,5 +52,4 @@ public abstract class AbstractUserBaseDAO<T> extends AbstractCRUDBaseDAO<T> impl
             log.error("Failed to update isActive for {} ID={}", getEntityName(), id, e);
         }
     }
-
 }
