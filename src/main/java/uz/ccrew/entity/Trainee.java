@@ -1,5 +1,7 @@
 package uz.ccrew.entity;
 
+import uz.ccrew.entity.base.BaseEntity;
+
 import lombok.*;
 import jakarta.persistence.*;
 import lombok.experimental.SuperBuilder;
@@ -16,14 +18,14 @@ import java.util.ArrayList;
 @ToString(callSuper = true)
 @Entity
 @Table(name = "trainees")
-public class Trainee extends User {
+public class Trainee extends BaseEntity {
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
     @Column(name = "address")
     private String address;
     @ManyToMany(mappedBy = "trainees")
     private List<Trainer> trainers = new ArrayList<>();
-    @OneToMany(mappedBy = "trainee",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "trainee", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Training> training = new ArrayList<>();
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)

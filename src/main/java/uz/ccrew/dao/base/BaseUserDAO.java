@@ -9,3 +9,4 @@ public interface BaseUserDAO<T> extends BaseCRUDDAO<T> {
 
     void activateDeactivate(Long id, boolean isActive);
 }
+

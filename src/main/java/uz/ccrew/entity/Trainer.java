@@ -1,5 +1,7 @@
 package uz.ccrew.entity;
 
+import uz.ccrew.entity.base.BaseEntity;
+
 import lombok.*;
 import jakarta.persistence.*;
 import lombok.experimental.SuperBuilder;
@@ -15,7 +17,7 @@ import java.util.ArrayList;
 @ToString(callSuper = true)
 @Entity
 @Table(name = "trainers")
-public class Trainer extends User {
+public class Trainer extends BaseEntity {
     @ManyToMany
     @JoinTable(name = "trainee_trainer",
             joinColumns = @JoinColumn(name = "trainer_id"),
