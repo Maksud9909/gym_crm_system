@@ -5,6 +5,7 @@ import uz.ccrew.entity.base.BaseEntity;
 import lombok.*;
 import jakarta.persistence.*;
 import lombok.experimental.SuperBuilder;
+import uz.ccrew.entity.base.UserAware;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 @ToString(callSuper = true)
 @Entity
 @Table(name = "trainers")
-public class Trainer extends BaseEntity {
+public class Trainer extends BaseEntity implements UserAware {
     @ManyToMany
     @JoinTable(name = "trainee_trainer",
             joinColumns = @JoinColumn(name = "trainer_id"),

@@ -6,10 +6,12 @@ import uz.ccrew.dao.base.AbstractBaseDAO;
 import org.hibernate.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 @Slf4j
 @Repository
+@Transactional
 public class TrainingDAO extends AbstractBaseDAO<Training> {
     private static final String ENTITY_NAME = "Training";
 

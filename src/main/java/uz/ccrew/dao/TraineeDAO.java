@@ -1,10 +1,8 @@
 package uz.ccrew.dao;
 
-import uz.ccrew.entity.Trainee;
-import uz.ccrew.entity.Trainer;
-import uz.ccrew.entity.Training;
-import uz.ccrew.entity.TrainingType;
-import uz.ccrew.dao.base.AbstractUserBaseDAO;
+import uz.ccrew.entity.*;
+import uz.ccrew.dto.trainee.TraineeCreateDTO;
+import uz.ccrew.dao.base.AbstractAdvancedBaseDAO;
 
 import static uz.ccrew.utils.UserUtils.generateRandomPassword;
 import static uz.ccrew.utils.UserUtils.generateUniqueUsername;
@@ -13,6 +11,7 @@ import org.hibernate.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -21,32 +20,73 @@ import java.util.List;
 @Slf4j
 @Repository
 @Transactional
-public class TraineeDAO extends AbstractUserBaseDAO<Trainee> {
+public class TraineeDAO extends AbstractAdvancedBaseDAO<Trainee, TraineeCreateDTO> {
     private static final String ENTITY_NAME = "Trainee";
 
-    public TraineeDAO(SessionFactory sessionFactory) {
+    private final UserDAO userDAO;
+
+    @Autowired
+    public TraineeDAO(SessionFactory sessionFactory, UserDAO userDAO) {
         super(sessionFactory, Trainee.class);
+        this.userDAO = userDAO;
         log.debug("TraineeDAO instantiated");
     }
 
     @Override
-    public Long create(Trainee trainee) {
+    public Long create(TraineeCreateDTO dto) {
         Session session = getSessionFactory().getCurrentSession();
+        String firstName = dto.firstName();
+        String lastName = dto.lastName();
 
-        String username = generateUniqueUsername(
-                trainee.getFirstName(),
-                trainee.getLastName(),
-                session.getSessionFactory()
-        );
-        trainee.setUsername(username);
-        trainee.setPassword(generateRandomPassword());
+
+        User user = User.builder()
+                .firstName(firstName)
+                .lastName(lastName)
+                .username(generateUniqueUsername(firstName, lastName, getSessionFactory()))
+                .password(generateRandomPassword())
+                .isActive(Boolean.TRUE).build();
+
+        Long userId = userDAO.create(user);
+        user = userDAO.findById(userId).orElseThrow();
+
+
+        Trainee trainee = Trainee.builder()
+                .user(user)
+                .dateOfBirth(dto.birthOfDate())
+                .address(dto.address())
+                .build();
 
         session.persist(trainee);
-        Long id = trainee.getId();
-        log.info("Created {}: ID={}, Trainee={}", getEntityName(), id, trainee);
 
-        return id;
+        log.info("Created {}: ID={}, Trainee={}", getEntityName(), trainee.getId(), dto);
+
+        return trainee.getId();
     }
+
+    @Override
+    public void update(Long id, TraineeCreateDTO dto) {
+        Session session = getSessionFactory().getCurrentSession();
+
+        Trainee trainee = session.get(Trainee.class, id);
+        if (trainee == null) {
+            log.warn("Trainee with ID={} not found", id);
+            throw new IllegalArgumentException("Trainee not found");
+        }
+
+        User user = trainee.getUser();
+        user.setFirstName(dto.firstName());
+        user.setLastName(dto.lastName());
+        user.setUsername(generateUniqueUsername(dto.firstName(), dto.lastName(), getSessionFactory()));
+
+        trainee.setDateOfBirth(dto.birthOfDate());
+        trainee.setAddress(dto.address());
+
+        session.merge(user);
+        session.merge(trainee);
+
+        log.info("Updated {}: ID={}, Trainee={}", getEntityName(), id, dto);
+    }
+
 
     public void deleteByUsername(String username) {
         try (Session session = getSessionFactory().getCurrentSession()) {

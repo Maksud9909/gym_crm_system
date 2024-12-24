@@ -27,6 +27,8 @@
         <postgresql.version>42.7.4</postgresql.version>
         <c3po.version>0.10.1</c3po.version>
         <dotenv.version>5.2.2</dotenv.version>
+        <jakarta.validation.api.version>3.0.2</jakarta.validation.api.version>
+        <hibernate.validator.version>8.0.0.Final</hibernate.validator.version>
 
 
         <maven.compiler.plugin.version>3.10.1</maven.compiler.plugin.version>
@@ -121,6 +123,18 @@
             <groupId>io.github.cdimascio</groupId>
             <artifactId>java-dotenv</artifactId>
             <version>${dotenv.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate.validator.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>${jakarta.validation.api.version}</version>
         </dependency>
 
     </dependencies>

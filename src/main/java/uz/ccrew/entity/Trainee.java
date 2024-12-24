@@ -5,6 +5,7 @@ import uz.ccrew.entity.base.BaseEntity;
 import lombok.*;
 import jakarta.persistence.*;
 import lombok.experimental.SuperBuilder;
+import uz.ccrew.entity.base.UserAware;
 
 import java.util.List;
 import java.time.LocalDate;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 @ToString(callSuper = true)
 @Entity
 @Table(name = "trainees")
-public class Trainee extends BaseEntity {
+public class Trainee extends BaseEntity implements UserAware {
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
     @Column(name = "address")
