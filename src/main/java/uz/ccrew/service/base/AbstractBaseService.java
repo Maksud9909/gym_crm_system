@@ -1,6 +1,6 @@
 package uz.ccrew.service.base;
 
-import uz.ccrew.dao.base.BaseDAO;
+import uz.ccrew.dao.base.base.BaseDAO;
 import uz.ccrew.exp.EntityNotFoundException;
 
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package uz.ccrew.dao.base;
+package uz.ccrew.dao.base.base;
 
 import java.util.*;
 

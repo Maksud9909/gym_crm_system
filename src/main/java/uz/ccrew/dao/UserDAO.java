@@ -2,7 +2,7 @@ package uz.ccrew.dao;
 
 import jakarta.transaction.Transactional;
 import uz.ccrew.entity.User;
-import uz.ccrew.dao.base.AbstractBaseDAO;
+import uz.ccrew.dao.base.base.AbstractBaseDAO;
 
 import static uz.ccrew.utils.UserUtils.generateRandomPassword;
 import static uz.ccrew.utils.UserUtils.generateUniqueUsername;

@@ -1,6 +1,6 @@
 package uz.ccrew.service.base;
 
-import uz.ccrew.dao.base.BaseCRUDDAO;
+import uz.ccrew.dao.base.crudBase.BaseCRUDDAO;
 import uz.ccrew.exp.EntityNotFoundException;
 
 import lombok.NoArgsConstructor;

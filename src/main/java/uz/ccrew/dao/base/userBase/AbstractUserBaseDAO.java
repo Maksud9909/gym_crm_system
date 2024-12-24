@@ -1,5 +1,6 @@
-package uz.ccrew.dao.base;
+package uz.ccrew.dao.base.userBase;
 
+import uz.ccrew.dao.base.crudBase.AbstractCRUDBaseDAO;
 import uz.ccrew.entity.User;
 import uz.ccrew.entity.base.UserAware;
 

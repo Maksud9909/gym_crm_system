@@ -1,10 +1,11 @@
-package uz.ccrew.dao.base;
+package uz.ccrew.dao.base.crudBase;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import uz.ccrew.dao.base.base.AbstractBaseDAO;
 
 @Slf4j
 @Getter

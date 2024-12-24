@@ -1,4 +1,6 @@
-package uz.ccrew.dao.base;
+package uz.ccrew.dao.base.userBase;
+
+import uz.ccrew.dao.base.crudBase.BaseCRUDDAO;
 
 import java.util.Optional;
 

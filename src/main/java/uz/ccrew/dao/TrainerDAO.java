@@ -1,7 +1,7 @@
 package uz.ccrew.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import uz.ccrew.dao.base.AbstractAdvancedBaseDAO;
+import uz.ccrew.dao.base.advancedBase.AbstractAdvancedBaseDAO;
 import uz.ccrew.dto.trainer.TrainerCreateDTO;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.entity.Training;
