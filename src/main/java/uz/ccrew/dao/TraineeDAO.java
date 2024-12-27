@@ -19,7 +19,6 @@ import static uz.ccrew.utils.UserUtils.*;
 
 @Slf4j
 @Repository
-@Transactional
 public class TraineeDAO extends AbstractAdvancedUserBaseCRUDDAO<Trainee, TraineeCreateDTO> {
     private static final String ENTITY_NAME = "Trainee";
 
@@ -85,6 +84,7 @@ public class TraineeDAO extends AbstractAdvancedUserBaseCRUDDAO<Trainee, Trainee
         log.info("Updated {}: ID={}, Trainee={}", getEntityName(), id, dto);
     }
 
+    @Transactional
     public void deleteByUsername(String username) {
         try (Session session = getSessionFactory().getCurrentSession()) {
             String hql = "FROM Trainee t JOIN FETCH t.user u WHERE u.username = :username";
@@ -101,6 +101,7 @@ public class TraineeDAO extends AbstractAdvancedUserBaseCRUDDAO<Trainee, Trainee
         }
     }
 
+    @Transactional
     public void updateTraineeTrainers(Long traineeId, List<Long> newTrainerIds) {
         try (Session session = getSessionFactory().getCurrentSession()) {
             Trainee trainee = session.get(Trainee.class, traineeId);

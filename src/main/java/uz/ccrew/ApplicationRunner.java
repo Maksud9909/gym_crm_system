@@ -1,6 +1,5 @@
 package uz.ccrew;
 
-import org.jetbrains.annotations.NotNull;
 import uz.ccrew.entity.Trainee;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.entity.Training;
@@ -13,6 +12,7 @@ import uz.ccrew.dto.trainee.TraineeCreateDTO;
 import uz.ccrew.dto.trainer.TrainerCreateDTO;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 

@@ -11,16 +11,15 @@ import static uz.ccrew.utils.UserUtils.*;
 import org.hibernate.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.time.LocalDate;
 
 @Slf4j
 @Repository
-@Transactional
 public class TrainerDAO extends AbstractAdvancedUserBaseCRUDDAO<Trainer, TrainerCreateDTO> {
     private static final String ENTITY_NAME = "Trainer";
     private final UserDAO userDAO;
@@ -85,6 +84,7 @@ public class TrainerDAO extends AbstractAdvancedUserBaseCRUDDAO<Trainer, Trainer
     }
 
 
+    @Transactional(readOnly = true)
     public List<Training> getTrainerTrainings(String trainerUsername, LocalDate fromDate, LocalDate toDate, String traineeName) {
         try (Session session = getSessionFactory().getCurrentSession()) {
             String hql = """
@@ -106,6 +106,7 @@ public class TrainerDAO extends AbstractAdvancedUserBaseCRUDDAO<Trainer, Trainer
         }
     }
 
+    @Transactional(readOnly = true)
     public List<Trainer> getUnassignedTrainers(String traineeUsername) {
         try (Session session = getSessionFactory().getCurrentSession()) {
             String hql = """

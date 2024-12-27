@@ -1,10 +1,12 @@
 package uz.ccrew.dao.base.advancedBase;
 
-import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import uz.ccrew.entity.User;
 import uz.ccrew.entity.base.UserAware;
+
+import org.hibernate.Session;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.SessionFactory;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -16,42 +18,42 @@ public abstract class AbstractAdvancedUserBaseCRUDDAO<T extends UserAware, D> ex
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<T> findByUsername(String username) {
-        try (Session session = getSessionFactory().getCurrentSession()) {
-            String hql = "FROM " + getEntityName() + " t JOIN FETCH t.user u WHERE u.username = :username";
-            return session.createQuery(hql, getEntityClass())
-                    .setParameter("username", username)
-                    .uniqueResultOptional();
-        }
+        Session session = getSessionFactory().getCurrentSession();
+        String hql = "FROM " + getEntityName() + " t JOIN FETCH t.user u WHERE u.username = :username";
+        return session.createQuery(hql, getEntityClass())
+                .setParameter("username", username)
+                .uniqueResultOptional();
     }
 
     @Override
+    @Transactional
     public void changePassword(Long id, String newPassword) {
-        try (Session session = getSessionFactory().getCurrentSession()) {
-            T entity = session.get(getEntityClass(), id);
-            if (entity != null) {
-                User user = entity.getUser();
-                user.setPassword(newPassword);
-                session.merge(user);
-                log.info("Password updated for {} with ID={}", getEntityName(), id);
-            }
-        } catch (Exception e) {
-            log.error("Failed to update password for {} ID={}", getEntityName(), id, e);
+        Session session = getSessionFactory().getCurrentSession();
+        T entity = session.get(getEntityClass(), id);
+        if (entity != null) {
+            User user = entity.getUser();
+            user.setPassword(newPassword);
+            session.merge(user);
+            log.info("Password updated for {} with ID={}", getEntityName(), id);
+        } else {
+            log.warn("Entity {} with ID={} not found to change password", getEntityName(), id);
         }
     }
 
     @Override
+    @Transactional
     public void activateDeactivate(Long id, boolean isActive) {
-        try (Session session = getSessionFactory().getCurrentSession()) {
-            T entity = session.get(getEntityClass(), id);
-            if (entity != null) {
-                User user = entity.getUser();
-                user.setIsActive(isActive);
-                session.merge(user);
-                log.info("Updated isActive for {} ID={}", getEntityName(), id);
-            }
-        } catch (Exception e) {
-            log.error("Failed to update isActive for {} ID={}", getEntityName(), id, e);
+        Session session = getSessionFactory().getCurrentSession();
+        T entity = session.get(getEntityClass(), id);
+        if (entity != null) {
+            User user = entity.getUser();
+            user.setIsActive(isActive);
+            session.merge(user);
+            log.info("Updated isActive for {} ID={}", getEntityName(), id);
+        } else {
+            log.warn("Entity {} with ID={} not found to update isActive", getEntityName(), id);
         }
     }
 }

@@ -1,20 +1,20 @@
 package uz.ccrew.dao;
 
-import jakarta.transaction.Transactional;
-import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.stereotype.Repository;
-import uz.ccrew.dao.base.base.AbstractBaseDAO;
 import uz.ccrew.entity.Training;
 import uz.ccrew.entity.TrainingType;
+import uz.ccrew.dao.base.base.AbstractBaseDAO;
 
-import java.time.LocalDate;
+import org.hibernate.Session;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.SessionFactory;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
+import java.time.LocalDate;
 
 @Slf4j
 @Repository
-@Transactional
 public class TrainingDAO extends AbstractBaseDAO<Training> {
     private static final String ENTITY_NAME = "Training";
 
@@ -33,6 +33,7 @@ public class TrainingDAO extends AbstractBaseDAO<Training> {
         return id;
     }
 
+    @Transactional(readOnly = true)
     public List<Training> getTraineeTrainings(String traineeUsername, LocalDate fromDate,
                                               LocalDate toDate, String trainerName, TrainingType trainingType) {
         try (Session session = getSessionFactory().getCurrentSession()) {
