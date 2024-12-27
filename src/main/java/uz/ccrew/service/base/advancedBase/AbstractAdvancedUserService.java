@@ -1,6 +1,7 @@
 package uz.ccrew.service.base.advancedBase;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 import uz.ccrew.dao.base.advancedBase.BaseAdvancedUserCRUDDAO;
 import uz.ccrew.entity.base.UserAware;
 import uz.ccrew.exp.EntityNotFoundException;
@@ -16,6 +17,7 @@ public abstract class AbstractAdvancedUserService<T extends UserAware, D> extend
     }
 
     @Override
+    @Transactional(readOnly = true)
     public T findByUsername(String username) {
         Objects.requireNonNull(username, "Username cannot be null");
         log.info("Finding {} by username={}", getEntityName(), username);
@@ -25,6 +27,7 @@ public abstract class AbstractAdvancedUserService<T extends UserAware, D> extend
 
 
     @Override
+    @Transactional
     public void changePassword(Long id, String newPassword) {
         Objects.requireNonNull(id, "ID cannot be null");
         Objects.requireNonNull(newPassword, "New password cannot be null");
@@ -33,6 +36,7 @@ public abstract class AbstractAdvancedUserService<T extends UserAware, D> extend
     }
 
     @Override
+    @Transactional
     public void activateDeactivate(Long id, boolean isActive) {
         Objects.requireNonNull(id, "ID cannot be null");
         log.info("Setting isActive={} for {} with ID={}", isActive, getEntityName(), id);

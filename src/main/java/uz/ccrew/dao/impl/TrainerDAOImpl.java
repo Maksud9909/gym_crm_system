@@ -7,14 +7,13 @@ import uz.ccrew.dao.TrainerDAO;
 import uz.ccrew.dto.trainer.TrainerCreateDTO;
 import uz.ccrew.dao.base.advancedBase.AbstractAdvancedUserBaseCRUDDAO;
 
-import static uz.ccrew.utils.UserUtils.*;
-
 import org.hibernate.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import uz.ccrew.utils.UserUtils;
 
 import java.util.List;
 
@@ -23,11 +22,13 @@ import java.util.List;
 public class TrainerDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainer, TrainerCreateDTO> implements TrainerDAO {
     private static final String ENTITY_NAME = "Trainer";
     private final UserDAO userDAO;
+    private final UserUtils userUtils;
 
     @Autowired
-    public TrainerDAOImpl(SessionFactory sessionFactory, UserDAO userDAO) {
+    public TrainerDAOImpl(SessionFactory sessionFactory, UserDAO userDAO, UserUtils userUtils) {
         super(sessionFactory, Trainer.class);
         this.userDAO = userDAO;
+        this.userUtils = userUtils;
         log.debug("TrainerDAO instantiated");
     }
 
@@ -40,8 +41,8 @@ public class TrainerDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainer, Tra
         User user = User.builder()
                 .firstName(firstName)
                 .lastName(lastName)
-                .username(generateUniqueUsername(firstName, lastName))
-                .password(generateRandomPassword())
+                .username(userUtils.generateUniqueUsername(firstName, lastName))
+                .password(userUtils.generateRandomPassword())
                 .isActive(Boolean.TRUE)
                 .build();
 
@@ -73,7 +74,7 @@ public class TrainerDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainer, Tra
         User user = trainer.getUser();
         user.setFirstName(dto.firstName());
         user.setLastName(dto.lastName());
-        user.setUsername(generateUniqueUsername(dto.firstName(), dto.lastName()));
+        user.setUsername(userUtils.generateUniqueUsername(dto.firstName(), dto.lastName()));
 
         trainer.setTrainingType(dto.trainingType());
 
@@ -84,7 +85,6 @@ public class TrainerDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainer, Tra
     }
 
 
-    @Transactional(readOnly = true)
     public List<Trainer> getUnassignedTrainers(String traineeUsername) {
         try (Session session = getSessionFactory().getCurrentSession()) {
             String hql = """

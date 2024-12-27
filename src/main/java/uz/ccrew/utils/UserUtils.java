@@ -1,23 +1,28 @@
 package uz.ccrew.utils;
 
-import static uz.ccrew.utils.UsernameValidator.*;
-
-import lombok.experimental.UtilityClass;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
 
-@UtilityClass
+@Component
 public class UserUtils {
-    private final String DOT = ".";
-    private final String CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    private final byte PASSWORD_LENGTH = 10;
+    private static final String DOT = ".";
+    private static final String CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    private static final byte PASSWORD_LENGTH = 10;
+    private final UsernameValidator usernameValidator;
+
+    @Autowired
+    public UserUtils(UsernameValidator usernameValidator) {
+        this.usernameValidator = usernameValidator;
+    }
 
     public String generateUniqueUsername(String firstName, String lastName) {
         String baseUsername = firstName + DOT + lastName;
         String uniqueUsername = baseUsername;
         int counter = 1;
 
-        while (isUsernameExists(uniqueUsername)) {
+        while (usernameValidator.isUsernameExists(uniqueUsername)) {
             uniqueUsername = baseUsername + DOT + counter++;
         }
 

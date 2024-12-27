@@ -5,7 +5,6 @@ import org.hibernate.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,11 +17,9 @@ public abstract class AbstractBaseDAO<T> implements BaseDAO<T> {
     private final Class<T> entityClass;
 
     @Override
-    @Transactional
     public abstract Long create(T entity);
 
     @Override
-    @Transactional(readOnly = true)
     public Optional<T> findById(Long id) {
         try (Session session = sessionFactory.getCurrentSession()) {
             T entity = session.get(entityClass, id);
@@ -37,7 +34,6 @@ public abstract class AbstractBaseDAO<T> implements BaseDAO<T> {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<T> findAll() {
         try (Session session = sessionFactory.getCurrentSession()) {
             log.info("Fetching all {}", getEntityName());

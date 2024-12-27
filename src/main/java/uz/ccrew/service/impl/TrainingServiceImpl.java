@@ -8,6 +8,7 @@ import uz.ccrew.service.base.base.AbstractBaseService;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.time.LocalDate;
@@ -25,12 +26,14 @@ public class TrainingServiceImpl extends AbstractBaseService<Training> implement
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Training> getTraineeTrainings(String traineeUsername, LocalDate fromDate, LocalDate toDate, String trainerName, TrainingType trainingType) {
         log.info("Fetching trainings for Trainee username={} with filters", traineeUsername);
         return trainingDAO.getTraineeTrainings(traineeUsername, fromDate, toDate, trainerName, trainingType);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Training> getTrainerTrainings(String trainerUsername, LocalDate fromDate, LocalDate toDate, String traineeName) {
         log.info("Fetching trainings for Trainer username={} with filters", trainerUsername);
         return trainingDAO.getTrainerTrainings(trainerUsername, fromDate, toDate, traineeName);

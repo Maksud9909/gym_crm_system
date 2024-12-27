@@ -1,16 +1,17 @@
 package uz.ccrew.config;
 
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-import uz.ccrew.dto.trainee.TraineeCreateDTO;
-import uz.ccrew.dto.trainer.TrainerCreateDTO;
 import uz.ccrew.entity.Trainee;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.entity.Training;
-import uz.ccrew.service.impl.TraineeServiceImpl;
-import uz.ccrew.service.impl.TrainerServiceImpl;
-import uz.ccrew.service.impl.TrainingServiceImpl;
+import uz.ccrew.service.TraineeService;
+import uz.ccrew.service.TrainerService;
+import uz.ccrew.service.TrainingService;
+import uz.ccrew.dto.trainee.TraineeCreateDTO;
+import uz.ccrew.dto.trainer.TrainerCreateDTO;
+
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,39 +20,39 @@ import java.util.Optional;
 @Getter
 @Component
 public class ApplicationFacade {
-    private final TraineeServiceImpl traineeServiceImpl;
-    private final TrainerServiceImpl trainerServiceImpl;
-    private final TrainingServiceImpl trainingService;
+    private final TraineeService traineeService;
+    private final TrainerService trainerService;
+    private final TrainingService trainingService;
 
-    public ApplicationFacade(TraineeServiceImpl traineeServiceImpl, TrainerServiceImpl trainerServiceImpl, TrainingServiceImpl trainingService) {
-        this.traineeServiceImpl = traineeServiceImpl;
-        this.trainerServiceImpl = trainerServiceImpl;
+    public ApplicationFacade(TraineeService traineeService, TrainerService trainerService, TrainingService trainingService) {
+        this.traineeService = traineeService;
+        this.trainerService = trainerService;
         this.trainingService = trainingService;
         log.info("ApplicationFacade initialized with services");
     }
 
     public Long createTrainee(TraineeCreateDTO trainee) {
-        return traineeServiceImpl.create(trainee);
+        return traineeService.create(trainee);
     }
 
     public Optional<Trainee> getTrainee(Long id) {
-        return Optional.ofNullable(traineeServiceImpl.findById(id));
+        return Optional.ofNullable(traineeService.findById(id));
     }
 
     public List<Trainee> getAllTrainees() {
-        return traineeServiceImpl.findAll();
+        return traineeService.findAll();
     }
 
     public Long createTrainer(TrainerCreateDTO trainer) {
-        return trainerServiceImpl.create(trainer);
+        return trainerService.create(trainer);
     }
 
     public Trainer getTrainer(Long id) {
-        return trainerServiceImpl.findById(id);
+        return trainerService.findById(id);
     }
 
     public List<Trainer> getAllTrainers() {
-        return trainerServiceImpl.findAll();
+        return trainerService.findAll();
     }
 
     public Long createTraining(Training training) {

@@ -1,14 +1,15 @@
 package uz.ccrew.service.impl;
 
+import org.springframework.transaction.annotation.Transactional;
 import uz.ccrew.dao.TraineeDAO;
 import uz.ccrew.entity.Trainee;
 import uz.ccrew.service.TraineeService;
-import uz.ccrew.dao.impl.TraineeDAOImpl;
 import uz.ccrew.dto.trainee.TraineeCreateDTO;
 import uz.ccrew.service.base.advancedBase.AbstractAdvancedUserService;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class TraineeServiceImpl extends AbstractAdvancedUserService<Trainee, Tra
     private static final String ENTITY_NAME = "Trainee";
     private final TraineeDAO traineeDAO;
 
+    @Autowired
     public TraineeServiceImpl(TraineeDAO traineeDAO) {
         super(traineeDAO);
         this.traineeDAO = traineeDAO;
@@ -30,6 +32,7 @@ public class TraineeServiceImpl extends AbstractAdvancedUserService<Trainee, Tra
     }
 
     @Override
+    @Transactional
     public void deleteTraineeByUsername(String username) {
         log.info("Deleting Trainee by username={}", username);
         traineeDAO.deleteByUsername(username);
@@ -37,6 +40,7 @@ public class TraineeServiceImpl extends AbstractAdvancedUserService<Trainee, Tra
     }
 
     @Override
+    @Transactional
     public void updateTraineeTrainers(Long traineeId, List<Long> newTrainerIds) {
         log.info("Updating trainers for Trainee ID={}", traineeId);
         traineeDAO.updateTraineeTrainers(traineeId, newTrainerIds);

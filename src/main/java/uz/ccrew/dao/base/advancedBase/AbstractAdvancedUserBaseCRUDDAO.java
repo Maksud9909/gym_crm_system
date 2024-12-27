@@ -6,7 +6,6 @@ import uz.ccrew.entity.base.UserAware;
 import org.hibernate.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -18,7 +17,6 @@ public abstract class AbstractAdvancedUserBaseCRUDDAO<T extends UserAware, D> ex
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Optional<T> findByUsername(String username) {
         Session session = getSessionFactory().getCurrentSession();
         String hql = "FROM " + getEntityName() + " t JOIN FETCH t.user u WHERE u.username = :username";
@@ -28,7 +26,6 @@ public abstract class AbstractAdvancedUserBaseCRUDDAO<T extends UserAware, D> ex
     }
 
     @Override
-    @Transactional
     public void changePassword(Long id, String newPassword) {
         Session session = getSessionFactory().getCurrentSession();
         T entity = session.get(getEntityClass(), id);
@@ -43,7 +40,6 @@ public abstract class AbstractAdvancedUserBaseCRUDDAO<T extends UserAware, D> ex
     }
 
     @Override
-    @Transactional
     public void activateDeactivate(Long id, boolean isActive) {
         Session session = getSessionFactory().getCurrentSession();
         T entity = session.get(getEntityClass(), id);

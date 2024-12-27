@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 import uz.ccrew.dao.base.advancedBase.BaseAdvancedCRUDDAO;
 import uz.ccrew.exp.EntityNotFoundException;
 
@@ -19,6 +20,7 @@ public abstract class AbstractAdvancedService<T, D> implements BaseAdvancedServi
     private BaseAdvancedCRUDDAO<T, D> dao;
 
     @Override
+    @Transactional
     public Long create(D entity) {
         Objects.requireNonNull(entity, "Entity cannot be null");
         log.info("Creating {}: {}", getEntityName(), entity);
@@ -28,6 +30,7 @@ public abstract class AbstractAdvancedService<T, D> implements BaseAdvancedServi
     }
 
     @Override
+    @Transactional(readOnly = true)
     public T findById(Long id) {
         Objects.requireNonNull(id, "ID cannot be null");
         log.info("Finding {} by ID={}", getEntityName(), id);
@@ -36,6 +39,7 @@ public abstract class AbstractAdvancedService<T, D> implements BaseAdvancedServi
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<T> findAll() {
         log.info("Fetching all {}", getEntityName());
         List<T> entities = dao.findAll();
@@ -44,6 +48,7 @@ public abstract class AbstractAdvancedService<T, D> implements BaseAdvancedServi
     }
 
     @Override
+    @Transactional
     public void update(Long id, D entity) {
         Objects.requireNonNull(id, "ID cannot be null");
         Objects.requireNonNull(entity, "Entity cannot be null");
@@ -60,6 +65,7 @@ public abstract class AbstractAdvancedService<T, D> implements BaseAdvancedServi
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         Objects.requireNonNull(id, "ID cannot be null");
         log.info("Deleting {} with ID={}", getEntityName(), id);

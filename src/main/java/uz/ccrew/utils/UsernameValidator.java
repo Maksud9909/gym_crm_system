@@ -1,25 +1,28 @@
 package uz.ccrew.utils;
 
-import lombok.experimental.UtilityClass;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@UtilityClass
+@Component
 public class UsernameValidator {
-    private final String CHECK_USERNAME_QUERY = """
+    private static final String CHECK_USERNAME_QUERY = """
                 SELECT COUNT(u) FROM Trainee u WHERE u.user.username = :username
             """;
 
-    private SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
+
+    @Autowired
+    public UsernameValidator(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     public boolean isUsernameExists(String username) {
-        try (Session session = sessionFactory.getCurrentSession()) {
-            Long count = session.createQuery(CHECK_USERNAME_QUERY, Long.class)
-                    .setParameter("username", username)
-                    .uniqueResult();
-            return count > 0;
-        } catch (Exception e) {
-            throw new RuntimeException("Error checking username existence", e);
-        }
+        Session session = sessionFactory.getCurrentSession();
+        Long count = session.createQuery(CHECK_USERNAME_QUERY, Long.class)
+                .setParameter("username", username)
+                .uniqueResult();
+        return count > 0;
     }
 }

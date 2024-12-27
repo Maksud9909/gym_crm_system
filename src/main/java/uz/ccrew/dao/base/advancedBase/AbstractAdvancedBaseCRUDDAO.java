@@ -18,15 +18,12 @@ public abstract class AbstractAdvancedBaseCRUDDAO<T, D> implements BaseAdvancedC
     private final Class<T> entityClass;
 
     @Override
-    @Transactional
     public abstract Long create(D dto);
 
     @Override
-    @Transactional
     public abstract void update(Long id, D dto);
 
     @Override
-    @Transactional(readOnly = true)
     public Optional<T> findById(Long id) {
         Session session = sessionFactory.getCurrentSession();
         T entity = session.get(entityClass, id);
@@ -34,14 +31,12 @@ public abstract class AbstractAdvancedBaseCRUDDAO<T, D> implements BaseAdvancedC
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<T> findAll() {
         Session session = sessionFactory.getCurrentSession();
         return session.createQuery("FROM " + entityClass.getSimpleName(), entityClass).list();
     }
 
     @Override
-    @Transactional
     public void delete(Long id) {
         Session session = sessionFactory.getCurrentSession();
         T entity = session.get(entityClass, id);

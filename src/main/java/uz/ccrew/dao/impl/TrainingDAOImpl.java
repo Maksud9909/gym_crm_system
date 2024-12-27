@@ -35,7 +35,6 @@ public class TrainingDAOImpl extends AbstractBaseDAO<Training> implements Traini
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Training> getTraineeTrainings(String traineeUsername, LocalDate fromDate,
                                               LocalDate toDate, String trainerName, TrainingType trainingType) {
         try (Session session = getSessionFactory().getCurrentSession()) {
@@ -59,7 +58,6 @@ public class TrainingDAOImpl extends AbstractBaseDAO<Training> implements Traini
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Training> getTrainerTrainings(String trainerUsername, LocalDate fromDate, LocalDate toDate, String traineeName) {
         try (Session session = getSessionFactory().getCurrentSession()) {
             String hql = """

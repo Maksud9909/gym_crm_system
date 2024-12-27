@@ -1,5 +1,6 @@
 package uz.ccrew.service.impl;
 
+import org.springframework.transaction.annotation.Transactional;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.dao.TrainerDAO;
 import uz.ccrew.service.TrainerService;
@@ -32,6 +33,7 @@ public class TrainerServiceImpl extends AbstractAdvancedUserService<Trainer, Tra
 
 
     @Override
+    @Transactional(readOnly = true)
     public List<Trainer> getUnassignedTrainers(String traineeUsername) {
         log.info("Fetching unassigned trainers for Trainee username={}", traineeUsername);
         return trainerDAO.getUnassignedTrainers(traineeUsername);

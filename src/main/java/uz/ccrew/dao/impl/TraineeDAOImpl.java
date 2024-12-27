@@ -8,14 +8,13 @@ import uz.ccrew.entity.Trainer;
 import uz.ccrew.dto.trainee.TraineeCreateDTO;
 import uz.ccrew.dao.base.advancedBase.AbstractAdvancedUserBaseCRUDDAO;
 
-import static uz.ccrew.utils.UserUtils.*;
-
 import org.hibernate.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import uz.ccrew.utils.UserUtils;
 
 import java.util.List;
 
@@ -23,13 +22,14 @@ import java.util.List;
 @Repository
 public class TraineeDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainee, TraineeCreateDTO> implements TraineeDAO {
     private static final String ENTITY_NAME = "Trainee";
-
     private final UserDAO userDAO;
+    private final UserUtils userUtils;
 
     @Autowired
-    public TraineeDAOImpl(SessionFactory sessionFactory, UserDAO userDAO) {
+    public TraineeDAOImpl(SessionFactory sessionFactory, UserDAO userDAO, UserUtils userUtils) {
         super(sessionFactory, Trainee.class);
         this.userDAO = userDAO;
+        this.userUtils = userUtils;
         log.debug("TraineeDAO instantiated");
     }
 
@@ -42,8 +42,8 @@ public class TraineeDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainee, Tra
         User user = User.builder()
                 .firstName(firstName)
                 .lastName(lastName)
-                .username(generateUniqueUsername(firstName, lastName))
-                .password(generateRandomPassword())
+                .username(userUtils.generateUniqueUsername(firstName, lastName))
+                .password(userUtils.generateRandomPassword())
                 .isActive(Boolean.TRUE).build();
 
         Long userId = userDAO.create(user);
@@ -75,7 +75,7 @@ public class TraineeDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainee, Tra
         User user = trainee.getUser();
         user.setFirstName(dto.firstName());
         user.setLastName(dto.lastName());
-        user.setUsername(generateUniqueUsername(dto.firstName(), dto.lastName()));
+        user.setUsername(userUtils.generateUniqueUsername(dto.firstName(), dto.lastName()));
 
         trainee.setDateOfBirth(dto.birthOfDate());
         trainee.setAddress(dto.address());
@@ -87,7 +87,6 @@ public class TraineeDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainee, Tra
     }
 
     @Override
-    @Transactional
     public void deleteByUsername(String username) {
         try (Session session = getSessionFactory().getCurrentSession()) {
             String hql = "FROM Trainee t JOIN FETCH t.user u WHERE u.username = :username";
@@ -105,7 +104,6 @@ public class TraineeDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainee, Tra
     }
 
     @Override
-    @Transactional
     public void updateTraineeTrainers(Long traineeId, List<Long> newTrainerIds) {
         try (Session session = getSessionFactory().getCurrentSession()) {
             Trainee trainee = session.get(Trainee.class, traineeId);
