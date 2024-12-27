@@ -17,9 +17,9 @@ import java.time.LocalDate;
 public class TrainingServiceImpl extends AbstractBaseService<Training> implements TrainingService {
     private static final String ENTITY_NAME = "Training";
 
-    private final TrainingDAO<Training> trainingDAO;
+    private final TrainingDAO trainingDAO;
 
-    public TrainingServiceImpl(TrainingDAO<Training> trainingDAO) {
+    public TrainingServiceImpl(TrainingDAO trainingDAO) {
         this.trainingDAO = trainingDAO;
         log.debug("TrainingServiceImpl initialized");
     }

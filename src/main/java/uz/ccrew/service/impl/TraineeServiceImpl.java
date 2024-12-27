@@ -16,7 +16,7 @@ import java.util.List;
 @Service
 public class TraineeServiceImpl extends AbstractAdvancedUserService<Trainee, TraineeCreateDTO> implements TraineeService {
     private static final String ENTITY_NAME = "Trainee";
-    private final TraineeDAO<Trainee, TraineeCreateDTO> traineeDAO;
+    private final TraineeDAO traineeDAO;
 
     public TraineeServiceImpl(TraineeDAOImpl traineeDAOImpl) {
         super(traineeDAOImpl);

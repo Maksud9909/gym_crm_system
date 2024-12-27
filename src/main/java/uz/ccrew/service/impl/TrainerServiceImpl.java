@@ -17,11 +17,11 @@ import java.util.List;
 public class TrainerServiceImpl extends AbstractAdvancedUserService<Trainer, TrainerCreateDTO> implements TrainerService {
     private static final String ENTITY_NAME = "Trainer";
 
-    private final TrainerDAO<Trainer, TrainerCreateDTO> trainerDAOImpl;
+    private final TrainerDAO trainerDAO;
 
-    public TrainerServiceImpl(TrainerDAOImpl trainerDAOImpl) {
-        super(trainerDAOImpl);
-        this.trainerDAOImpl = trainerDAOImpl;
+    public TrainerServiceImpl(TrainerDAOImpl trainerDAO) {
+        super(trainerDAO);
+        this.trainerDAO = trainerDAO;
         log.debug("TrainerService initialized");
     }
 
@@ -34,6 +34,6 @@ public class TrainerServiceImpl extends AbstractAdvancedUserService<Trainer, Tra
     @Override
     public List<Trainer> getUnassignedTrainers(String traineeUsername) {
         log.info("Fetching unassigned trainers for Trainee username={}", traineeUsername);
-        return trainerDAOImpl.getUnassignedTrainers(traineeUsername);
+        return trainerDAO.getUnassignedTrainers(traineeUsername);
     }
 }
