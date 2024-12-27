@@ -18,9 +18,9 @@ public class TraineeServiceImpl extends AbstractAdvancedUserService<Trainee, Tra
     private static final String ENTITY_NAME = "Trainee";
     private final TraineeDAO traineeDAO;
 
-    public TraineeServiceImpl(TraineeDAOImpl traineeDAOImpl) {
-        super(traineeDAOImpl);
-        this.traineeDAO = traineeDAOImpl;
+    public TraineeServiceImpl(TraineeDAO traineeDAO) {
+        super(traineeDAO);
+        this.traineeDAO = traineeDAO;
         log.debug("TraineeService initialized");
     }
 

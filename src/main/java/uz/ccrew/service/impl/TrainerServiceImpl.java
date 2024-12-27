@@ -19,7 +19,7 @@ public class TrainerServiceImpl extends AbstractAdvancedUserService<Trainer, Tra
 
     private final TrainerDAO trainerDAO;
 
-    public TrainerServiceImpl(TrainerDAOImpl trainerDAO) {
+    public TrainerServiceImpl(TrainerDAO trainerDAO) {
         super(trainerDAO);
         this.trainerDAO = trainerDAO;
         log.debug("TrainerService initialized");
