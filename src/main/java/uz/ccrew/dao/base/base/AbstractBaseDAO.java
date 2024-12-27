@@ -21,24 +21,23 @@ public abstract class AbstractBaseDAO<T> implements BaseDAO<T> {
 
     @Override
     public Optional<T> findById(Long id) {
-        try (Session session = sessionFactory.getCurrentSession()) {
-            T entity = session.get(entityClass, id);
-            if (entity != null) {
-                log.info("Found {} by ID={}: {}", getEntityName(), id, entity);
-                return Optional.of(entity);
-            } else {
-                log.warn("{} not found for ID={}", getEntityName(), id);
-                return Optional.empty();
-            }
+        Session session = sessionFactory.getCurrentSession();
+        T entity = session.get(entityClass, id);
+        if (entity != null) {
+            log.info("Found {} by ID={}: {}", getEntityName(), id, entity);
+            return Optional.of(entity);
+        } else {
+            log.warn("{} not found for ID={}", getEntityName(), id);
+            return Optional.empty();
         }
     }
 
+
     @Override
     public List<T> findAll() {
-        try (Session session = sessionFactory.getCurrentSession()) {
-            log.info("Fetching all {}", getEntityName());
-            return session.createQuery("FROM " + entityClass.getSimpleName(), entityClass).list();
-        }
+        Session session = sessionFactory.getCurrentSession();
+        log.info("Fetching all {}", getEntityName());
+        return session.createQuery("FROM " + entityClass.getSimpleName(), entityClass).list();
     }
 
     protected abstract String getEntityName();

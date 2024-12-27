@@ -86,20 +86,19 @@ public class TrainerDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainer, Tra
 
 
     public List<Trainer> getUnassignedTrainers(String traineeUsername) {
-        try (Session session = getSessionFactory().getCurrentSession()) {
-            String hql = """
-                        SELECT tr FROM Trainer tr
-                        WHERE tr.id NOT IN (
-                            SELECT trainer.id FROM Trainee trainee
-                            JOIN trainee.trainers trainer
-                            WHERE trainee.user.username = :traineeUsername
-                        )
-                    """;
+        Session session = getSessionFactory().getCurrentSession();
+        String hql = """
+                    SELECT tr FROM Trainer tr
+                    WHERE tr.id NOT IN (
+                        SELECT trainer.id FROM Trainee trainee
+                        JOIN trainee.trainers trainer
+                        WHERE trainee.user.username = :traineeUsername
+                    )
+                """;
 
-            return session.createQuery(hql, Trainer.class)
-                    .setParameter("traineeUsername", traineeUsername)
-                    .list();
-        }
+        return session.createQuery(hql, Trainer.class)
+                .setParameter("traineeUsername", traineeUsername)
+                .list();
     }
 
     @Override

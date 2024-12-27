@@ -1,10 +1,11 @@
 package uz.ccrew.dao.impl;
 
-import uz.ccrew.dao.UserDAO;
-import uz.ccrew.dao.TraineeDAO;
 import uz.ccrew.entity.User;
+import uz.ccrew.dao.UserDAO;
 import uz.ccrew.entity.Trainee;
 import uz.ccrew.entity.Trainer;
+import uz.ccrew.dao.TraineeDAO;
+import uz.ccrew.utils.UserUtils;
 import uz.ccrew.dto.trainee.TraineeCreateDTO;
 import uz.ccrew.dao.base.advancedBase.AbstractAdvancedUserBaseCRUDDAO;
 
@@ -13,8 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-import uz.ccrew.utils.UserUtils;
 
 import java.util.List;
 
@@ -88,42 +87,37 @@ public class TraineeDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainee, Tra
 
     @Override
     public void deleteByUsername(String username) {
-        try (Session session = getSessionFactory().getCurrentSession()) {
-            String hql = "FROM Trainee t JOIN FETCH t.user u WHERE u.username = :username";
-            Trainee trainee = session.createQuery(hql, Trainee.class)
-                    .setParameter("username", username)
-                    .uniqueResult();
+        Session session = getSessionFactory().getCurrentSession();
+        String hql = "FROM Trainee t JOIN FETCH t.user u WHERE u.username = :username";
+        Trainee trainee = session.createQuery(hql, Trainee.class)
+                .setParameter("username", username)
+                .uniqueResult();
 
-            if (trainee != null) {
-                session.remove(trainee);
-                log.info("Deleted Trainee profile with username={}", username);
-            } else {
-                log.warn("Trainee with username={} not found", username);
-            }
+        if (trainee != null) {
+            session.remove(trainee);
+            log.info("Deleted Trainee profile with username={}", username);
+        } else {
+            log.warn("Trainee with username={} not found", username);
         }
     }
 
     @Override
     public void updateTraineeTrainers(Long traineeId, List<Long> newTrainerIds) {
-        try (Session session = getSessionFactory().getCurrentSession()) {
-            Trainee trainee = session.get(Trainee.class, traineeId);
-            if (trainee != null) {
-                List<Trainer> newTrainers = session.createQuery(
-                                "FROM Trainer t WHERE t.id IN :ids", Trainer.class)
-                        .setParameter("ids", newTrainerIds)
-                        .list();
+        Session session = getSessionFactory().getCurrentSession();
+        Trainee trainee = session.get(Trainee.class, traineeId);
+        if (trainee != null) {
+            List<Trainer> newTrainers = session.createQuery(
+                            "FROM Trainer t WHERE t.id IN :ids", Trainer.class)
+                    .setParameter("ids", newTrainerIds)
+                    .list();
 
-                trainee.getTrainers().clear();
-                trainee.getTrainers().addAll(newTrainers);
+            trainee.getTrainers().clear();
+            trainee.getTrainers().addAll(newTrainers);
 
-                session.merge(trainee);
-                log.info("Updated trainers list for Trainee ID={}", traineeId);
-            } else {
-                log.warn("Trainee with ID={} not found", traineeId);
-            }
-        } catch (Exception e) {
-            log.warn("Failed to update trainers list for Trainee ID={}", traineeId, e);
-            throw e;
+            session.merge(trainee);
+            log.info("Updated trainers list for Trainee ID={}", traineeId);
+        } else {
+            log.warn("Trainee with ID={} not found", traineeId);
         }
     }
 

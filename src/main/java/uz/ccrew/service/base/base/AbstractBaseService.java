@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 import uz.ccrew.dao.base.base.BaseDAO;
 import uz.ccrew.exp.EntityNotFoundException;
 
@@ -19,6 +20,7 @@ public abstract class AbstractBaseService<T> implements BaseService<T> {
     private BaseDAO<T> dao;
 
     @Override
+    @Transactional
     public Long create(T entity) {
         log.info("Creating {}: {}", getEntityName(), entity);
         Long id = dao.create(entity);
@@ -27,6 +29,7 @@ public abstract class AbstractBaseService<T> implements BaseService<T> {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public T findById(Long id) {
         log.info("Finding {} by ID={}", getEntityName(), id);
         return dao.findById(id)
@@ -35,6 +38,7 @@ public abstract class AbstractBaseService<T> implements BaseService<T> {
 
 
     @Override
+    @Transactional(readOnly = true)
     public List<T> findAll() {
         log.info("Fetching all {}", getEntityName());
         List<T> entities = dao.findAll();

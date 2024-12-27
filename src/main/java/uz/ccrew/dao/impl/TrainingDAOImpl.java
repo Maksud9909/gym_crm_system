@@ -37,46 +37,44 @@ public class TrainingDAOImpl extends AbstractBaseDAO<Training> implements Traini
     @Override
     public List<Training> getTraineeTrainings(String traineeUsername, LocalDate fromDate,
                                               LocalDate toDate, String trainerName, TrainingType trainingType) {
-        try (Session session = getSessionFactory().getCurrentSession()) {
-            String hql = "SELECT tr FROM Training tr " +
-                    "JOIN FETCH tr.trainee trainee " +
-                    "JOIN FETCH tr.trainer trainer " +
-                    "WHERE trainee.user.username = :traineeUsername " +
-                    "AND (:fromDate IS NULL OR tr.trainingDate >= :fromDate) " +
-                    "AND (:toDate IS NULL OR tr.trainingDate <= :toDate) " +
-                    "AND (:trainerName IS NULL OR CONCAT(trainer.user.firstName, ' ', trainer.user.lastName) = :trainerName) " +
-                    "AND (:trainingType IS NULL OR tr.trainingType = :trainingType)";
+        Session session = getSessionFactory().getCurrentSession();
+        String hql = "SELECT tr FROM Training tr " +
+                "JOIN FETCH tr.trainee trainee " +
+                "JOIN FETCH tr.trainer trainer " +
+                "WHERE trainee.user.username = :traineeUsername " +
+                "AND (:fromDate IS NULL OR tr.trainingDate >= :fromDate) " +
+                "AND (:toDate IS NULL OR tr.trainingDate <= :toDate) " +
+                "AND (:trainerName IS NULL OR CONCAT(trainer.user.firstName, ' ', trainer.user.lastName) = :trainerName) " +
+                "AND (:trainingType IS NULL OR tr.trainingType = :trainingType)";
 
-            return session.createQuery(hql, Training.class)
-                    .setParameter("traineeUsername", traineeUsername)
-                    .setParameter("fromDate", fromDate)
-                    .setParameter("toDate", toDate)
-                    .setParameter("trainerName", trainerName)
-                    .setParameter("trainingType", trainingType)
-                    .list();
-        }
+        return session.createQuery(hql, Training.class)
+                .setParameter("traineeUsername", traineeUsername)
+                .setParameter("fromDate", fromDate)
+                .setParameter("toDate", toDate)
+                .setParameter("trainerName", trainerName)
+                .setParameter("trainingType", trainingType)
+                .list();
     }
 
     @Override
     public List<Training> getTrainerTrainings(String trainerUsername, LocalDate fromDate, LocalDate toDate, String traineeName) {
-        try (Session session = getSessionFactory().getCurrentSession()) {
-            String hql = """
-                        SELECT t FROM Training t
-                        JOIN FETCH t.trainer trainer
-                        JOIN FETCH t.trainee trainee
-                        WHERE trainer.user.username = :trainerUsername
-                        AND (:fromDate IS NULL OR t.trainingDate >= :fromDate)
-                        AND (:toDate IS NULL OR t.trainingDate <= :toDate)
-                        AND (:traineeName IS NULL OR CONCAT(trainee.user.firstName, ' ', trainee.user.lastName) = :traineeName)
-                    """;
+        Session session = getSessionFactory().getCurrentSession();
+        String hql = """
+                    SELECT t FROM Training t
+                    JOIN FETCH t.trainer trainer
+                    JOIN FETCH t.trainee trainee
+                    WHERE trainer.user.username = :trainerUsername
+                    AND (:fromDate IS NULL OR t.trainingDate >= :fromDate)
+                    AND (:toDate IS NULL OR t.trainingDate <= :toDate)
+                    AND (:traineeName IS NULL OR CONCAT(trainee.user.firstName, ' ', trainee.user.lastName) = :traineeName)
+                """;
 
-            return session.createQuery(hql, Training.class)
-                    .setParameter("trainerUsername", trainerUsername)
-                    .setParameter("fromDate", fromDate)
-                    .setParameter("toDate", toDate)
-                    .setParameter("traineeName", traineeName)
-                    .list();
-        }
+        return session.createQuery(hql, Training.class)
+                .setParameter("trainerUsername", trainerUsername)
+                .setParameter("fromDate", fromDate)
+                .setParameter("toDate", toDate)
+                .setParameter("traineeName", traineeName)
+                .list();
     }
 
     @Override

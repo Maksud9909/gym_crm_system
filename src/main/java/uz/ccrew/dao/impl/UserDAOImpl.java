@@ -2,14 +2,13 @@ package uz.ccrew.dao.impl;
 
 import uz.ccrew.dao.UserDAO;
 import uz.ccrew.entity.User;
+import uz.ccrew.utils.UserUtils;
 import uz.ccrew.dao.base.base.AbstractBaseDAO;
 
 import org.hibernate.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
-import uz.ccrew.utils.UserUtils;
 
 @Slf4j
 @Repository
