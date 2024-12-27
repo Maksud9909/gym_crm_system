@@ -12,8 +12,6 @@ public class UserUtils {
     private final String CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private final byte PASSWORD_LENGTH = 10;
 
-    private UsernameValidator usernameValidator;
-
     public String generateUniqueUsername(String firstName, String lastName) {
         String baseUsername = firstName + DOT + lastName;
         String uniqueUsername = baseUsername;
