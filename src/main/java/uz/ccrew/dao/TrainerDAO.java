@@ -6,17 +6,17 @@ import uz.ccrew.entity.Training;
 import uz.ccrew.dto.trainer.TrainerCreateDTO;
 import uz.ccrew.dao.base.advancedBase.AbstractAdvancedUserBaseCRUDDAO;
 
-import jakarta.transaction.Transactional;
-import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import java.time.LocalDate;
-import java.util.List;
-
 import static uz.ccrew.utils.UserUtils.*;
+
+import org.hibernate.Session;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.SessionFactory;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+import java.time.LocalDate;
 
 @Slf4j
 @Repository
@@ -41,7 +41,7 @@ public class TrainerDAO extends AbstractAdvancedUserBaseCRUDDAO<Trainer, Trainer
         User user = User.builder()
                 .firstName(firstName)
                 .lastName(lastName)
-                .username(generateUniqueUsername(firstName, lastName, getSessionFactory()))
+                .username(generateUniqueUsername(firstName, lastName))
                 .password(generateRandomPassword())
                 .isActive(Boolean.TRUE)
                 .build();
@@ -74,7 +74,7 @@ public class TrainerDAO extends AbstractAdvancedUserBaseCRUDDAO<Trainer, Trainer
         User user = trainer.getUser();
         user.setFirstName(dto.firstName());
         user.setLastName(dto.lastName());
-        user.setUsername(generateUniqueUsername(dto.firstName(), dto.lastName(), getSessionFactory()));
+        user.setUsername(generateUniqueUsername(dto.firstName(), dto.lastName()));
 
         trainer.setTrainingType(dto.trainingType());
 

@@ -41,7 +41,7 @@ public class TraineeDAO extends AbstractAdvancedUserBaseCRUDDAO<Trainee, Trainee
         User user = User.builder()
                 .firstName(firstName)
                 .lastName(lastName)
-                .username(generateUniqueUsername(firstName, lastName, getSessionFactory()))
+                .username(generateUniqueUsername(firstName, lastName))
                 .password(generateRandomPassword())
                 .isActive(Boolean.TRUE).build();
 
@@ -74,7 +74,7 @@ public class TraineeDAO extends AbstractAdvancedUserBaseCRUDDAO<Trainee, Trainee
         User user = trainee.getUser();
         user.setFirstName(dto.firstName());
         user.setLastName(dto.lastName());
-        user.setUsername(generateUniqueUsername(dto.firstName(), dto.lastName(), getSessionFactory()));
+        user.setUsername(generateUniqueUsername(dto.firstName(), dto.lastName()));
 
         trainee.setDateOfBirth(dto.birthOfDate());
         trainee.setAddress(dto.address());

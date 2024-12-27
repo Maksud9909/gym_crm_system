@@ -1,14 +1,15 @@
 package uz.ccrew.dao;
 
-import jakarta.transaction.Transactional;
-import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.stereotype.Repository;
-import uz.ccrew.dao.base.base.AbstractBaseDAO;
 import uz.ccrew.entity.User;
+import uz.ccrew.dao.base.base.AbstractBaseDAO;
 
 import static uz.ccrew.utils.UserUtils.*;
+
+import org.hibernate.Session;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.SessionFactory;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Repository;
 
 @Slf4j
 @Repository
@@ -27,8 +28,7 @@ public class UserImplDAO extends AbstractBaseDAO<User> implements UserDAO{
 
         String username = generateUniqueUsername(
                 user.getFirstName(),
-                user.getLastName(),
-                session.getSessionFactory()
+                user.getLastName()
         );
         user.setUsername(username);
         user.setPassword(generateRandomPassword());
