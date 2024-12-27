@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 public interface TrainingDAO extends BaseDAO<Training> {
     List<Training> getTraineeTrainings(String traineeUsername, LocalDate fromDate,
-                                       LocalDate toDate, String trainerName, TrainingType trainingType);
+                                       LocalDate toDate, String trainerName, Long trainingTypeId);
 
     List<Training> getTrainerTrainings(String trainerUsername, LocalDate fromDate, LocalDate toDate, String traineeName);
 }

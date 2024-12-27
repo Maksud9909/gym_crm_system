@@ -6,6 +6,7 @@ import uz.ccrew.entity.Training;
 import uz.ccrew.service.TraineeService;
 import uz.ccrew.service.TrainerService;
 import uz.ccrew.service.TrainingService;
+import uz.ccrew.service.TrainingTypeService;
 import uz.ccrew.dto.trainee.TraineeCreateDTO;
 import uz.ccrew.dto.trainer.TrainerCreateDTO;
 
@@ -23,11 +24,13 @@ public class ApplicationFacade {
     private final TraineeService traineeService;
     private final TrainerService trainerService;
     private final TrainingService trainingService;
+    private final TrainingTypeService trainingTypeService;
 
-    public ApplicationFacade(TraineeService traineeService, TrainerService trainerService, TrainingService trainingService) {
+    public ApplicationFacade(TraineeService traineeService, TrainerService trainerService, TrainingService trainingService, TrainingTypeService trainingTypeService) {
         this.traineeService = traineeService;
         this.trainerService = trainerService;
         this.trainingService = trainingService;
+        this.trainingTypeService = trainingTypeService;
         log.info("ApplicationFacade initialized with services");
     }
 

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(callSuper = true)
+@ToString(callSuper = true, exclude = {"trainers", "training"})
 @Entity
 @Table(name = "trainees")
 public class Trainee extends BaseEntity implements UserAware {

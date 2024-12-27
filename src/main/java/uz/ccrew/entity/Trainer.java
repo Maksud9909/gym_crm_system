@@ -15,7 +15,7 @@ import java.util.List;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(callSuper = true)
+@ToString(callSuper = true, exclude = {"trainees", "training"})
 @Entity
 @Table(name = "trainers")
 public class Trainer extends BaseEntity implements UserAware {
@@ -29,7 +29,7 @@ public class Trainer extends BaseEntity implements UserAware {
     private TrainingType trainingType;
     @OneToMany(mappedBy = "trainer",fetch = FetchType.LAZY)
     private List<Training> training = new ArrayList<>();
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }

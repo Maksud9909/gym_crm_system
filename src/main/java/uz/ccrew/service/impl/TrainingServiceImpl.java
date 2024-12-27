@@ -2,12 +2,12 @@ package uz.ccrew.service.impl;
 
 import uz.ccrew.dao.TrainingDAO;
 import uz.ccrew.entity.Training;
-import uz.ccrew.entity.TrainingType;
 import uz.ccrew.service.TrainingService;
 import uz.ccrew.service.base.base.AbstractBaseService;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -20,16 +20,18 @@ public class TrainingServiceImpl extends AbstractBaseService<Training> implement
 
     private final TrainingDAO trainingDAO;
 
+    @Autowired
     public TrainingServiceImpl(TrainingDAO trainingDAO) {
+        super(trainingDAO);
         this.trainingDAO = trainingDAO;
         log.debug("TrainingServiceImpl initialized");
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Training> getTraineeTrainings(String traineeUsername, LocalDate fromDate, LocalDate toDate, String trainerName, TrainingType trainingType) {
+    public List<Training> getTraineeTrainings(String traineeUsername, LocalDate fromDate, LocalDate toDate, String trainerName, Long trainingTypeId) {
         log.info("Fetching trainings for Trainee username={} with filters", traineeUsername);
-        return trainingDAO.getTraineeTrainings(traineeUsername, fromDate, toDate, trainerName, trainingType);
+        return trainingDAO.getTraineeTrainings(traineeUsername, fromDate, toDate, trainerName, trainingTypeId);
     }
 
     @Override

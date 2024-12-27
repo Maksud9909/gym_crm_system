@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Component
 public class UsernameValidator {
     private static final String CHECK_USERNAME_QUERY = """
-                SELECT COUNT(u) FROM Trainee u WHERE u.user.username = :username
+                SELECT COUNT(u) FROM User u WHERE u.username = :username
             """;
 
     private final SessionFactory sessionFactory;

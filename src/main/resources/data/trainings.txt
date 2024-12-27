@@ -1,2 +1,0 @@
-1,1,Strength Training,GYM,2023-10-01,60
-2,2,Yoga Session,RUN,2023-10-02,45

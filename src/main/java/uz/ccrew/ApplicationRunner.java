@@ -39,7 +39,7 @@ public class ApplicationRunner {
         log.info("---- Trainee Operations ----");
 
         TraineeCreateDTO traineeDTO = TraineeCreateDTO.builder()
-                .firstName("John")
+                .firstName("Maksud")
                 .lastName("Doe")
                 .birthOfDate(LocalDate.of(1990, 1, 1))
                 .address("123 Main St")
@@ -55,9 +55,9 @@ public class ApplicationRunner {
         log.info("---- Trainer Operations ----");
 
         TrainerCreateDTO trainerDTO = TrainerCreateDTO.builder()
-                .firstName("Jane")
+                .firstName("Lev")
                 .lastName("Smith")
-                .trainingType(new TrainingType("Yoga"))
+                .trainingTypeId(1L)
                 .build();
         Long trainerId = facade.getTrainerService().create(trainerDTO);
         log.info("Created Trainer ID: {}", trainerId);
@@ -69,11 +69,13 @@ public class ApplicationRunner {
     private static void createAndListTrainings(@NotNull ApplicationFacade facade) {
         log.info("---- Training Operations ----");
 
+        TrainingType trainingType = facade.getTrainingTypeService().findById(2L);
+
         Training training = Training.builder()
                 .trainee(facade.getTraineeService().findById(1L))
-                .trainer(facade.getTrainerService().findById(1L))
+                .trainer(facade.getTrainerService().findById(11L))
                 .trainingName("Morning Yoga Session")
-                .trainingType(new TrainingType("Yoga"))
+                .trainingType(trainingType)
                 .trainingDate(LocalDate.now())
                 .trainingDuration(60.0)
                 .build();
@@ -88,26 +90,18 @@ public class ApplicationRunner {
     private static void advancedTraineeOperations(@NotNull ApplicationFacade facade) {
         log.info("---- Advanced Trainee Operations ----");
 
-        String usernameToDelete = "John.Doe";
+        String usernameToDelete = "Maksud.Doe";
         facade.getTraineeService().deleteTraineeByUsername(usernameToDelete);
         log.info("Deleted Trainee with username: {}", usernameToDelete);
 
-        facade.getTraineeService().updateTraineeTrainers(1L, List.of(2L, 3L));
+        facade.getTraineeService().updateTraineeTrainers(1L, List.of(10L, 11L));
         log.info("Updated trainers for Trainee ID: 1");
     }
 
     private static void advancedTrainerOperations(@NotNull ApplicationFacade facade) {
         log.info("---- Advanced Trainer Operations ----");
 
-//        List<Training> trainings = facade.getTrainerServiceImpl().getTrainerTrainings(
-//                "Jane.Smith",
-//                LocalDate.of(2023, 1, 1),
-//                LocalDate.of(2023, 12, 31),
-//                "John Doe"
-//        );
-//        trainings.forEach(t -> log.info("Training: {}, Trainee: {}", t.getTrainingName(), t.getTrainee().getUser().getFirstName()));
-
-        List<Trainer> unassignedTrainers = facade.getTrainerService().getUnassignedTrainers("John.Doe");
+        List<Trainer> unassignedTrainers = facade.getTrainerService().getUnassignedTrainers("John.Doe.1");
         unassignedTrainers.forEach(tr -> log.info("Unassigned Trainer: {} {}", tr.getUser().getFirstName(), tr.getUser().getLastName()));
     }
 

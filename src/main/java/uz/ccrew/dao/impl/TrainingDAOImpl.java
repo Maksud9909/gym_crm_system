@@ -9,7 +9,6 @@ import org.hibernate.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.time.LocalDate;
@@ -36,8 +35,9 @@ public class TrainingDAOImpl extends AbstractBaseDAO<Training> implements Traini
 
     @Override
     public List<Training> getTraineeTrainings(String traineeUsername, LocalDate fromDate,
-                                              LocalDate toDate, String trainerName, TrainingType trainingType) {
+                                              LocalDate toDate, String trainerName, Long trainingTypeId) {
         Session session = getSessionFactory().getCurrentSession();
+        TrainingType trainingType = session.get(TrainingType.class, trainingTypeId);
         String hql = "SELECT tr FROM Training tr " +
                 "JOIN FETCH tr.trainee trainee " +
                 "JOIN FETCH tr.trainer trainer " +

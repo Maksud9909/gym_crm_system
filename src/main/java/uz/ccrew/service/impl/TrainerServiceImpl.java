@@ -1,5 +1,6 @@
 package uz.ccrew.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.dao.TrainerDAO;
@@ -20,6 +21,7 @@ public class TrainerServiceImpl extends AbstractAdvancedUserService<Trainer, Tra
 
     private final TrainerDAO trainerDAO;
 
+    @Autowired
     public TrainerServiceImpl(TrainerDAO trainerDAO) {
         super(trainerDAO);
         this.trainerDAO = trainerDAO;

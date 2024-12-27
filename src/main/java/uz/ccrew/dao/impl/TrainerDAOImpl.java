@@ -4,6 +4,7 @@ import uz.ccrew.dao.UserDAO;
 import uz.ccrew.entity.User;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.dao.TrainerDAO;
+import uz.ccrew.entity.TrainingType;
 import uz.ccrew.dto.trainer.TrainerCreateDTO;
 import uz.ccrew.dao.base.advancedBase.AbstractAdvancedUserBaseCRUDDAO;
 
@@ -12,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import uz.ccrew.utils.UserUtils;
 
 import java.util.List;
@@ -49,9 +49,11 @@ public class TrainerDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainer, Tra
         Long userId = userDAO.create(user);
         user = userDAO.findById(userId).orElseThrow();
 
+        TrainingType trainingType = session.get(TrainingType.class, dto.trainingTypeId());
+
         Trainer trainer = Trainer.builder()
                 .user(user)
-                .trainingType(dto.trainingType())
+                .trainingType(trainingType)
                 .build();
 
         session.persist(trainer);
@@ -76,7 +78,9 @@ public class TrainerDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainer, Tra
         user.setLastName(dto.lastName());
         user.setUsername(userUtils.generateUniqueUsername(dto.firstName(), dto.lastName()));
 
-        trainer.setTrainingType(dto.trainingType());
+        TrainingType trainingType = session.get(TrainingType.class, dto.trainingTypeId());
+
+        trainer.setTrainingType(trainingType);
 
         session.merge(user);
         session.merge(trainer);
