@@ -1,5 +1,6 @@
-package uz.ccrew.dao;
+package uz.ccrew.dao.impl;
 
+import uz.ccrew.dao.UserDAO;
 import uz.ccrew.entity.User;
 import uz.ccrew.dao.base.base.AbstractBaseDAO;
 
@@ -13,11 +14,11 @@ import org.springframework.stereotype.Repository;
 
 @Slf4j
 @Repository
-public class UserImplDAO extends AbstractBaseDAO<User> implements UserDAO{
+public class UserDAOImpl extends AbstractBaseDAO<User> implements UserDAO {
     private static final String ENTITY_NAME = "User";
 
 
-    public UserImplDAO(SessionFactory sessionFactory) {
+    public UserDAOImpl(SessionFactory sessionFactory) {
         super(sessionFactory, User.class);
     }
 

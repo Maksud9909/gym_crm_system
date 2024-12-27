@@ -8,9 +8,9 @@ import uz.ccrew.dto.trainer.TrainerCreateDTO;
 import uz.ccrew.entity.Trainee;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.entity.Training;
-import uz.ccrew.service.TraineeService;
-import uz.ccrew.service.TrainerService;
-import uz.ccrew.service.TrainingService;
+import uz.ccrew.service.impl.TraineeServiceImpl;
+import uz.ccrew.service.impl.TrainerServiceImpl;
+import uz.ccrew.service.impl.TrainingServiceImpl;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,39 +19,39 @@ import java.util.Optional;
 @Getter
 @Component
 public class ApplicationFacade {
-    private final TraineeService traineeService;
-    private final TrainerService trainerService;
-    private final TrainingService trainingService;
+    private final TraineeServiceImpl traineeServiceImpl;
+    private final TrainerServiceImpl trainerServiceImpl;
+    private final TrainingServiceImpl trainingService;
 
-    public ApplicationFacade(TraineeService traineeService, TrainerService trainerService, TrainingService trainingService) {
-        this.traineeService = traineeService;
-        this.trainerService = trainerService;
+    public ApplicationFacade(TraineeServiceImpl traineeServiceImpl, TrainerServiceImpl trainerServiceImpl, TrainingServiceImpl trainingService) {
+        this.traineeServiceImpl = traineeServiceImpl;
+        this.trainerServiceImpl = trainerServiceImpl;
         this.trainingService = trainingService;
         log.info("ApplicationFacade initialized with services");
     }
 
     public Long createTrainee(TraineeCreateDTO trainee) {
-        return traineeService.create(trainee);
+        return traineeServiceImpl.create(trainee);
     }
 
     public Optional<Trainee> getTrainee(Long id) {
-        return Optional.ofNullable(traineeService.findById(id));
+        return Optional.ofNullable(traineeServiceImpl.findById(id));
     }
 
     public List<Trainee> getAllTrainees() {
-        return traineeService.findAll();
+        return traineeServiceImpl.findAll();
     }
 
     public Long createTrainer(TrainerCreateDTO trainer) {
-        return trainerService.create(trainer);
+        return trainerServiceImpl.create(trainer);
     }
 
     public Trainer getTrainer(Long id) {
-        return trainerService.findById(id);
+        return trainerServiceImpl.findById(id);
     }
 
     public List<Trainer> getAllTrainers() {
-        return trainerService.findAll();
+        return trainerServiceImpl.findAll();
     }
 
     public Long createTraining(Training training) {

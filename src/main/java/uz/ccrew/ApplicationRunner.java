@@ -44,10 +44,10 @@ public class ApplicationRunner {
                 .birthOfDate(LocalDate.of(1990, 1, 1))
                 .address("123 Main St")
                 .build();
-        Long traineeId = facade.getTraineeService().create(traineeDTO);
+        Long traineeId = facade.getTraineeServiceImpl().create(traineeDTO);
         log.info("Created Trainee ID: {}", traineeId);
 
-        List<Trainee> trainees = facade.getTraineeService().findAll();
+        List<Trainee> trainees = facade.getTraineeServiceImpl().findAll();
         trainees.forEach(t -> log.info("Trainee: {} {}, ID: {}", t.getUser().getFirstName(), t.getUser().getLastName(), t.getId()));
     }
 
@@ -59,10 +59,10 @@ public class ApplicationRunner {
                 .lastName("Smith")
                 .trainingType(new TrainingType("Yoga"))
                 .build();
-        Long trainerId = facade.getTrainerService().create(trainerDTO);
+        Long trainerId = facade.getTrainerServiceImpl().create(trainerDTO);
         log.info("Created Trainer ID: {}", trainerId);
 
-        List<Trainer> trainers = facade.getTrainerService().findAll();
+        List<Trainer> trainers = facade.getTrainerServiceImpl().findAll();
         trainers.forEach(t -> log.info("Trainer: {} {}, ID: {}", t.getUser().getFirstName(), t.getUser().getLastName(), t.getId()));
     }
 
@@ -70,8 +70,8 @@ public class ApplicationRunner {
         log.info("---- Training Operations ----");
 
         Training training = Training.builder()
-                .trainee(facade.getTraineeService().findById(1L))
-                .trainer(facade.getTrainerService().findById(1L))
+                .trainee(facade.getTraineeServiceImpl().findById(1L))
+                .trainer(facade.getTrainerServiceImpl().findById(1L))
                 .trainingName("Morning Yoga Session")
                 .trainingType(new TrainingType("Yoga"))
                 .trainingDate(LocalDate.now())
@@ -89,25 +89,25 @@ public class ApplicationRunner {
         log.info("---- Advanced Trainee Operations ----");
 
         String usernameToDelete = "John.Doe";
-        facade.getTraineeService().deleteTraineeByUsername(usernameToDelete);
+        facade.getTraineeServiceImpl().deleteTraineeByUsername(usernameToDelete);
         log.info("Deleted Trainee with username: {}", usernameToDelete);
 
-        facade.getTraineeService().updateTraineeTrainers(1L, List.of(2L, 3L));
+        facade.getTraineeServiceImpl().updateTraineeTrainers(1L, List.of(2L, 3L));
         log.info("Updated trainers for Trainee ID: 1");
     }
 
     private static void advancedTrainerOperations(@NotNull ApplicationFacade facade) {
         log.info("---- Advanced Trainer Operations ----");
 
-        List<Training> trainings = facade.getTrainerService().getTrainerTrainings(
-                "Jane.Smith",
-                LocalDate.of(2023, 1, 1),
-                LocalDate.of(2023, 12, 31),
-                "John Doe"
-        );
-        trainings.forEach(t -> log.info("Training: {}, Trainee: {}", t.getTrainingName(), t.getTrainee().getUser().getFirstName()));
+//        List<Training> trainings = facade.getTrainerServiceImpl().getTrainerTrainings(
+//                "Jane.Smith",
+//                LocalDate.of(2023, 1, 1),
+//                LocalDate.of(2023, 12, 31),
+//                "John Doe"
+//        );
+//        trainings.forEach(t -> log.info("Training: {}, Trainee: {}", t.getTrainingName(), t.getTrainee().getUser().getFirstName()));
 
-        List<Trainer> unassignedTrainers = facade.getTrainerService().getUnassignedTrainers("John.Doe");
+        List<Trainer> unassignedTrainers = facade.getTrainerServiceImpl().getUnassignedTrainers("John.Doe");
         unassignedTrainers.forEach(tr -> log.info("Unassigned Trainer: {} {}", tr.getUser().getFirstName(), tr.getUser().getLastName()));
     }
 

@@ -4,18 +4,18 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import uz.ccrew.service.TraineeService;
-import uz.ccrew.service.TrainerService;
-import uz.ccrew.service.TrainingService;
+import uz.ccrew.service.impl.TraineeServiceImpl;
+import uz.ccrew.service.impl.TrainerServiceImpl;
+import uz.ccrew.service.impl.TrainingServiceImpl;
 
 @Component
 public class DataInitializer {
 
-    private TraineeService traineeService;
+    private TraineeServiceImpl traineeServiceImpl;
 
-    private TrainerService trainerService;
+    private TrainerServiceImpl trainerServiceImpl;
 
-    private TrainingService trainingService;
+    private TrainingServiceImpl trainingService;
 
     @Value("${trainee.data.file}")
     private String traineeDataFile;
@@ -27,18 +27,18 @@ public class DataInitializer {
     private String trainingDataFile;
 
     @Autowired
-    public void setTrainingService(TrainingService trainingService) {
+    public void setTrainingService(TrainingServiceImpl trainingService) {
         this.trainingService = trainingService;
     }
 
     @Autowired
-    public void setTrainerService(TrainerService trainerService) {
-        this.trainerService = trainerService;
+    public void setTrainerService(TrainerServiceImpl trainerServiceImpl) {
+        this.trainerServiceImpl = trainerServiceImpl;
     }
 
     @Autowired
-    public void setTraineeService(TraineeService traineeService) {
-        this.traineeService = traineeService;
+    public void setTraineeService(TraineeServiceImpl traineeServiceImpl) {
+        this.traineeServiceImpl = traineeServiceImpl;
     }
 
     @PostConstruct
