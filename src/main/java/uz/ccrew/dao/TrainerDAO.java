@@ -1,34 +1,33 @@
 package uz.ccrew.dao;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import uz.ccrew.dao.base.advancedBase.AbstractAdvancedBaseDAO;
-import uz.ccrew.dto.trainer.TrainerCreateDTO;
+import uz.ccrew.entity.User;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.entity.Training;
+import uz.ccrew.dto.trainer.TrainerCreateDTO;
+import uz.ccrew.dao.base.advancedBase.AbstractAdvancedUserBaseCRUDDAO;
 
-import static uz.ccrew.utils.UserUtils.generateRandomPassword;
-import static uz.ccrew.utils.UserUtils.generateUniqueUsername;
-
-import org.hibernate.Session;
-import lombok.extern.slf4j.Slf4j;
-import org.hibernate.SessionFactory;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import uz.ccrew.entity.User;
 
 import java.time.LocalDate;
 import java.util.List;
 
+import static uz.ccrew.utils.UserUtils.*;
+
 @Slf4j
 @Repository
 @Transactional
-public class TrainerDAO extends AbstractAdvancedBaseDAO<Trainer, TrainerCreateDTO> {
+public class TrainerDAO extends AbstractAdvancedUserBaseCRUDDAO<Trainer, TrainerCreateDTO> {
     private static final String ENTITY_NAME = "Trainer";
     private final UserDAO userDAO;
 
     @Autowired
-    public TrainerDAO(SessionFactory sessionFactory, Class<Trainer> entityClass, UserDAO userDAO) {
-        super(sessionFactory, entityClass);
+    public TrainerDAO(SessionFactory sessionFactory, UserDAO userDAO) {
+        super(sessionFactory, Trainer.class);
         this.userDAO = userDAO;
         log.debug("TrainerDAO instantiated");
     }
@@ -52,7 +51,7 @@ public class TrainerDAO extends AbstractAdvancedBaseDAO<Trainer, TrainerCreateDT
 
         Trainer trainer = Trainer.builder()
                 .user(user)
-                .specialization(dto.specialization())
+                .trainingType(dto.trainingType())
                 .build();
 
         session.persist(trainer);
@@ -61,7 +60,6 @@ public class TrainerDAO extends AbstractAdvancedBaseDAO<Trainer, TrainerCreateDT
 
         return trainer.getId();
     }
-
 
     @Override
     public void update(Long id, TrainerCreateDTO dto) {
@@ -78,7 +76,7 @@ public class TrainerDAO extends AbstractAdvancedBaseDAO<Trainer, TrainerCreateDT
         user.setLastName(dto.lastName());
         user.setUsername(generateUniqueUsername(dto.firstName(), dto.lastName(), getSessionFactory()));
 
-        trainer.setSpecialization(dto.specialization());
+        trainer.setTrainingType(dto.trainingType());
 
         session.merge(user);
         session.merge(trainer);
@@ -89,13 +87,15 @@ public class TrainerDAO extends AbstractAdvancedBaseDAO<Trainer, TrainerCreateDT
 
     public List<Training> getTrainerTrainings(String trainerUsername, LocalDate fromDate, LocalDate toDate, String traineeName) {
         try (Session session = getSessionFactory().getCurrentSession()) {
-            String hql = "SELECT t FROM Training t " +
-                    "JOIN t.trainer trainer " +
-                    "JOIN t.trainee trainee " +
-                    "WHERE trainer.username = :trainerUsername " +
-                    "AND (:fromDate IS NULL OR t.trainingDate >= :fromDate) " +
-                    "AND (:toDate IS NULL OR t.trainingDate <= :toDate) " +
-                    "AND (:traineeName IS NULL OR trainee.firstName || ' ' || trainee.lastName = :traineeName)";
+            String hql = """
+                        SELECT t FROM Training t
+                        JOIN FETCH t.trainer trainer
+                        JOIN FETCH t.trainee trainee
+                        WHERE trainer.user.username = :trainerUsername
+                        AND (:fromDate IS NULL OR t.trainingDate >= :fromDate)
+                        AND (:toDate IS NULL OR t.trainingDate <= :toDate)
+                        AND (:traineeName IS NULL OR CONCAT(trainee.user.firstName, ' ', trainee.user.lastName) = :traineeName)
+                    """;
 
             return session.createQuery(hql, Training.class)
                     .setParameter("trainerUsername", trainerUsername)
@@ -108,12 +108,14 @@ public class TrainerDAO extends AbstractAdvancedBaseDAO<Trainer, TrainerCreateDT
 
     public List<Trainer> getUnassignedTrainers(String traineeUsername) {
         try (Session session = getSessionFactory().getCurrentSession()) {
-            String hql = "SELECT tr FROM Trainer tr " +
-                    "WHERE tr.id NOT IN (" +
-                    "   SELECT t.id FROM Trainee trainee " +
-                    "   JOIN trainee.trainers t " +
-                    "   WHERE trainee.username = :traineeUsername" +
-                    ")";
+            String hql = """
+                        SELECT tr FROM Trainer tr
+                        WHERE tr.id NOT IN (
+                            SELECT trainer.id FROM Trainee trainee
+                            JOIN trainee.trainers trainer
+                            WHERE trainee.user.username = :traineeUsername
+                        )
+                    """;
 
             return session.createQuery(hql, Trainer.class)
                     .setParameter("traineeUsername", traineeUsername)

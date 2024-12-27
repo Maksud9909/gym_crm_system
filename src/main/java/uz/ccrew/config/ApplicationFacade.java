@@ -1,5 +1,10 @@
 package uz.ccrew.config;
 
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+import uz.ccrew.dto.trainee.TraineeCreateDTO;
+import uz.ccrew.dto.trainer.TrainerCreateDTO;
 import uz.ccrew.entity.Trainee;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.entity.Training;
@@ -7,21 +12,17 @@ import uz.ccrew.service.TraineeService;
 import uz.ccrew.service.TrainerService;
 import uz.ccrew.service.TrainingService;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.util.List;
 import java.util.Optional;
 
 @Slf4j
+@Getter
 @Component
 public class ApplicationFacade {
     private final TraineeService traineeService;
     private final TrainerService trainerService;
     private final TrainingService trainingService;
 
-    @Autowired
     public ApplicationFacade(TraineeService traineeService, TrainerService trainerService, TrainingService trainingService) {
         this.traineeService = traineeService;
         this.trainerService = trainerService;
@@ -29,7 +30,7 @@ public class ApplicationFacade {
         log.info("ApplicationFacade initialized with services");
     }
 
-    public Long createTrainee(Trainee trainee) {
+    public Long createTrainee(TraineeCreateDTO trainee) {
         return traineeService.create(trainee);
     }
 
@@ -41,7 +42,7 @@ public class ApplicationFacade {
         return traineeService.findAll();
     }
 
-    public Long createTrainer(Trainer trainer) {
+    public Long createTrainer(TrainerCreateDTO trainer) {
         return trainerService.create(trainer);
     }
 

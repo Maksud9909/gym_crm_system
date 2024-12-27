@@ -1,19 +1,17 @@
-package uz.ccrew.dao.base.userBase;
+package uz.ccrew.dao.base.advancedBase;
 
-import uz.ccrew.dao.base.crudBase.AbstractCRUDBaseDAO;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import uz.ccrew.entity.User;
 import uz.ccrew.entity.base.UserAware;
-
-import org.hibernate.Session;
-import lombok.extern.slf4j.Slf4j;
-import org.hibernate.SessionFactory;
 
 import java.util.Optional;
 
 @Slf4j
-public abstract class AbstractUserBaseDAO<T extends UserAware> extends AbstractCRUDBaseDAO<T> implements BaseUserDAO<T> {
+public abstract class AbstractAdvancedUserBaseCRUDDAO<T extends UserAware, D> extends AbstractAdvancedBaseCRUDDAO<T, D> implements BaseAdvancedUserCRUDDAO<T, D> {
 
-    public AbstractUserBaseDAO(SessionFactory sessionFactory, Class<T> entityClass) {
+    public AbstractAdvancedUserBaseCRUDDAO(SessionFactory sessionFactory, Class<T> entityClass) {
         super(sessionFactory, entityClass);
     }
 

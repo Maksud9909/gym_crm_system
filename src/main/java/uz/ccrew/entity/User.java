@@ -1,11 +1,9 @@
 package uz.ccrew.entity;
 
-import uz.ccrew.entity.base.BaseEntity;
-
 import jakarta.persistence.*;
-
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import uz.ccrew.entity.base.BaseEntity;
 
 @Getter
 @Setter

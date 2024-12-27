@@ -1,10 +1,5 @@
 package uz.ccrew.utils;
 
-import uz.ccrew.entity.*;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 public class EntityMapper {
 //    public static Trainee mapToTrainee(String[] data) {
 //        return Trainee.builder()

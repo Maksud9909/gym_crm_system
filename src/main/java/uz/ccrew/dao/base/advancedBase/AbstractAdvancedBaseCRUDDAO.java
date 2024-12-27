@@ -13,7 +13,7 @@ import java.util.Optional;
 @Slf4j
 @Getter
 @RequiredArgsConstructor
-public abstract class AbstractAdvancedBaseDAO<T, D> implements BaseAdvancedDAO<T, D> {
+public abstract class AbstractAdvancedBaseCRUDDAO<T, D> implements BaseAdvancedCRUDDAO<T, D> {
     private final SessionFactory sessionFactory;
     private final Class<T> entityClass;
 
@@ -45,7 +45,7 @@ public abstract class AbstractAdvancedBaseDAO<T, D> implements BaseAdvancedDAO<T
             transaction = session.beginTransaction();
             T entity = session.get(entityClass, id);
             if (entity != null) {
-                session.delete(entity);
+                session.remove(entity);
                 transaction.commit();
                 log.info("Deleted {} with ID={}", getEntityName(), id);
             } else {

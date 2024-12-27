@@ -1,15 +1,12 @@
 package uz.ccrew.config;
 
-import uz.ccrew.utils.DataLoader;
-import uz.ccrew.utils.EntityMapper;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import uz.ccrew.service.TraineeService;
 import uz.ccrew.service.TrainerService;
 import uz.ccrew.service.TrainingService;
-
-import jakarta.annotation.PostConstruct;
-import org.springframework.stereotype.Component;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @Component
 public class DataInitializer {

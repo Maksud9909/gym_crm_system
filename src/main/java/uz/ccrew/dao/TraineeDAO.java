@@ -1,26 +1,26 @@
 package uz.ccrew.dao;
 
-import uz.ccrew.entity.*;
+import uz.ccrew.entity.User;
+import uz.ccrew.entity.Trainee;
+import uz.ccrew.entity.Trainer;
 import uz.ccrew.dto.trainee.TraineeCreateDTO;
-import uz.ccrew.dao.base.advancedBase.AbstractAdvancedBaseDAO;
+import uz.ccrew.dao.base.advancedBase.AbstractAdvancedUserBaseCRUDDAO;
 
-import static uz.ccrew.utils.UserUtils.generateRandomPassword;
-import static uz.ccrew.utils.UserUtils.generateUniqueUsername;
-
-import org.hibernate.Session;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.springframework.stereotype.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
+
+import static uz.ccrew.utils.UserUtils.*;
 
 @Slf4j
 @Repository
 @Transactional
-public class TraineeDAO extends AbstractAdvancedBaseDAO<Trainee, TraineeCreateDTO> {
+public class TraineeDAO extends AbstractAdvancedUserBaseCRUDDAO<Trainee, TraineeCreateDTO> {
     private static final String ENTITY_NAME = "Trainee";
 
     private final UserDAO userDAO;
@@ -38,7 +38,6 @@ public class TraineeDAO extends AbstractAdvancedBaseDAO<Trainee, TraineeCreateDT
         String firstName = dto.firstName();
         String lastName = dto.lastName();
 
-
         User user = User.builder()
                 .firstName(firstName)
                 .lastName(lastName)
@@ -48,7 +47,6 @@ public class TraineeDAO extends AbstractAdvancedBaseDAO<Trainee, TraineeCreateDT
 
         Long userId = userDAO.create(user);
         user = userDAO.findById(userId).orElseThrow();
-
 
         Trainee trainee = Trainee.builder()
                 .user(user)
@@ -87,10 +85,9 @@ public class TraineeDAO extends AbstractAdvancedBaseDAO<Trainee, TraineeCreateDT
         log.info("Updated {}: ID={}, Trainee={}", getEntityName(), id, dto);
     }
 
-
     public void deleteByUsername(String username) {
         try (Session session = getSessionFactory().getCurrentSession()) {
-            String hql = "FROM Trainee t WHERE t.username = :username";
+            String hql = "FROM Trainee t JOIN FETCH t.user u WHERE u.username = :username";
             Trainee trainee = session.createQuery(hql, Trainee.class)
                     .setParameter("username", username)
                     .uniqueResult();
@@ -101,28 +98,6 @@ public class TraineeDAO extends AbstractAdvancedBaseDAO<Trainee, TraineeCreateDT
             } else {
                 log.warn("Trainee with username={} not found", username);
             }
-        }
-    }
-
-    public List<Training> getTraineeTrainings(String traineeUsername, LocalDate fromDate,
-                                              LocalDate toDate, String trainerName, TrainingType trainingType) {
-        try (Session session = getSessionFactory().getCurrentSession()) {
-            String hql = "SELECT t FROM Training t " +
-                    "JOIN t.trainee trainee " +
-                    "JOIN t.trainer trainer " +
-                    "WHERE trainee.username = :traineeUsername " +
-                    "AND (:fromDate IS NULL OR t.trainingDate >= :fromDate) " +
-                    "AND (:toDate IS NULL OR t.trainingDate <= :toDate) " +
-                    "AND (:trainerName IS NULL OR trainer.firstName || ' ' || trainer.lastName = :trainerName) " +
-                    "AND (:trainingType IS NULL OR t.trainingType = :trainingType)";
-
-            return session.createQuery(hql, Training.class)
-                    .setParameter("traineeUsername", traineeUsername)
-                    .setParameter("fromDate", fromDate)
-                    .setParameter("toDate", toDate)
-                    .setParameter("trainerName", trainerName)
-                    .setParameter("trainingType", trainingType)
-                    .list();
         }
     }
 
@@ -148,7 +123,6 @@ public class TraineeDAO extends AbstractAdvancedBaseDAO<Trainee, TraineeCreateDT
             throw e;
         }
     }
-
 
     @Override
     protected String getEntityName() {

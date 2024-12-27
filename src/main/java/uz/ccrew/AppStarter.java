@@ -1,10 +1,10 @@
 package uz.ccrew;
 
-import uz.ccrew.config.*;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import uz.ccrew.config.DataSourceConfig;
+import uz.ccrew.config.HibernateConfig;
 
 @Slf4j
 public class AppStarter {

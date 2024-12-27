@@ -1,12 +1,13 @@
 package uz.ccrew.dao.base.base;
 
-import java.util.*;
-
 import lombok.Getter;
-import org.hibernate.Session;
-import lombok.extern.slf4j.Slf4j;
-import org.hibernate.SessionFactory;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Getter

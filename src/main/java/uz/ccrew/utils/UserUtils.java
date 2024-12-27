@@ -1,8 +1,8 @@
 package uz.ccrew.utils;
 
+import lombok.experimental.UtilityClass;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import lombok.experimental.UtilityClass;
 
 import java.security.SecureRandom;
 

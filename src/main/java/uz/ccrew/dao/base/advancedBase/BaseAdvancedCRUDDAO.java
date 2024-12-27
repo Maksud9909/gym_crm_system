@@ -3,7 +3,7 @@ package uz.ccrew.dao.base.advancedBase;
 import java.util.List;
 import java.util.Optional;
 
-public interface BaseAdvancedDAO<T, D> {
+public interface BaseAdvancedCRUDDAO<T, D> {
     Long create(D dto);
 
     void update(Long id, D dto);

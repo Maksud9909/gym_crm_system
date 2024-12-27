@@ -1,13 +1,12 @@
 package uz.ccrew.entity;
 
-import uz.ccrew.entity.base.BaseEntity;
-
-import lombok.Setter;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import uz.ccrew.entity.base.BaseEntity;
 
 @Getter
 @Setter

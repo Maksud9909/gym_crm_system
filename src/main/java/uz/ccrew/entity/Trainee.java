@@ -1,15 +1,14 @@
 package uz.ccrew.entity;
 
-import uz.ccrew.entity.base.BaseEntity;
-
-import lombok.*;
 import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
+import uz.ccrew.entity.base.BaseEntity;
 import uz.ccrew.entity.base.UserAware;
 
-import java.util.List;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter

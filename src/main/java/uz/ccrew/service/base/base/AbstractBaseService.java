@@ -1,13 +1,12 @@
-package uz.ccrew.service.base;
+package uz.ccrew.service.base.base;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import uz.ccrew.dao.base.base.BaseDAO;
 import uz.ccrew.exp.EntityNotFoundException;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 

@@ -1,14 +1,13 @@
 package uz.ccrew.entity;
 
-import uz.ccrew.entity.base.BaseEntity;
-
-import lombok.*;
 import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
+import uz.ccrew.entity.base.BaseEntity;
 import uz.ccrew.entity.base.UserAware;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -25,11 +24,11 @@ public class Trainer extends BaseEntity implements UserAware {
             inverseJoinColumns = @JoinColumn(name = "trainee_id"))
     private List<Trainee> trainees = new ArrayList<>();
     @ManyToOne
-    @JoinColumn(name = "specialization_id", nullable = false)
-    private Specialization specialization;
+    @JoinColumn(name = "training_type_id", nullable = false)
+    private TrainingType trainingType;
     @OneToMany(mappedBy = "trainer")
     private List<Training> training = new ArrayList<>();
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }
