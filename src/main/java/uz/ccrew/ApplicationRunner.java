@@ -1,18 +1,20 @@
 package uz.ccrew;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import uz.ccrew.config.AppConfig;
-import uz.ccrew.config.ApplicationFacade;
-import uz.ccrew.config.DataSourceConfig;
-import uz.ccrew.config.HibernateConfig;
-import uz.ccrew.dto.trainee.TraineeCreateDTO;
-import uz.ccrew.dto.trainer.TrainerCreateDTO;
+import org.jetbrains.annotations.NotNull;
 import uz.ccrew.entity.Trainee;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.entity.Training;
+import uz.ccrew.config.AppConfig;
 import uz.ccrew.entity.TrainingType;
+import uz.ccrew.config.HibernateConfig;
+import uz.ccrew.config.DataSourceConfig;
+import uz.ccrew.config.ApplicationFacade;
+import uz.ccrew.dto.trainee.TraineeCreateDTO;
+import uz.ccrew.dto.trainer.TrainerCreateDTO;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.List;
 import java.time.LocalDate;
@@ -33,7 +35,7 @@ public class ApplicationRunner {
         log.info("---- Application Finished ----");
     }
 
-    private static void createAndListTrainees(ApplicationFacade facade) {
+    private static void createAndListTrainees(@NotNull ApplicationFacade facade) {
         log.info("---- Trainee Operations ----");
 
         TraineeCreateDTO traineeDTO = TraineeCreateDTO.builder()
@@ -49,7 +51,7 @@ public class ApplicationRunner {
         trainees.forEach(t -> log.info("Trainee: {} {}, ID: {}", t.getUser().getFirstName(), t.getUser().getLastName(), t.getId()));
     }
 
-    private static void createAndListTrainers(ApplicationFacade facade) {
+    private static void createAndListTrainers(@NotNull ApplicationFacade facade) {
         log.info("---- Trainer Operations ----");
 
         TrainerCreateDTO trainerDTO = TrainerCreateDTO.builder()
@@ -64,7 +66,7 @@ public class ApplicationRunner {
         trainers.forEach(t -> log.info("Trainer: {} {}, ID: {}", t.getUser().getFirstName(), t.getUser().getLastName(), t.getId()));
     }
 
-    private static void createAndListTrainings(ApplicationFacade facade) {
+    private static void createAndListTrainings(@NotNull ApplicationFacade facade) {
         log.info("---- Training Operations ----");
 
         Training training = Training.builder()
@@ -83,7 +85,7 @@ public class ApplicationRunner {
                 t.getTrainingName(), t.getTrainingDate(), t.getTrainingDuration()));
     }
 
-    private static void advancedTraineeOperations(ApplicationFacade facade) {
+    private static void advancedTraineeOperations(@NotNull ApplicationFacade facade) {
         log.info("---- Advanced Trainee Operations ----");
 
         String usernameToDelete = "John.Doe";
@@ -94,7 +96,7 @@ public class ApplicationRunner {
         log.info("Updated trainers for Trainee ID: 1");
     }
 
-    private static void advancedTrainerOperations(ApplicationFacade facade) {
+    private static void advancedTrainerOperations(@NotNull ApplicationFacade facade) {
         log.info("---- Advanced Trainer Operations ----");
 
         List<Training> trainings = facade.getTrainerService().getTrainerTrainings(
@@ -109,7 +111,7 @@ public class ApplicationRunner {
         unassignedTrainers.forEach(tr -> log.info("Unassigned Trainer: {} {}", tr.getUser().getFirstName(), tr.getUser().getLastName()));
     }
 
-    private static void advancedTrainingOperations(ApplicationFacade facade) {
+    private static void advancedTrainingOperations(@NotNull ApplicationFacade facade) {
         List<Training> trainings = facade.getTrainingService().getTraineeTrainings(
                 "Jane.Doe",
                 LocalDate.of(2023, 1, 1),

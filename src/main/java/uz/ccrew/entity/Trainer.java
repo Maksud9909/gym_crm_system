@@ -1,10 +1,11 @@
 package uz.ccrew.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
-import lombok.experimental.SuperBuilder;
-import uz.ccrew.entity.base.BaseEntity;
 import uz.ccrew.entity.base.UserAware;
+import uz.ccrew.entity.base.BaseEntity;
+
+import lombok.*;
+import jakarta.persistence.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,17 +19,17 @@ import java.util.List;
 @Entity
 @Table(name = "trainers")
 public class Trainer extends BaseEntity implements UserAware {
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "trainee_trainer",
             joinColumns = @JoinColumn(name = "trainer_id"),
             inverseJoinColumns = @JoinColumn(name = "trainee_id"))
     private List<Trainee> trainees = new ArrayList<>();
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "training_type_id", nullable = false)
     private TrainingType trainingType;
-    @OneToMany(mappedBy = "trainer")
+    @OneToMany(mappedBy = "trainer",fetch = FetchType.LAZY)
     private List<Training> training = new ArrayList<>();
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }

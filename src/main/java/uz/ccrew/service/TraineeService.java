@@ -5,13 +5,13 @@ import org.springframework.stereotype.Service;
 import uz.ccrew.dao.TraineeDAO;
 import uz.ccrew.dto.trainee.TraineeCreateDTO;
 import uz.ccrew.entity.Trainee;
-import uz.ccrew.service.base.advancedBase.AbstractAdvancedUserCRUDService;
+import uz.ccrew.service.base.advancedBase.AbstractAdvancedUserService;
 
 import java.util.List;
 
 @Slf4j
 @Service
-public class TraineeService extends AbstractAdvancedUserCRUDService<Trainee, TraineeCreateDTO> {
+public class TraineeService extends AbstractAdvancedUserService<Trainee, TraineeCreateDTO> {
     private static final String ENTITY_NAME = "Trainee";
     private final TraineeDAO traineeDAO;
 

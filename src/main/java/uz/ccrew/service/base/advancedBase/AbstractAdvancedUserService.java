@@ -8,10 +8,10 @@ import uz.ccrew.exp.EntityNotFoundException;
 import java.util.Objects;
 
 @Slf4j
-public abstract class AbstractAdvancedUserCRUDService<T extends UserAware, D> extends AbstractAdvancedCRUDService<T, D>
-        implements BaseAdvancedUserCRUDService<T, D> {
+public abstract class AbstractAdvancedUserService<T extends UserAware, D> extends AbstractAdvancedService<T, D>
+        implements BaseAdvancedUserService<T, D> {
 
-    public AbstractAdvancedUserCRUDService(BaseAdvancedUserCRUDDAO<T, D> dao) {
+    public AbstractAdvancedUserService(BaseAdvancedUserCRUDDAO<T, D> dao) {
         super(dao);
     }
 

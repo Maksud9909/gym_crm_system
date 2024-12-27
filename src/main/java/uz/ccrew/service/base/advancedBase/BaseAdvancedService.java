@@ -2,7 +2,7 @@ package uz.ccrew.service.base.advancedBase;
 
 import java.util.List;
 
-public interface BaseAdvancedCRUDService<T, D> {
+public interface BaseAdvancedService<T, D> {
     Long create(D entity);
 
     T findById(Long id);

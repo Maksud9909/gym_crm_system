@@ -6,14 +6,14 @@ import uz.ccrew.dao.TrainerDAO;
 import uz.ccrew.dto.trainer.TrainerCreateDTO;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.entity.Training;
-import uz.ccrew.service.base.advancedBase.AbstractAdvancedUserCRUDService;
+import uz.ccrew.service.base.advancedBase.AbstractAdvancedUserService;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
 @Service
-public class TrainerService extends AbstractAdvancedUserCRUDService<Trainer, TrainerCreateDTO> {
+public class TrainerService extends AbstractAdvancedUserService<Trainer, TrainerCreateDTO> {
     private static final String ENTITY_NAME = "Trainer";
 
     private final TrainerDAO trainerDAO;

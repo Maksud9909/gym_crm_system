@@ -14,7 +14,7 @@ import java.util.Objects;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class AbstractAdvancedCRUDService<T, D> implements BaseAdvancedCRUDService<T, D> {
+public abstract class AbstractAdvancedService<T, D> implements BaseAdvancedService<T, D> {
 
     private BaseAdvancedCRUDDAO<T, D> dao;
 
