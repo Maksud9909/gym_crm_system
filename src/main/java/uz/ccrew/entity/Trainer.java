@@ -1,32 +1,35 @@
 package uz.ccrew.entity;
 
+import uz.ccrew.entity.base.UserAware;
+import uz.ccrew.entity.base.BaseEntity;
+
 import lombok.*;
 import jakarta.persistence.*;
 import lombok.experimental.SuperBuilder;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(callSuper = true)
+@ToString(callSuper = true, exclude = {"trainees", "training"})
 @Entity
 @Table(name = "trainers")
-public class Trainer extends User {
-    @ManyToMany
+public class Trainer extends BaseEntity implements UserAware {
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "trainee_trainer",
             joinColumns = @JoinColumn(name = "trainer_id"),
             inverseJoinColumns = @JoinColumn(name = "trainee_id"))
     private List<Trainee> trainees = new ArrayList<>();
-    @ManyToOne
-    @JoinColumn(name = "specialization_id", nullable = false)
-    private Specialization specialization;
-    @OneToMany(mappedBy = "trainer")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "training_type_id", nullable = false)
+    private TrainingType trainingType;
+    @OneToMany(mappedBy = "trainer",fetch = FetchType.LAZY)
     private List<Training> training = new ArrayList<>();
-    @OneToOne
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }

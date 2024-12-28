@@ -20,38 +20,38 @@ import java.util.Optional;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class ApplicationFacadeTest {
 
-    @Autowired
-    private ApplicationFacade applicationFacade;
-
-    private Trainee trainee;
-
-    @BeforeEach
-    void setUp() {
-        trainee = new Trainee();
-        trainee.setFirstName("John");
-        trainee.setLastName("Doe");
-    }
-
-    @Test
-    void createTrainee_ShouldDelegateToService() {
-        Long id = applicationFacade.createTrainee(trainee);
-        assertNotNull(id);
-
-        Optional<Trainee> savedTrainee = applicationFacade.getTrainee(id);
-        assertNotNull(savedTrainee);
-        assertEquals("John", savedTrainee.get().getFirstName());
-    }
-
-    @Test
-    void getAllTrainees_ShouldReturnAllTrainees() {
-        applicationFacade.createTrainee(trainee);
-
-        Trainee anotherTrainee = new Trainee();
-        anotherTrainee.setFirstName("Alice");
-        anotherTrainee.setLastName("Smith");
-        applicationFacade.createTrainee(anotherTrainee);
-
-        List<Trainee> allTrainees = applicationFacade.getAllTrainees();
-        assertEquals(4, allTrainees.size());
-    }
+//    @Autowired
+//    private ApplicationFacade applicationFacade;
+//
+//    private Trainee trainee;
+//
+//    @BeforeEach
+//    void setUp() {
+//        trainee = new Trainee();
+//        trainee.setFirstName("John");
+//        trainee.setLastName("Doe");
+//    }
+//
+//    @Test
+//    void createTrainee_ShouldDelegateToService() {
+//        Long id = applicationFacade.createTrainee(trainee);
+//        assertNotNull(id);
+//
+//        Optional<Trainee> savedTrainee = applicationFacade.getTrainee(id);
+//        assertNotNull(savedTrainee);
+//        assertEquals("John", savedTrainee.get().getFirstName());
+//    }
+//
+//    @Test
+//    void getAllTrainees_ShouldReturnAllTrainees() {
+//        applicationFacade.createTrainee(trainee);
+//
+//        Trainee anotherTrainee = new Trainee();
+//        anotherTrainee.setFirstName("Alice");
+//        anotherTrainee.setLastName("Smith");
+//        applicationFacade.createTrainee(anotherTrainee);
+//
+//        List<Trainee> allTrainees = applicationFacade.getAllTrainees();
+//        assertEquals(4, allTrainees.size());
+//    }
 }

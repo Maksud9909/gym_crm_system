@@ -1,11 +1,11 @@
 package uz.ccrew.entity.base;
 
-import lombok.*;
-import jakarta.persistence.Id;
-import lombok.experimental.SuperBuilder;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter

@@ -15,19 +15,19 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "traingings")
+@Table(name = "trainings")
 public class Training extends BaseEntity {
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "trainee_id", nullable = false)
     private Trainee trainee;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "trainer_id", nullable = false)
     private Trainer trainer;
     @Column(name = "training_name", nullable = false)
     private String trainingName;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "training_type_id", nullable = false)
-    private TrainingTypeEntity trainingType;
+    private TrainingType trainingType;
     @Column(name = "training_date", nullable = false)
     private LocalDate trainingDate;
     @Column(name = "training_duration", nullable = false)

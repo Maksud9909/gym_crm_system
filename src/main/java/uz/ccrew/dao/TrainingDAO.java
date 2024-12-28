@@ -1,35 +1,14 @@
 package uz.ccrew.dao;
 
 import uz.ccrew.entity.Training;
-import uz.ccrew.dao.base.AbstractBaseDAO;
+import uz.ccrew.dao.base.base.BaseDAO;
 
-import org.hibernate.Session;
-import lombok.extern.slf4j.Slf4j;
-import org.hibernate.SessionFactory;
-import org.springframework.stereotype.Repository;
+import java.util.List;
+import java.time.LocalDate;
 
-@Slf4j
-@Repository
-public class TrainingDAO extends AbstractBaseDAO<Training> {
-    private static final String ENTITY_NAME = "Training";
+public interface TrainingDAO extends BaseDAO<Training> {
+    List<Training> getTraineeTrainings(String traineeUsername, LocalDate fromDate,
+                                       LocalDate toDate, String trainerName, Long trainingTypeId);
 
-    public TrainingDAO(SessionFactory sessionFactory, Class<Training> entityClass) {
-        super(sessionFactory, entityClass);
-        log.debug("TrainingDAO instantiated");
-    }
-
-
-    @Override
-    public Long create(Training training) {
-        Session session = getSessionFactory().getCurrentSession();
-        session.persist(training);
-        Long id = training.getId();
-        log.info("Created {}: ID={}, Training={}", getEntityName(), id, training);
-        return id;
-    }
-
-    @Override
-    protected String getEntityName() {
-        return ENTITY_NAME;
-    }
+    List<Training> getTrainerTrainings(String trainerUsername, LocalDate fromDate, LocalDate toDate, String traineeName);
 }

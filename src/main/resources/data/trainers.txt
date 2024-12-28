@@ -1,2 +1,0 @@
-Alice,Johnson,Fitness
-Bob,Williams,Yoga

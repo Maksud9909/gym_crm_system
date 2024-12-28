@@ -1,30 +1,12 @@
 package uz.ccrew.service;
 
-import uz.ccrew.dao.TrainerDAO;
 import uz.ccrew.entity.Trainer;
-import uz.ccrew.service.base.AbstractCRUDBaseService;
+import uz.ccrew.dto.trainer.TrainerUpdateDTO;
+import uz.ccrew.dto.trainer.TrainerCreateDTO;
+import uz.ccrew.service.base.advancedBase.BaseAdvancedUserService;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
 
-@Slf4j
-@Service
-public class TrainerService extends AbstractCRUDBaseService<Trainer> {
-    private static final String ENTITY_NAME = "Trainer";
-
-    public TrainerService() {
-        log.debug("TrainerServiceImpl initialized");
-    }
-
-    @Autowired
-    public void setDao(TrainerDAO dao) {
-        super.setDao(dao);
-        log.debug("TrainerDAO injected into TrainerServiceImpl");
-    }
-
-    @Override
-    protected String getEntityName() {
-        return ENTITY_NAME;
-    }
+public interface TrainerService extends BaseAdvancedUserService<Trainer, TrainerCreateDTO, TrainerUpdateDTO> {
+    List<Trainer> getUnassignedTrainers(String traineeUsername);
 }

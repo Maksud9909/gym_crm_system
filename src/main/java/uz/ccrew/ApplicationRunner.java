@@ -1,93 +1,126 @@
 package uz.ccrew;
 
-import uz.ccrew.entity.*;
+import uz.ccrew.entity.Trainee;
+import uz.ccrew.entity.Trainer;
+import uz.ccrew.entity.Training;
 import uz.ccrew.config.AppConfig;
+import uz.ccrew.entity.TrainingType;
+import uz.ccrew.config.HibernateConfig;
+import uz.ccrew.config.DataSourceConfig;
 import uz.ccrew.config.ApplicationFacade;
+import uz.ccrew.dto.trainee.TraineeCreateDTO;
+import uz.ccrew.dto.trainer.TrainerCreateDTO;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import java.time.LocalDate;
 import java.util.List;
+import java.time.LocalDate;
 
 @Slf4j
-@Component
 public class ApplicationRunner {
 
-    private final ApplicationFacade facade;
+    public static void main(String[] args) {
+        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class, DataSourceConfig.class, HibernateConfig.class);
+        ApplicationFacade facade = context.getBean(ApplicationFacade.class);
 
-    public ApplicationRunner(ApplicationFacade facade) {
-        this.facade = facade;
-    }
-
-    public void start() {
         log.info("---- Starting Application ----");
 
-        handleTraineeOperations();
-        handleTrainerOperations();
-        handleTrainingOperations();
-
+        createAndListTrainees(facade);
+        createAndListTrainers(facade);
+        createAndListTrainings(facade);
+        advancedTrainingOperations(facade);
+        advancedTraineeOperations(facade);
+        advancedTrainerOperations(facade);
         log.info("---- Application Finished ----");
     }
 
-    private void handleTraineeOperations() {
+    private static void createAndListTrainees(@NotNull ApplicationFacade facade) {
         log.info("---- Trainee Operations ----");
-        List<Trainee> trainees = facade.getAllTrainees();
-        trainees.forEach(t -> log.info("Trainee: {} {}", t.getFirstName(), t.getLastName()));
 
-//        Trainee newTrainee = Trainee.builder()
-//                .firstName("Michael")
-//                .lastName("Brown")
-//                .isActive(true)
-//                .dateOfBirth(LocalDate.of(LocalDate.now()))
-//                .address("789 Oak St")
-//                .build();
-//        Long traineeId = facade.createTrainee(newTrainee);
-//        log.info("Created Trainee ID: {}", traineeId);
+        TraineeCreateDTO traineeDTO = TraineeCreateDTO.builder()
+                .firstName("Maksud")
+                .lastName("Rustamov")
+                .birthOfDate(LocalDate.of(2005, 1, 1))
+                .address("Test")
+                .build();
+        Long id = facade.getTraineeService().create(traineeDTO);
+        log.info("Created Trainee ID: {}", id);
+
+        List<Trainee> trainees = facade.getTraineeService().findAll();
+        trainees.forEach(t -> log.info("Trainee: {} {}, ID: {}", t.getUser().getFirstName(), t.getUser().getLastName(), t.getId()));
     }
 
-    private void handleTrainerOperations() {
+    private static void createAndListTrainers(@NotNull ApplicationFacade facade) {
         log.info("---- Trainer Operations ----");
-        List<Trainer> trainers = facade.getAllTrainers();
-        trainers.forEach(t -> log.info("Trainer: {} {}", t.getFirstName(), t.getLastName()));
 
-//        Trainer newTrainer = Trainer.builder()
-//                .id(null)
-//                .firstName("Emily")
-//                .lastName("Davis")
-//                .username(null)
-//                .password(null)
-//                .isActive(true)
-//                .specialization("Pilates")
-//                .build();
+        TrainerCreateDTO trainerDTO = TrainerCreateDTO.builder()
+                .firstName("Lev")
+                .lastName("Smith")
+                .trainingTypeId(1L)
+                .build();
+        Long trainerId = facade.getTrainerService().create(trainerDTO);
+        log.info("Created Trainer ID: {}", trainerId);
 
-//        Long trainerId = facade.createTrainer(newTrainer);
-//        log.info("Created Trainer ID: {}", trainerId);
+        List<Trainer> trainers = facade.getTrainerService().findAll();
+        trainers.forEach(t -> log.info("Trainer: {} {}, ID: {}", t.getUser().getFirstName(), t.getUser().getLastName(), t.getId()));
     }
 
-    private void handleTrainingOperations() {
+    private static void createAndListTrainings(@NotNull ApplicationFacade facade) {
         log.info("---- Training Operations ----");
-        List<Training> trainings = facade.getAllTrainings();
-        trainings.forEach(t -> log.info("Training: {}", t.getTrainingName()));
 
-//        Training newTraining = Training.builder()
-//                .traineeId(1L)
-//                .trainerId(1L)
-//                .trainingName("Pilates Session")
-//                .trainingType(TrainingType.GYM)
-//                .trainingDate(LocalDate.now())
-//                .trainingDuration(90)
-//                .build();
-//
-//        Long trainingId = facade.createTraining(newTraining);
-//        log.info("Created Training ID: {}", trainingId);
+        TrainingType trainingType = facade.getTrainingTypeService().findById(2L);
+
+        Training training = Training.builder()
+                .trainee(facade.getTraineeService().findById(1L))
+                .trainer(facade.getTrainerService().findById(11L))
+                .trainingName("Morning Yoga Session")
+                .trainingType(trainingType)
+                .trainingDate(LocalDate.now())
+                .trainingDuration(60.0)
+                .build();
+        Long trainingId = facade.getTrainingService().create(training);
+        log.info("Created Training ID: {}", trainingId);
+
+        List<Training> trainings = facade.getTrainingService().findAll();
+        trainings.forEach(t -> log.info("Training: {}, Date: {}, Duration: {} minutes",
+                t.getTrainingName(), t.getTrainingDate(), t.getTrainingDuration()));
     }
 
-    public static void main(String[] args) {
-        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
-        ApplicationRunner runner = context.getBean(ApplicationRunner.class);
-        runner.start();
+    private static void advancedTraineeOperations(@NotNull ApplicationFacade facade) {
+        log.info("---- Advanced Trainee Operations ----");
+
+        String usernameToDelete = "Maksud.Doe";
+        facade.getTraineeService().deleteTraineeByUsername(usernameToDelete);
+        log.info("Deleted Trainee with username: {}", usernameToDelete);
+
+        facade.getTraineeService().updateTraineeTrainers(1L, List.of(10L, 11L));
+        log.info("Updated trainers for Trainee ID: 1");
+    }
+
+    private static void advancedTrainerOperations(@NotNull ApplicationFacade facade) {
+        log.info("---- Advanced Trainer Operations ----");
+
+        List<Trainer> unassignedTrainers = facade.getTrainerService().getUnassignedTrainers("John.Doe.1");
+        unassignedTrainers.forEach(tr -> log.info("Unassigned Trainer: {} {}", tr.getUser().getFirstName(), tr.getUser().getLastName()));
+    }
+
+    private static void advancedTrainingOperations(@NotNull ApplicationFacade facade) {
+        List<Training> trainings = facade.getTrainingService().getTraineeTrainings(
+                "Jane.Smith",
+                LocalDate.of(2023, 1, 1),
+                LocalDate.of(2023, 12, 31),
+                "Lev",
+                3L);
+        trainings.forEach(t -> log.info("Training: {}, Trainer: {}",
+                t.getTrainingName(),
+                t.getTrainer().getUser().getFirstName()));
+                facade.getTrainingService().getTrainerTrainings(
+                        "Test",
+                        LocalDate.of(2023, 1, 1),
+                        LocalDate.of(2023, 12, 31),
+                        "Jane");
     }
 }
