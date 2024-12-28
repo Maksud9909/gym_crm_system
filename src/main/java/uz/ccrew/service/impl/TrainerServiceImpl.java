@@ -2,6 +2,7 @@ package uz.ccrew.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import uz.ccrew.dto.trainer.TrainerUpdateDTO;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.dao.TrainerDAO;
 import uz.ccrew.service.TrainerService;
@@ -16,7 +17,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class TrainerServiceImpl extends AbstractAdvancedUserService<Trainer, TrainerCreateDTO> implements TrainerService {
+public class TrainerServiceImpl extends AbstractAdvancedUserService<Trainer, TrainerCreateDTO, TrainerUpdateDTO> implements TrainerService {
     private static final String ENTITY_NAME = "Trainer";
 
     private final TrainerDAO trainerDAO;

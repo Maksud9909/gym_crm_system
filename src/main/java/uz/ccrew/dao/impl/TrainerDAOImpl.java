@@ -1,6 +1,8 @@
 package uz.ccrew.dao.impl;
 
 import uz.ccrew.dao.UserDAO;
+import uz.ccrew.dto.trainee.TraineeUpdateDTO;
+import uz.ccrew.dto.trainer.TrainerUpdateDTO;
 import uz.ccrew.entity.User;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.dao.TrainerDAO;
@@ -13,13 +15,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
+import uz.ccrew.exp.EntityNotFoundException;
 import uz.ccrew.utils.UserUtils;
 
 import java.util.List;
 
 @Slf4j
 @Repository
-public class TrainerDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainer, TrainerCreateDTO> implements TrainerDAO {
+public class TrainerDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainer, TrainerCreateDTO, TrainerUpdateDTO> implements TrainerDAO {
     private final UserDAO userDAO;
     private final UserUtils userUtils;
     private static final String ENTITY_NAME = "Trainer";
@@ -72,19 +75,20 @@ public class TrainerDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainer, Tra
     }
 
     @Override
-    public void update(Long id, TrainerCreateDTO dto) {
+    public void update(Long id, TrainerUpdateDTO dto) {
         Session session = getSessionFactory().getCurrentSession();
 
         Trainer trainer = session.get(Trainer.class, id);
         if (trainer == null) {
             log.warn("Trainer with ID={} not found", id);
-            throw new IllegalArgumentException("Trainer not found");
+            throw new EntityNotFoundException("Trainer with ID=" + id + " not found for update");
         }
 
         User user = trainer.getUser();
         user.setFirstName(dto.firstName());
         user.setLastName(dto.lastName());
-        user.setUsername(userUtils.generateUniqueUsername(dto.firstName(), dto.lastName()));
+        user.setUsername(dto.username());
+        user.setPassword(dto.password());
 
         TrainingType trainingType = session.get(TrainingType.class, dto.trainingTypeId());
 
@@ -97,6 +101,7 @@ public class TrainerDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainer, Tra
     }
 
 
+    @Override
     public List<Trainer> getUnassignedTrainers(String traineeUsername) {
         Session session = getSessionFactory().getCurrentSession();
 

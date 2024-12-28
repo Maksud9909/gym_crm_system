@@ -2,6 +2,7 @@ package uz.ccrew.service.impl;
 
 import org.springframework.transaction.annotation.Transactional;
 import uz.ccrew.dao.TraineeDAO;
+import uz.ccrew.dto.trainee.TraineeUpdateDTO;
 import uz.ccrew.entity.Trainee;
 import uz.ccrew.service.TraineeService;
 import uz.ccrew.dto.trainee.TraineeCreateDTO;
@@ -15,7 +16,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class TraineeServiceImpl extends AbstractAdvancedUserService<Trainee, TraineeCreateDTO> implements TraineeService {
+public class TraineeServiceImpl extends AbstractAdvancedUserService<Trainee, TraineeCreateDTO, TraineeUpdateDTO> implements TraineeService {
     private static final String ENTITY_NAME = "Trainee";
     private final TraineeDAO traineeDAO;
 

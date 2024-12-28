@@ -1,5 +1,7 @@
 package uz.ccrew.dao.base.advancedBase;
 
+import uz.ccrew.exp.EntityNotFoundException;
+
 import lombok.Getter;
 import org.hibernate.Session;
 import lombok.extern.slf4j.Slf4j;
@@ -12,16 +14,10 @@ import java.util.Optional;
 @Slf4j
 @Getter
 @RequiredArgsConstructor
-public abstract class AbstractAdvancedBaseCRUDDAO<T, D> implements BaseAdvancedCRUDDAO<T, D> {
+public abstract class AbstractAdvancedBaseCRUDDAO<T, D, U> implements BaseAdvancedCRUDDAO<T, D, U> {
     private final SessionFactory sessionFactory;
     private final Class<T> entityClass;
     private static final String SELECT_ALL_QUERY_TEMPLATE = "FROM %s";
-
-    @Override
-    public abstract Long create(D dto);
-
-    @Override
-    public abstract void update(Long id, D dto);
 
     @Override
     public Optional<T> findById(Long id) {
@@ -46,6 +42,7 @@ public abstract class AbstractAdvancedBaseCRUDDAO<T, D> implements BaseAdvancedC
             log.info("Deleted {} with ID={}", getEntityName(), id);
         } else {
             log.warn("Entity {} with ID={} not found for deletion", getEntityName(), id);
+            throw new EntityNotFoundException(getEntityName() + " with ID=" + id + " not found");
         }
     }
 

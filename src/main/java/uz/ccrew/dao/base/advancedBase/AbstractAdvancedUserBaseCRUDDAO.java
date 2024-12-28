@@ -6,11 +6,12 @@ import uz.ccrew.entity.base.UserAware;
 import org.hibernate.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
+import uz.ccrew.exp.EntityNotFoundException;
 
 import java.util.Optional;
 
 @Slf4j
-public abstract class AbstractAdvancedUserBaseCRUDDAO<T extends UserAware, D> extends AbstractAdvancedBaseCRUDDAO<T, D> implements BaseAdvancedUserCRUDDAO<T, D> {
+public abstract class AbstractAdvancedUserBaseCRUDDAO<T extends UserAware, D, U> extends AbstractAdvancedBaseCRUDDAO<T, D, U> implements BaseAdvancedUserCRUDDAO<T, D, U> {
 
     public static final String FIND_BY_USERNAME = "FROM %s t JOIN FETCH t.user u where u.username = :username";
 
@@ -38,6 +39,7 @@ public abstract class AbstractAdvancedUserBaseCRUDDAO<T extends UserAware, D> ex
             log.info("Password updated for {} with ID={}", getEntityName(), id);
         } else {
             log.warn("Entity {} with ID={} not found to change password", getEntityName(), id);
+            throw new EntityNotFoundException("Entity " + getEntityName() + " with ID=" + id + " not found to change password");
         }
     }
 
@@ -52,6 +54,7 @@ public abstract class AbstractAdvancedUserBaseCRUDDAO<T extends UserAware, D> ex
             log.info("Updated isActive for {} ID={}", getEntityName(), id);
         } else {
             log.warn("Entity {} with ID={} not found to update isActive", getEntityName(), id);
+            throw new EntityNotFoundException("Entity " + getEntityName() + " with ID=" + id + " not found to activate and Deactivate profile");
         }
     }
 }

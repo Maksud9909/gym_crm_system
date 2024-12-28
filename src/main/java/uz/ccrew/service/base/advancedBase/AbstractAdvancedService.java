@@ -15,9 +15,9 @@ import java.util.Objects;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class AbstractAdvancedService<T, D> implements BaseAdvancedService<T, D> {
+public abstract class AbstractAdvancedService<T, D, U> implements BaseAdvancedService<T, D, U> {
 
-    private BaseAdvancedCRUDDAO<T, D> dao;
+    private BaseAdvancedCRUDDAO<T, D, U> dao;
 
     @Override
     @Transactional
@@ -49,7 +49,7 @@ public abstract class AbstractAdvancedService<T, D> implements BaseAdvancedServi
 
     @Override
     @Transactional
-    public void update(Long id, D entity) {
+    public void update(Long id, U entity) {
         Objects.requireNonNull(id, "ID cannot be null");
         Objects.requireNonNull(entity, "Entity cannot be null");
         log.info("Updating {} with ID={}: {}", getEntityName(), id, entity);

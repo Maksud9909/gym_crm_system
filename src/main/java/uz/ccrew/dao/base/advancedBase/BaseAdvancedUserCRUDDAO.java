@@ -2,7 +2,7 @@ package uz.ccrew.dao.base.advancedBase;
 
 import java.util.Optional;
 
-public interface BaseAdvancedUserCRUDDAO<T, D> extends BaseAdvancedCRUDDAO<T, D> {
+public interface BaseAdvancedUserCRUDDAO<T, D, U> extends BaseAdvancedCRUDDAO<T, D, U> {
 
     Optional<T> findByUsername(String username);
 
