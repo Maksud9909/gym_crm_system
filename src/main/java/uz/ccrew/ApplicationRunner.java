@@ -31,7 +31,9 @@ public class ApplicationRunner {
         createAndListTrainees(facade);
         createAndListTrainers(facade);
         createAndListTrainings(facade);
-
+        advancedTrainingOperations(facade);
+        advancedTraineeOperations(facade);
+        advancedTrainerOperations(facade);
         log.info("---- Application Finished ----");
     }
 
@@ -40,12 +42,12 @@ public class ApplicationRunner {
 
         TraineeCreateDTO traineeDTO = TraineeCreateDTO.builder()
                 .firstName("Maksud")
-                .lastName("Doe")
-                .birthOfDate(LocalDate.of(1990, 1, 1))
-                .address("123 Main St")
+                .lastName("Rustamov")
+                .birthOfDate(LocalDate.of(2005, 1, 1))
+                .address("Test")
                 .build();
-        Long traineeId = facade.getTraineeService().create(traineeDTO);
-        log.info("Created Trainee ID: {}", traineeId);
+        Long id = facade.getTraineeService().create(traineeDTO);
+        log.info("Created Trainee ID: {}", id);
 
         List<Trainee> trainees = facade.getTraineeService().findAll();
         trainees.forEach(t -> log.info("Trainee: {} {}, ID: {}", t.getUser().getFirstName(), t.getUser().getLastName(), t.getId()));
@@ -107,12 +109,18 @@ public class ApplicationRunner {
 
     private static void advancedTrainingOperations(@NotNull ApplicationFacade facade) {
         List<Training> trainings = facade.getTrainingService().getTraineeTrainings(
-                "Jane.Doe",
+                "Jane.Smith",
                 LocalDate.of(2023, 1, 1),
                 LocalDate.of(2023, 12, 31),
-                null,
-                null
-        );
-        trainings.forEach(t -> log.info("Training: {}, Trainer: {}", t.getTrainingName(), t.getTrainer().getUser().getFirstName()));
+                "Lev",
+                3L);
+        trainings.forEach(t -> log.info("Training: {}, Trainer: {}",
+                t.getTrainingName(),
+                t.getTrainer().getUser().getFirstName()));
+                facade.getTrainingService().getTrainerTrainings(
+                        "Test",
+                        LocalDate.of(2023, 1, 1),
+                        LocalDate.of(2023, 12, 31),
+                        "Jane");
     }
 }

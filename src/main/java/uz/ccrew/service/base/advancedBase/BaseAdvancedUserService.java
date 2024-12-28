@@ -5,5 +5,5 @@ public interface BaseAdvancedUserService<T, D, U> extends BaseAdvancedService<T,
 
     void changePassword(Long id, String newPassword);
 
-    void activateDeactivate(Long id, boolean isActive);
+    void activateDeactivate(Long id, Boolean isActive);
 }

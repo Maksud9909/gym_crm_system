@@ -24,7 +24,7 @@ public class Trainee extends BaseEntity implements UserAware {
     private LocalDate dateOfBirth;
     @Column(name = "address")
     private String address;
-    @ManyToMany(mappedBy = "trainees", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "trainees", fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<Trainer> trainers = new ArrayList<>();
     @OneToMany(mappedBy = "trainee", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Training> training = new ArrayList<>();

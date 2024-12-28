@@ -2,41 +2,52 @@ package uz.ccrew.dao.impl;
 
 import uz.ccrew.dao.TrainingDAO;
 import uz.ccrew.entity.Training;
-import uz.ccrew.entity.TrainingType;
 import uz.ccrew.dao.base.base.AbstractBaseDAO;
 
 import org.hibernate.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.time.LocalDate;
+
 @Slf4j
 @Repository
 public class TrainingDAOImpl extends AbstractBaseDAO<Training> implements TrainingDAO {
     private static final String ENTITY_NAME = "Training";
 
     private static final String GET_TRAINEE_TRAININGS = """
-                SELECT tr FROM Training tr
-                JOIN FETCH tr.trainee trainee
-                JOIN FETCH tr.trainer trainer
-                WHERE trainee.user.username = :traineeUsername
-                AND (:fromDate IS NULL OR tr.trainingDate >= :fromDate)
-                AND (:toDate IS NULL OR tr.trainingDate <= :toDate)
-                AND (:trainerName IS NULL OR CONCAT(trainer.user.firstName, ' ', trainer.user.lastName) = :trainerName)
-                AND (:trainingType IS NULL OR tr.trainingType = :trainingType)
+            SELECT t FROM Training t
+            JOIN t.trainee tr
+            JOIN tr.user u
+            JOIN t.trainer tn
+            JOIN tn.user tu
+            WHERE u.username = :username
+            AND (cast(:fromDate as date) IS NULL OR t.trainingDate >= :fromDate)
+            AND (cast(:toDate as date) IS NULL OR t.trainingDate <= :toDate)
+            AND (:trainerName IS NULL 
+                OR LOWER(tu.firstName) LIKE LOWER(CONCAT('%', :trainerName, '%'))
+                OR LOWER(tu.lastName) LIKE LOWER(CONCAT('%', :trainerName, '%')))
+            AND (cast(:trainingTypeId as long) IS NULL OR t.trainingType.id = :trainingTypeId)
+            ORDER BY t.trainingDate ASC
             """;
 
     private static final String GET_TRAINER_TRAININGS = """
             SELECT t FROM Training t
-            JOIN FETCH t.trainer trainer
-            JOIN FETCH t.trainee trainee
-            WHERE trainer.user.username = :trainerUsername
-            AND (:fromDate IS NULL OR t.trainingDate >= :fromDate)
-            AND (:toDate IS NULL OR t.trainingDate <= :toDate)
-            AND (:traineeName IS NULL OR CONCAT(trainee.user.firstName, ' ', trainee.user.lastName) = :traineeName)
-        """;
+            JOIN t.trainer tr
+            JOIN tr.user u
+            JOIN t.trainee te
+            JOIN te.user tu
+            WHERE u.username = :username
+            AND (cast(:fromDate as date) IS NULL OR t.trainingDate >= :fromDate)
+            AND (cast(:toDate as date) IS NULL OR t.trainingDate <= :toDate)
+            AND (:traineeName IS NULL 
+                OR LOWER(tu.firstName) LIKE LOWER(CONCAT('%', :traineeName, '%'))
+                OR LOWER(tu.lastName) LIKE LOWER(CONCAT('%', :traineeName, '%')))
+            ORDER BY t.trainingDate ASC
+            """;
 
     public TrainingDAOImpl(SessionFactory sessionFactory) {
         super(sessionFactory, Training.class);
@@ -53,30 +64,43 @@ public class TrainingDAOImpl extends AbstractBaseDAO<Training> implements Traini
     }
 
     @Override
-    public List<Training> getTraineeTrainings(String traineeUsername, LocalDate fromDate,
-                                              LocalDate toDate, String trainerName, Long trainingTypeId) {
+    public List<Training> getTraineeTrainings(String username,
+                                              LocalDate fromDate,
+                                              LocalDate toDate,
+                                              String trainerName,
+                                              Long trainingTypeId) {
         Session session = getSessionFactory().getCurrentSession();
-        TrainingType trainingType = session.get(TrainingType.class, trainingTypeId);
+        Query<Training> query = session.createQuery(GET_TRAINEE_TRAININGS, Training.class);
 
-        return session.createQuery(GET_TRAINEE_TRAININGS, Training.class)
-                .setParameter("traineeUsername", traineeUsername)
-                .setParameter("fromDate", fromDate)
-                .setParameter("toDate", toDate)
-                .setParameter("trainerName", trainerName)
-                .setParameter("trainingType", trainingType)
-                .list();
+        query.setParameter("username", username);
+        query.setParameter("fromDate", fromDate);
+        query.setParameter("toDate", toDate);
+        query.setParameter("trainerName", trainerName);
+        query.setParameter("trainingTypeId", trainingTypeId);
+
+        List<Training> trainings = query.getResultList();
+        log.debug("Found {} trainee trainings for username: {}", trainings.size(), username);
+
+        return trainings;
     }
 
     @Override
-    public List<Training> getTrainerTrainings(String trainerUsername, LocalDate fromDate, LocalDate toDate, String traineeName) {
+    public List<Training> getTrainerTrainings(String username,
+                                              LocalDate fromDate,
+                                              LocalDate toDate,
+                                              String traineeName) {
         Session session = getSessionFactory().getCurrentSession();
+        Query<Training> query = session.createQuery(GET_TRAINER_TRAININGS, Training.class);
 
-        return session.createQuery(GET_TRAINER_TRAININGS, Training.class)
-                .setParameter("trainerUsername", trainerUsername)
-                .setParameter("fromDate", fromDate)
-                .setParameter("toDate", toDate)
-                .setParameter("traineeName", traineeName)
-                .list();
+        query.setParameter("username", username);
+        query.setParameter("fromDate", fromDate);
+        query.setParameter("toDate", toDate);
+        query.setParameter("traineeName", traineeName);
+
+        List<Training> trainings = query.getResultList();
+        log.debug("Found {} trainer trainings for username: {}", trainings.size(), username);
+
+        return trainings;
     }
 
     @Override

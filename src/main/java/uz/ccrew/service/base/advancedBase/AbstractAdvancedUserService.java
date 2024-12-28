@@ -37,7 +37,7 @@ public abstract class AbstractAdvancedUserService<T extends UserAware, D, U> ext
 
     @Override
     @Transactional
-    public void activateDeactivate(Long id, boolean isActive) {
+    public void activateDeactivate(Long id, Boolean isActive) {
         Objects.requireNonNull(id, "ID cannot be null");
         log.info("Setting isActive={} for {} with ID={}", isActive, getEntityName(), id);
         ((BaseAdvancedUserCRUDDAO<T, D, U>) getDao()).activateDeactivate(id, isActive);

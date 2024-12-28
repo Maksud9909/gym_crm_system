@@ -1,7 +1,6 @@
 package uz.ccrew.dao;
 
 import uz.ccrew.entity.Training;
-import uz.ccrew.entity.TrainingType;
 import uz.ccrew.dao.base.base.BaseDAO;
 
 import java.util.List;

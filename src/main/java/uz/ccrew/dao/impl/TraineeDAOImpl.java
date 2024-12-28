@@ -1,14 +1,14 @@
 package uz.ccrew.dao.impl;
 
-import uz.ccrew.dto.trainee.TraineeUpdateDTO;
 import uz.ccrew.entity.User;
 import uz.ccrew.dao.UserDAO;
 import uz.ccrew.entity.Trainee;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.dao.TraineeDAO;
-import uz.ccrew.exp.EntityNotFoundException;
 import uz.ccrew.utils.UserUtils;
+import uz.ccrew.exp.EntityNotFoundException;
 import uz.ccrew.dto.trainee.TraineeCreateDTO;
+import uz.ccrew.dto.trainee.TraineeUpdateDTO;
 import uz.ccrew.dao.base.advancedBase.AbstractAdvancedUserBaseCRUDDAO;
 
 import org.hibernate.Session;
@@ -116,8 +116,14 @@ public class TraineeDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainee, Tra
                     .setParameter("ids", newTrainerIds)
                     .list();
 
+            for (Trainer trainer : trainee.getTrainers()) {
+                trainer.getTrainees().remove(trainee);
+            }
             trainee.getTrainers().clear();
-            trainee.getTrainers().addAll(newTrainers);
+
+            for (Trainer trainer : newTrainers) {
+                trainer.getTrainees().add(trainee);
+            }
 
             session.merge(trainee);
             log.info("Updated trainers list for Trainee ID={}", traineeId);

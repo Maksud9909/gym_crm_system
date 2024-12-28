@@ -2,11 +2,11 @@ package uz.ccrew.dao.base.advancedBase;
 
 import uz.ccrew.entity.User;
 import uz.ccrew.entity.base.UserAware;
+import uz.ccrew.exp.EntityNotFoundException;
 
 import org.hibernate.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
-import uz.ccrew.exp.EntityNotFoundException;
 
 import java.util.Optional;
 
@@ -44,7 +44,7 @@ public abstract class AbstractAdvancedUserBaseCRUDDAO<T extends UserAware, D, U>
     }
 
     @Override
-    public void activateDeactivate(Long id, boolean isActive) {
+    public void activateDeactivate(Long id, Boolean isActive) {
         Session session = getSessionFactory().getCurrentSession();
         T entity = session.get(getEntityClass(), id);
         if (entity != null) {
