@@ -20,9 +20,17 @@ import java.util.List;
 @Slf4j
 @Repository
 public class TrainerDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainer, TrainerCreateDTO> implements TrainerDAO {
-    private static final String ENTITY_NAME = "Trainer";
     private final UserDAO userDAO;
     private final UserUtils userUtils;
+    private static final String ENTITY_NAME = "Trainer";
+    public static final String FIND_UNASSIGNED_TRAINERS = """
+                SELECT tr FROM Trainer tr
+                WHERE tr.id NOT IN (
+                    SELECT trainer.id FROM Trainee trainee
+                    JOIN trainee.trainers trainer
+                    WHERE trainee.user.username = :traineeUsername
+                )
+            """;
 
     @Autowired
     public TrainerDAOImpl(SessionFactory sessionFactory, UserDAO userDAO, UserUtils userUtils) {
@@ -91,16 +99,8 @@ public class TrainerDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainer, Tra
 
     public List<Trainer> getUnassignedTrainers(String traineeUsername) {
         Session session = getSessionFactory().getCurrentSession();
-        String hql = """
-                    SELECT tr FROM Trainer tr
-                    WHERE tr.id NOT IN (
-                        SELECT trainer.id FROM Trainee trainee
-                        JOIN trainee.trainers trainer
-                        WHERE trainee.user.username = :traineeUsername
-                    )
-                """;
 
-        return session.createQuery(hql, Trainer.class)
+        return session.createQuery(FIND_UNASSIGNED_TRAINERS, Trainer.class)
                 .setParameter("traineeUsername", traineeUsername)
                 .list();
     }

@@ -12,6 +12,8 @@ import java.util.Optional;
 @Slf4j
 public abstract class AbstractAdvancedUserBaseCRUDDAO<T extends UserAware, D> extends AbstractAdvancedBaseCRUDDAO<T, D> implements BaseAdvancedUserCRUDDAO<T, D> {
 
+    public static final String FIND_BY_USERNAME = "FROM %s t JOIN FETCH t.user u where u.username = :username";
+
     public AbstractAdvancedUserBaseCRUDDAO(SessionFactory sessionFactory, Class<T> entityClass) {
         super(sessionFactory, entityClass);
     }
@@ -19,7 +21,7 @@ public abstract class AbstractAdvancedUserBaseCRUDDAO<T extends UserAware, D> ex
     @Override
     public Optional<T> findByUsername(String username) {
         Session session = getSessionFactory().getCurrentSession();
-        String hql = "FROM " + getEntityName() + " t JOIN FETCH t.user u WHERE u.username = :username";
+        String hql = String.format(FIND_BY_USERNAME, getEntityName());
         return session.createQuery(hql, getEntityClass())
                 .setParameter("username", username)
                 .uniqueResultOptional();

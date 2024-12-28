@@ -13,8 +13,8 @@ import org.springframework.stereotype.Repository;
 @Slf4j
 @Repository
 public class UserDAOImpl extends AbstractBaseDAO<User> implements UserDAO {
-    private static final String ENTITY_NAME = "User";
     private final UserUtils userUtils;
+    private static final String ENTITY_NAME = "User";
 
 
     public UserDAOImpl(SessionFactory sessionFactory, UserUtils userUtils) {

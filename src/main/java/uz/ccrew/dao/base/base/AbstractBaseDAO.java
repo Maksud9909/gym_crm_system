@@ -15,6 +15,7 @@ import java.util.Optional;
 public abstract class AbstractBaseDAO<T> implements BaseDAO<T> {
     private final SessionFactory sessionFactory;
     private final Class<T> entityClass;
+    private static final String SELECT_ALL_QUERY_TEMPLATE = "FROM %s";
 
     @Override
     public abstract Long create(T entity);
@@ -32,12 +33,12 @@ public abstract class AbstractBaseDAO<T> implements BaseDAO<T> {
         }
     }
 
-
     @Override
     public List<T> findAll() {
         Session session = sessionFactory.getCurrentSession();
         log.info("Fetching all {}", getEntityName());
-        return session.createQuery("FROM " + entityClass.getSimpleName(), entityClass).list();
+        String query = String.format(SELECT_ALL_QUERY_TEMPLATE, entityClass.getSimpleName());
+        return session.createQuery(query, entityClass).list();
     }
 
     protected abstract String getEntityName();

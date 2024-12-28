@@ -20,9 +20,11 @@ import java.util.List;
 @Slf4j
 @Repository
 public class TraineeDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainee, TraineeCreateDTO> implements TraineeDAO {
-    private static final String ENTITY_NAME = "Trainee";
     private final UserDAO userDAO;
     private final UserUtils userUtils;
+    private static final String ENTITY_NAME = "Trainee";
+    private static final String FIND_TRAINEE_BY_USERNAME = "FROM Trainee t JOIN FETCH t.user u WHERE u.username = :username";
+    private static final String FIND_TRAINERS_BY_IDS = "FROM Trainer t WHERE t.id IN :ids";
 
     @Autowired
     public TraineeDAOImpl(SessionFactory sessionFactory, UserDAO userDAO, UserUtils userUtils) {
@@ -88,8 +90,7 @@ public class TraineeDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainee, Tra
     @Override
     public void deleteByUsername(String username) {
         Session session = getSessionFactory().getCurrentSession();
-        String hql = "FROM Trainee t JOIN FETCH t.user u WHERE u.username = :username";
-        Trainee trainee = session.createQuery(hql, Trainee.class)
+        Trainee trainee = session.createQuery(FIND_TRAINEE_BY_USERNAME, Trainee.class)
                 .setParameter("username", username)
                 .uniqueResult();
 
@@ -107,7 +108,7 @@ public class TraineeDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainee, Tra
         Trainee trainee = session.get(Trainee.class, traineeId);
         if (trainee != null) {
             List<Trainer> newTrainers = session.createQuery(
-                            "FROM Trainer t WHERE t.id IN :ids", Trainer.class)
+                            FIND_TRAINERS_BY_IDS, Trainer.class)
                     .setParameter("ids", newTrainerIds)
                     .list();
 

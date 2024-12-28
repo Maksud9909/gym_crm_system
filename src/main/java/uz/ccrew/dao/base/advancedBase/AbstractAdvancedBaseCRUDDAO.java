@@ -1,11 +1,10 @@
 package uz.ccrew.dao.base.advancedBase;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
-import org.springframework.transaction.annotation.Transactional;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +15,7 @@ import java.util.Optional;
 public abstract class AbstractAdvancedBaseCRUDDAO<T, D> implements BaseAdvancedCRUDDAO<T, D> {
     private final SessionFactory sessionFactory;
     private final Class<T> entityClass;
+    private static final String SELECT_ALL_QUERY_TEMPLATE = "FROM %s";
 
     @Override
     public abstract Long create(D dto);
@@ -33,7 +33,8 @@ public abstract class AbstractAdvancedBaseCRUDDAO<T, D> implements BaseAdvancedC
     @Override
     public List<T> findAll() {
         Session session = sessionFactory.getCurrentSession();
-        return session.createQuery("FROM " + entityClass.getSimpleName(), entityClass).list();
+        String query = String.format(SELECT_ALL_QUERY_TEMPLATE, entityClass.getSimpleName());
+        return session.createQuery(query, entityClass).list();
     }
 
     @Override

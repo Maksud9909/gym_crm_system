@@ -12,17 +12,36 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.time.LocalDate;
-
 @Slf4j
 @Repository
 public class TrainingDAOImpl extends AbstractBaseDAO<Training> implements TrainingDAO {
     private static final String ENTITY_NAME = "Training";
 
+    private static final String GET_TRAINEE_TRAININGS = """
+                SELECT tr FROM Training tr
+                JOIN FETCH tr.trainee trainee
+                JOIN FETCH tr.trainer trainer
+                WHERE trainee.user.username = :traineeUsername
+                AND (:fromDate IS NULL OR tr.trainingDate >= :fromDate)
+                AND (:toDate IS NULL OR tr.trainingDate <= :toDate)
+                AND (:trainerName IS NULL OR CONCAT(trainer.user.firstName, ' ', trainer.user.lastName) = :trainerName)
+                AND (:trainingType IS NULL OR tr.trainingType = :trainingType)
+            """;
+
+    private static final String GET_TRAINER_TRAININGS = """
+            SELECT t FROM Training t
+            JOIN FETCH t.trainer trainer
+            JOIN FETCH t.trainee trainee
+            WHERE trainer.user.username = :trainerUsername
+            AND (:fromDate IS NULL OR t.trainingDate >= :fromDate)
+            AND (:toDate IS NULL OR t.trainingDate <= :toDate)
+            AND (:traineeName IS NULL OR CONCAT(trainee.user.firstName, ' ', trainee.user.lastName) = :traineeName)
+        """;
+
     public TrainingDAOImpl(SessionFactory sessionFactory) {
         super(sessionFactory, Training.class);
         log.debug("TrainingDAO instantiated");
     }
-
 
     @Override
     public Long create(Training training) {
@@ -38,16 +57,8 @@ public class TrainingDAOImpl extends AbstractBaseDAO<Training> implements Traini
                                               LocalDate toDate, String trainerName, Long trainingTypeId) {
         Session session = getSessionFactory().getCurrentSession();
         TrainingType trainingType = session.get(TrainingType.class, trainingTypeId);
-        String hql = "SELECT tr FROM Training tr " +
-                "JOIN FETCH tr.trainee trainee " +
-                "JOIN FETCH tr.trainer trainer " +
-                "WHERE trainee.user.username = :traineeUsername " +
-                "AND (:fromDate IS NULL OR tr.trainingDate >= :fromDate) " +
-                "AND (:toDate IS NULL OR tr.trainingDate <= :toDate) " +
-                "AND (:trainerName IS NULL OR CONCAT(trainer.user.firstName, ' ', trainer.user.lastName) = :trainerName) " +
-                "AND (:trainingType IS NULL OR tr.trainingType = :trainingType)";
 
-        return session.createQuery(hql, Training.class)
+        return session.createQuery(GET_TRAINEE_TRAININGS, Training.class)
                 .setParameter("traineeUsername", traineeUsername)
                 .setParameter("fromDate", fromDate)
                 .setParameter("toDate", toDate)
@@ -59,17 +70,8 @@ public class TrainingDAOImpl extends AbstractBaseDAO<Training> implements Traini
     @Override
     public List<Training> getTrainerTrainings(String trainerUsername, LocalDate fromDate, LocalDate toDate, String traineeName) {
         Session session = getSessionFactory().getCurrentSession();
-        String hql = """
-                    SELECT t FROM Training t
-                    JOIN FETCH t.trainer trainer
-                    JOIN FETCH t.trainee trainee
-                    WHERE trainer.user.username = :trainerUsername
-                    AND (:fromDate IS NULL OR t.trainingDate >= :fromDate)
-                    AND (:toDate IS NULL OR t.trainingDate <= :toDate)
-                    AND (:traineeName IS NULL OR CONCAT(trainee.user.firstName, ' ', trainee.user.lastName) = :traineeName)
-                """;
 
-        return session.createQuery(hql, Training.class)
+        return session.createQuery(GET_TRAINER_TRAININGS, Training.class)
                 .setParameter("trainerUsername", trainerUsername)
                 .setParameter("fromDate", fromDate)
                 .setParameter("toDate", toDate)
