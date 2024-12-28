@@ -6,7 +6,6 @@ import uz.ccrew.dto.trainer.TrainerUpdateDTO;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.dao.TrainerDAO;
 import uz.ccrew.service.TrainerService;
-import uz.ccrew.dao.impl.TrainerDAOImpl;
 import uz.ccrew.dto.trainer.TrainerCreateDTO;
 import uz.ccrew.service.base.advancedBase.AbstractAdvancedUserService;
 

@@ -1,7 +1,7 @@
 package uz.ccrew.service;
 
-import uz.ccrew.dto.trainee.TraineeUpdateDTO;
 import uz.ccrew.entity.Trainee;
+import uz.ccrew.dto.trainee.TraineeUpdateDTO;
 import uz.ccrew.dto.trainee.TraineeCreateDTO;
 import uz.ccrew.service.base.advancedBase.BaseAdvancedUserService;
 
