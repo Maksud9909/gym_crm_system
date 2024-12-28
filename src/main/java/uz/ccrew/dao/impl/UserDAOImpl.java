@@ -1,5 +1,6 @@
 package uz.ccrew.dao.impl;
 
+import org.hibernate.query.Query;
 import uz.ccrew.dao.UserDAO;
 import uz.ccrew.entity.User;
 import uz.ccrew.utils.UserUtils;
@@ -10,11 +11,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Slf4j
 @Repository
 public class UserDAOImpl extends AbstractBaseDAO<User> implements UserDAO {
     private final UserUtils userUtils;
     private static final String ENTITY_NAME = "User";
+    public static final String FIND_BY_USERNAME = "from User where username = :username";
 
 
     public UserDAOImpl(SessionFactory sessionFactory, UserUtils userUtils) {
@@ -39,6 +43,21 @@ public class UserDAOImpl extends AbstractBaseDAO<User> implements UserDAO {
         log.info("Created {}: ID={}, User={}", getEntityName(), id, user);
 
         return id;
+    }
+
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        Session session = getSessionFactory().getCurrentSession();
+        try {
+            User user = session.createQuery(FIND_BY_USERNAME, User.class)
+                    .setParameter("username", username)
+                    .getSingleResult();
+            return Optional.ofNullable(user);
+        } catch (Exception e) {
+            log.debug("User not found with username: {}", username);
+            return Optional.empty();
+        }
     }
 
     @Override

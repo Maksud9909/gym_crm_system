@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import uz.ccrew.dto.trainer.TrainerUpdateDTO;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.dao.TrainerDAO;
+import uz.ccrew.service.AuthService;
 import uz.ccrew.service.TrainerService;
 import uz.ccrew.dto.trainer.TrainerCreateDTO;
 import uz.ccrew.service.base.advancedBase.AbstractAdvancedUserService;
@@ -22,8 +23,8 @@ public class TrainerServiceImpl extends AbstractAdvancedUserService<Trainer, Tra
     private final TrainerDAO trainerDAO;
 
     @Autowired
-    public TrainerServiceImpl(TrainerDAO trainerDAO) {
-        super(trainerDAO);
+    public TrainerServiceImpl(TrainerDAO trainerDAO, AuthService authService) {
+        super(trainerDAO,authService);
         this.trainerDAO = trainerDAO;
         log.debug("TrainerService initialized");
     }
@@ -37,6 +38,7 @@ public class TrainerServiceImpl extends AbstractAdvancedUserService<Trainer, Tra
     @Override
     @Transactional(readOnly = true)
     public List<Trainer> getUnassignedTrainers(String traineeUsername) {
+        checkAuthentication();
         log.info("Fetching unassigned trainers for Trainee username={}", traineeUsername);
         return trainerDAO.getUnassignedTrainers(traineeUsername);
     }

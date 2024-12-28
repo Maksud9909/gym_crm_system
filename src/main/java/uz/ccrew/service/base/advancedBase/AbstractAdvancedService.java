@@ -1,5 +1,7 @@
 package uz.ccrew.service.base.advancedBase;
 
+import uz.ccrew.entity.User;
+import uz.ccrew.entity.base.UserAware;
 import uz.ccrew.exp.EntityNotFoundException;
 import uz.ccrew.dao.base.advancedBase.BaseAdvancedCRUDDAO;
 
@@ -8,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
+import uz.ccrew.service.AuthService;
 
 import java.util.List;
 import java.util.Objects;
@@ -19,20 +22,29 @@ import java.util.Objects;
 public abstract class AbstractAdvancedService<T, D, U> implements BaseAdvancedService<T, D, U> {
 
     private BaseAdvancedCRUDDAO<T, D, U> dao;
+    private AuthService authService;
 
     @Override
     @Transactional
     public Long create(D entity) {
         Objects.requireNonNull(entity, "Entity cannot be null");
         log.info("Creating {}: {}", getEntityName(), entity);
+
         Long id = dao.create(entity);
         log.info("{} created with ID={}", getEntityName(), id);
+
+        T createdEntity = this.findById(id);
+        User user = ((UserAware) createdEntity).getUser();
+        String token = authService.authenticate(user.getUsername(), user.getPassword());
+        log.info("{} automatically registered with token: {}", getEntityName(), token);
         return id;
     }
+
 
     @Override
     @Transactional(readOnly = true)
     public T findById(Long id) {
+        checkAuthentication();
         Objects.requireNonNull(id, "ID cannot be null");
         log.info("Finding {} by ID={}", getEntityName(), id);
         return dao.findById(id)
@@ -42,6 +54,7 @@ public abstract class AbstractAdvancedService<T, D, U> implements BaseAdvancedSe
     @Override
     @Transactional(readOnly = true)
     public List<T> findAll() {
+        checkAuthentication();
         log.info("Fetching all {}", getEntityName());
         List<T> entities = dao.findAll();
         log.info("Fetched {} {}", entities.size(), getEntityName());
@@ -51,6 +64,7 @@ public abstract class AbstractAdvancedService<T, D, U> implements BaseAdvancedSe
     @Override
     @Transactional
     public void update(Long id, U entity) {
+        checkAuthentication();
         Objects.requireNonNull(id, "ID cannot be null");
         Objects.requireNonNull(entity, "Entity cannot be null");
         log.info("Updating {} with ID={}: {}", getEntityName(), id, entity);
@@ -68,6 +82,7 @@ public abstract class AbstractAdvancedService<T, D, U> implements BaseAdvancedSe
     @Override
     @Transactional
     public void delete(Long id) {
+        checkAuthentication();
         Objects.requireNonNull(id, "ID cannot be null");
         log.info("Deleting {} with ID={}", getEntityName(), id);
         dao.findById(id).ifPresentOrElse(
@@ -82,4 +97,10 @@ public abstract class AbstractAdvancedService<T, D, U> implements BaseAdvancedSe
     }
 
     protected abstract String getEntityName();
+
+    protected void checkAuthentication() {
+        if (!authService.isAuthenticated()) {
+            throw new SecurityException("Access denied. User is not authenticated.");
+        }
+    }
 }

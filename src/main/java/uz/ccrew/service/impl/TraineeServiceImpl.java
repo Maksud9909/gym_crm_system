@@ -2,6 +2,7 @@ package uz.ccrew.service.impl;
 
 import uz.ccrew.dao.TraineeDAO;
 import uz.ccrew.entity.Trainee;
+import uz.ccrew.service.AuthService;
 import uz.ccrew.service.TraineeService;
 import uz.ccrew.dto.trainee.TraineeUpdateDTO;
 import uz.ccrew.dto.trainee.TraineeCreateDTO;
@@ -21,8 +22,8 @@ public class TraineeServiceImpl extends AbstractAdvancedUserService<Trainee, Tra
     private final TraineeDAO traineeDAO;
 
     @Autowired
-    public TraineeServiceImpl(TraineeDAO traineeDAO) {
-        super(traineeDAO);
+    public TraineeServiceImpl(TraineeDAO traineeDAO, AuthService authService) {
+        super(traineeDAO, authService);
         this.traineeDAO = traineeDAO;
         log.debug("TraineeService initialized");
     }
@@ -35,6 +36,7 @@ public class TraineeServiceImpl extends AbstractAdvancedUserService<Trainee, Tra
     @Override
     @Transactional
     public void deleteTraineeByUsername(String username) {
+        checkAuthentication();
         if (username == null || username.isEmpty()) {
             throw new IllegalArgumentException("Username must not be null or empty");
         }
@@ -46,6 +48,7 @@ public class TraineeServiceImpl extends AbstractAdvancedUserService<Trainee, Tra
     @Override
     @Transactional
     public void updateTraineeTrainers(Long traineeId, List<Long> newTrainerIds) {
+        checkAuthentication();
         if (traineeId == null || newTrainerIds == null || newTrainerIds.isEmpty()) {
             throw new IllegalArgumentException("Trainee ID and Trainer IDs must not be null or empty");
         }
