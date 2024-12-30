@@ -2,6 +2,7 @@ package uz.ccrew.service.impl;
 
 import uz.ccrew.dao.TrainingDAO;
 import uz.ccrew.entity.Training;
+import uz.ccrew.service.AuthService;
 import uz.ccrew.service.TrainingService;
 import uz.ccrew.service.base.base.AbstractBaseService;
 
@@ -21,8 +22,8 @@ public class TrainingServiceImpl extends AbstractBaseService<Training> implement
     private final TrainingDAO trainingDAO;
 
     @Autowired
-    public TrainingServiceImpl(TrainingDAO trainingDAO) {
-        super(trainingDAO);
+    public TrainingServiceImpl(TrainingDAO trainingDAO, AuthService authService) {
+        super(trainingDAO, authService);
         this.trainingDAO = trainingDAO;
         log.debug("TrainingServiceImpl initialized");
     }
@@ -30,6 +31,7 @@ public class TrainingServiceImpl extends AbstractBaseService<Training> implement
     @Override
     @Transactional(readOnly = true)
     public List<Training> getTraineeTrainings(String traineeUsername, LocalDate fromDate, LocalDate toDate, String trainerName, Long trainingTypeId) {
+        getAuthService().checkAuth();
         log.info("Fetching trainings for Trainee username={} with filters", traineeUsername);
         return trainingDAO.getTraineeTrainings(traineeUsername, fromDate, toDate, trainerName, trainingTypeId);
     }
@@ -37,6 +39,7 @@ public class TrainingServiceImpl extends AbstractBaseService<Training> implement
     @Override
     @Transactional(readOnly = true)
     public List<Training> getTrainerTrainings(String trainerUsername, LocalDate fromDate, LocalDate toDate, String traineeName) {
+        getAuthService().checkAuth();
         log.info("Fetching trainings for Trainer username={} with filters", trainerUsername);
         return trainingDAO.getTrainerTrainings(trainerUsername, fromDate, toDate, traineeName);
     }

@@ -12,4 +12,6 @@ public interface UserDAO extends BaseDAO<User> {
     Optional<User> findById(Long id);
 
     List<User> findAll();
+
+    Optional<User> findByUsername(String username);
 }

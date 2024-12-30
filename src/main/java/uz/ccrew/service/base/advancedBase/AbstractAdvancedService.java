@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
+import uz.ccrew.service.AuthService;
 
 import java.util.List;
 import java.util.Objects;
@@ -19,20 +20,12 @@ import java.util.Objects;
 public abstract class AbstractAdvancedService<T, D, U> implements BaseAdvancedService<T, D, U> {
 
     private BaseAdvancedCRUDDAO<T, D, U> dao;
-
-    @Override
-    @Transactional
-    public Long create(D entity) {
-        Objects.requireNonNull(entity, "Entity cannot be null");
-        log.info("Creating {}: {}", getEntityName(), entity);
-        Long id = dao.create(entity);
-        log.info("{} created with ID={}", getEntityName(), id);
-        return id;
-    }
+    private AuthService authService;
 
     @Override
     @Transactional(readOnly = true)
     public T findById(Long id) {
+        authService.checkAuth();
         Objects.requireNonNull(id, "ID cannot be null");
         log.info("Finding {} by ID={}", getEntityName(), id);
         return dao.findById(id)
@@ -42,6 +35,7 @@ public abstract class AbstractAdvancedService<T, D, U> implements BaseAdvancedSe
     @Override
     @Transactional(readOnly = true)
     public List<T> findAll() {
+        authService.checkAuth();
         log.info("Fetching all {}", getEntityName());
         List<T> entities = dao.findAll();
         log.info("Fetched {} {}", entities.size(), getEntityName());
@@ -51,6 +45,7 @@ public abstract class AbstractAdvancedService<T, D, U> implements BaseAdvancedSe
     @Override
     @Transactional
     public void update(Long id, U entity) {
+        authService.checkAuth();
         Objects.requireNonNull(id, "ID cannot be null");
         Objects.requireNonNull(entity, "Entity cannot be null");
         log.info("Updating {} with ID={}: {}", getEntityName(), id, entity);
@@ -68,6 +63,7 @@ public abstract class AbstractAdvancedService<T, D, U> implements BaseAdvancedSe
     @Override
     @Transactional
     public void delete(Long id) {
+        authService.checkAuth();
         Objects.requireNonNull(id, "ID cannot be null");
         log.info("Deleting {} with ID={}", getEntityName(), id);
         dao.findById(id).ifPresentOrElse(

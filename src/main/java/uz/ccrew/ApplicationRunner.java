@@ -31,9 +31,9 @@ public class ApplicationRunner {
         createAndListTrainees(facade);
         createAndListTrainers(facade);
         createAndListTrainings(facade);
-        advancedTrainingOperations(facade);
-        advancedTraineeOperations(facade);
-        advancedTrainerOperations(facade);
+//        advancedTrainingOperations(facade);
+//        advancedTraineeOperations(facade);
+//        advancedTrainerOperations(facade);
         log.info("---- Application Finished ----");
     }
 
@@ -92,7 +92,7 @@ public class ApplicationRunner {
     private static void advancedTraineeOperations(@NotNull ApplicationFacade facade) {
         log.info("---- Advanced Trainee Operations ----");
 
-        String usernameToDelete = "Maksud.Doe";
+        String usernameToDelete = "John.Doe";
         facade.getTraineeService().deleteTraineeByUsername(usernameToDelete);
         log.info("Deleted Trainee with username: {}", usernameToDelete);
 
