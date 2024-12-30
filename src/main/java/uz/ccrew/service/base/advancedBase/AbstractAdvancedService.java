@@ -21,8 +21,8 @@ import java.util.Objects;
 @NoArgsConstructor
 public abstract class AbstractAdvancedService<T, D, U> implements BaseAdvancedService<T, D, U> {
 
-    private BaseAdvancedCRUDDAO<T, D, U> dao;
     private AuthService authService;
+    private BaseAdvancedCRUDDAO<T, D, U> dao;
 
     @Override
     @Transactional

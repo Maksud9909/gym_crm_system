@@ -1,12 +1,13 @@
 package uz.ccrew.service.base.advancedBase;
 
+import uz.ccrew.service.AuthService;
+import uz.ccrew.entity.base.UserAware;
+import uz.ccrew.dao.base.advancedBase.BaseAdvancedUserCRUDDAO;
+import uz.ccrew.exp.EntityNotFoundException;
+
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
-import uz.ccrew.dao.base.advancedBase.BaseAdvancedUserCRUDDAO;
-import uz.ccrew.entity.base.UserAware;
-import uz.ccrew.exp.EntityNotFoundException;
-import uz.ccrew.service.AuthService;
 
 import java.util.Objects;
 
@@ -16,7 +17,7 @@ public abstract class AbstractAdvancedUserService<T extends UserAware, D, U> ext
         implements BaseAdvancedUserService<T, D, U> {
 
     public AbstractAdvancedUserService(BaseAdvancedUserCRUDDAO<T, D, U> dao, AuthService authService) {
-        super(dao, authService);
+        super(authService, dao);
     }
 
     @Override

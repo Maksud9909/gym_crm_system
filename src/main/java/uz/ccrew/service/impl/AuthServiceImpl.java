@@ -15,7 +15,7 @@ import java.util.HashMap;
 @Service
 public class AuthServiceImpl implements AuthService {
     private final UserDAO userDAO;
-    private final Map<String, String> activeSessions = new HashMap<>(1,0);
+    private final Map<String, String> activeSessions = new HashMap<>(1, 0);
 
     @Autowired
     public AuthServiceImpl(UserDAO userDAO) {
