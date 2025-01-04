@@ -1,6 +1,5 @@
 package uz.ccrew;
 
-import uz.ccrew.entity.Trainee;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.entity.Training;
 import uz.ccrew.config.AppConfig;
@@ -28,9 +27,9 @@ public class ApplicationRunner {
 
         log.info("---- Starting Application ----");
 
-        createAndListTrainees(facade);
-        createAndListTrainers(facade);
-        createAndListTrainings(facade);
+//        createAndListTrainees(facade);
+//        createAndListTrainers(facade);
+//        createAndListTrainings(facade);
 //        advancedTrainingOperations(facade);
 //        advancedTraineeOperations(facade);
 //        advancedTrainerOperations(facade);
@@ -49,8 +48,8 @@ public class ApplicationRunner {
         Long id = facade.getTraineeService().create(traineeDTO);
         log.info("Created Trainee ID: {}", id);
 
-        List<Trainee> trainees = facade.getTraineeService().findAll();
-        trainees.forEach(t -> log.info("Trainee: {} {}, ID: {}", t.getUser().getFirstName(), t.getUser().getLastName(), t.getId()));
+//        List<Trainee> trainees = facade.getTraineeService().findAll();
+//        trainees.forEach(t -> log.info("Trainee: {} {}, ID: {}", t.getUser().getFirstName(), t.getUser().getLastName(), t.getId()));
     }
 
     private static void createAndListTrainers(@NotNull ApplicationFacade facade) {
@@ -92,12 +91,12 @@ public class ApplicationRunner {
     private static void advancedTraineeOperations(@NotNull ApplicationFacade facade) {
         log.info("---- Advanced Trainee Operations ----");
 
-        String usernameToDelete = "John.Doe";
-        facade.getTraineeService().deleteTraineeByUsername(usernameToDelete);
-        log.info("Deleted Trainee with username: {}", usernameToDelete);
+//        String usernameToDelete = "John.Doe";
+//        facade.getTraineeService().deleteTraineeByUsername(usernameToDelete);
+//        log.info("Deleted Trainee with username: {}", usernameToDelete);
 
-        facade.getTraineeService().updateTraineeTrainers(1L, List.of(10L, 11L));
-        log.info("Updated trainers for Trainee ID: 1");
+        facade.getTraineeService().updateTraineeTrainers(2L, List.of(15L, 16L));
+        log.info("Updated trainers for Trainee ID: 2");
     }
 
     private static void advancedTrainerOperations(@NotNull ApplicationFacade facade) {
