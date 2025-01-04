@@ -1,5 +1,6 @@
 package uz.ccrew;
 
+import uz.ccrew.entity.Trainee;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.entity.Training;
 import uz.ccrew.config.AppConfig;
@@ -40,7 +41,7 @@ public class ApplicationRunner {
         log.info("---- Trainee Operations ----");
 
         TraineeCreateDTO traineeDTO = TraineeCreateDTO.builder()
-                .firstName("Maksud")
+                .firstName("Log")
                 .lastName("Rustamov")
                 .birthOfDate(LocalDate.of(2005, 1, 1))
                 .address("Test")
@@ -48,8 +49,8 @@ public class ApplicationRunner {
         Long id = facade.getTraineeService().create(traineeDTO);
         log.info("Created Trainee ID: {}", id);
 
-//        List<Trainee> trainees = facade.getTraineeService().findAll();
-//        trainees.forEach(t -> log.info("Trainee: {} {}, ID: {}", t.getUser().getFirstName(), t.getUser().getLastName(), t.getId()));
+        List<Trainee> trainees = facade.getTraineeService().findAll();
+        trainees.forEach(t -> log.info("Trainee: {} {}, ID: {}", t.getUser().getFirstName(), t.getUser().getLastName(), t.getId()));
     }
 
     private static void createAndListTrainers(@NotNull ApplicationFacade facade) {
@@ -91,9 +92,9 @@ public class ApplicationRunner {
     private static void advancedTraineeOperations(@NotNull ApplicationFacade facade) {
         log.info("---- Advanced Trainee Operations ----");
 
-//        String usernameToDelete = "John.Doe";
-//        facade.getTraineeService().deleteTraineeByUsername(usernameToDelete);
-//        log.info("Deleted Trainee with username: {}", usernameToDelete);
+        String usernameToDelete = "John.Doe";
+        facade.getTraineeService().deleteTraineeByUsername(usernameToDelete);
+        log.info("Deleted Trainee with username: {}", usernameToDelete);
 
         facade.getTraineeService().updateTraineeTrainers(2L, List.of(15L, 16L));
         log.info("Updated trainers for Trainee ID: 2");

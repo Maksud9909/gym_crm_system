@@ -49,15 +49,20 @@ public class TrainerDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainer, Tra
 
         String firstName = dto.firstName();
         String lastName = dto.lastName();
+
+        String username = userUtils.generateUniqueUsername(firstName, lastName);
+        String password = userUtils.generateRandomPassword();
+
         User user = User.builder()
                 .firstName(firstName)
                 .lastName(lastName)
-                .username(userUtils.generateUniqueUsername(firstName, lastName))
-                .password(userUtils.generateRandomPassword())
+                .username(username)
+                .password(password)
                 .isActive(Boolean.TRUE)
                 .build();
 
         Long userId = userDAO.create(user);
+
         user = userDAO.findById(userId).orElseThrow();
 
         TrainingType trainingType = session.get(TrainingType.class, dto.trainingTypeId());
@@ -73,6 +78,7 @@ public class TrainerDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainer, Tra
 
         return trainer.getId();
     }
+
 
     @Override
     public void update(Long id, TrainerUpdateDTO dto) {

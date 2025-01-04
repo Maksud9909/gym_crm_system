@@ -39,17 +39,23 @@ public class TraineeDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainee, Tra
     @Override
     public Long create(TraineeCreateDTO dto) {
         Session session = getSessionFactory().getCurrentSession();
+
         String firstName = dto.firstName();
         String lastName = dto.lastName();
+
+        String username = userUtils.generateUniqueUsername(firstName, lastName);
+        String password = userUtils.generateRandomPassword();
 
         User user = User.builder()
                 .firstName(firstName)
                 .lastName(lastName)
-                .username(userUtils.generateUniqueUsername(firstName, lastName))
-                .password(userUtils.generateRandomPassword())
-                .isActive(Boolean.TRUE).build();
+                .username(username)
+                .password(password)
+                .isActive(Boolean.TRUE)
+                .build();
 
         Long userId = userDAO.create(user);
+
         user = userDAO.findById(userId).orElseThrow();
 
         Trainee trainee = Trainee.builder()
@@ -59,11 +65,11 @@ public class TraineeDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainee, Tra
                 .build();
 
         session.persist(trainee);
-
         log.info("Created {}: ID={}, Trainee={}", getEntityName(), trainee.getId(), dto);
 
         return trainee.getId();
     }
+
 
     @Override
     public void update(Long id, TraineeUpdateDTO dto) {
