@@ -16,6 +16,7 @@ import java.util.Optional;
 @Repository
 public class UserDAOImpl extends AbstractBaseDAO<User> implements UserDAO {
     public static final String FIND_BY_USERNAME = "SELECT u FROM User u WHERE u.username = :username";
+    private static final String CHECK_USERNAME_QUERY = "SELECT COUNT(u) FROM User u WHERE u.username = :username";
     private final UserUtils userUtils;
     private static final String ENTITY_NAME = "User";
 
@@ -44,12 +45,21 @@ public class UserDAOImpl extends AbstractBaseDAO<User> implements UserDAO {
         return id;
     }
 
+    @Override
     public Optional<User> findByUsername(String username) {
         Session session = getSessionFactory().getCurrentSession();
         User user = session.createQuery(FIND_BY_USERNAME, User.class)
                 .setParameter("username", username)
                 .uniqueResult();
         return Optional.ofNullable(user);
+    }
+
+    public boolean isUsernameExists(String username) {
+        Session session = getSessionFactory().getCurrentSession();
+        Long count = session.createQuery(CHECK_USERNAME_QUERY, Long.class)
+                .setParameter("username", username)
+                .uniqueResult();
+        return count > 0;
     }
 
 

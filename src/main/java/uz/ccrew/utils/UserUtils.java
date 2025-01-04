@@ -1,5 +1,7 @@
 package uz.ccrew.utils;
 
+import uz.ccrew.dao.UserDAO;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -7,14 +9,14 @@ import java.security.SecureRandom;
 
 @Component
 public class UserUtils {
+    private final UserDAO userDAO;
     private static final String DOT = ".";
-    private static final String CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private static final byte PASSWORD_LENGTH = 10;
-    private final UsernameValidator usernameValidator;
+    private static final String CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
     @Autowired
-    public UserUtils(UsernameValidator usernameValidator) {
-        this.usernameValidator = usernameValidator;
+    public UserUtils(UserDAO userDAO) {
+        this.userDAO = userDAO;
     }
 
     public String generateUniqueUsername(String firstName, String lastName) {
@@ -22,7 +24,7 @@ public class UserUtils {
         String uniqueUsername = baseUsername;
         int counter = 1;
 
-        while (usernameValidator.isUsernameExists(uniqueUsername)) {
+        while (userDAO.isUsernameExists(uniqueUsername)) {
             uniqueUsername = baseUsername + DOT + counter++;
         }
 

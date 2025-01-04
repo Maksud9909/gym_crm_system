@@ -14,4 +14,6 @@ public interface UserDAO extends BaseDAO<User> {
     List<User> findAll();
 
     Optional<User> findByUsername(String username);
+
+    boolean isUsernameExists(String username);
 }
