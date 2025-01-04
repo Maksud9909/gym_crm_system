@@ -14,5 +14,4 @@ public class SecurityContext {
     public static void clear() {
         currentUserHolder.remove();
     }
-
 }

@@ -1,7 +1,6 @@
 package uz.ccrew.dao.base.advancedBase;
 
 import uz.ccrew.entity.User;
-import uz.ccrew.entity.Trainee;
 import uz.ccrew.exp.EntityNotFoundException;
 
 import org.hibernate.Session;
@@ -11,7 +10,7 @@ import org.hibernate.SessionFactory;
 import java.util.Optional;
 
 @Slf4j
-public abstract class AbstractAdvancedUserBaseCRUDDAO<T , D, U> extends AbstractAdvancedBaseCRUDDAO<T, D, U> implements BaseAdvancedUserCRUDDAO<T, D, U> {
+public abstract class AbstractAdvancedUserBaseCRUDDAO<T, D, U> extends AbstractAdvancedBaseCRUDDAO<T, D, U> implements BaseAdvancedUserCRUDDAO<T, D, U> {
 
     public static final String FIND_BY_USERNAME = "FROM %s t JOIN FETCH t.user u where u.username = :username";
 
@@ -31,41 +30,30 @@ public abstract class AbstractAdvancedUserBaseCRUDDAO<T , D, U> extends Abstract
     @Override
     public void changePassword(Long id, String newPassword) {
         Session session = getSessionFactory().getCurrentSession();
-        T entity = session.get(getEntityClass(), id);
-        if (entity != null) {
-            if (entity instanceof Trainee) {
-                User user = ((Trainee) entity).getUser();
-                user.setPassword(newPassword);
-                session.merge(user);
-                log.info("Password updated for {} with ID={}", getEntityName(), id);
-            } else {
-                log.warn("Unsupported entity type for changePassword operation: {}", getEntityName());
-                throw new UnsupportedOperationException("Entity type " + getEntityName() + " not supported for this operation");
-            }
+        User user = session.get(User.class, id);
+        if (user != null) {
+            user.setPassword(newPassword);
+            session.merge(user);
+            log.info("Password updated for User with ID={}", id);
         } else {
-            log.warn("Entity {} with ID={} not found to change password", getEntityName(), id);
-            throw new EntityNotFoundException("Entity " + getEntityName() + " with ID=" + id + " not found to change password");
+            log.warn("User with ID={} not found to change password", id);
+            throw new EntityNotFoundException("User with ID=" + id + " not found to change password");
         }
     }
 
     @Override
     public void activateDeactivate(Long id, Boolean isActive) {
         Session session = getSessionFactory().getCurrentSession();
-        T entity = session.get(getEntityClass(), id);
-        if (entity != null) {
-            if (entity instanceof Trainee) {
-                User user = ((Trainee) entity).getUser();
-                user.setIsActive(isActive);
-                session.merge(user);
-                log.info("Updated isActive for {} ID={}", getEntityName(), id);
-            } else {
-                log.warn("Unsupported entity type for activateDeactivate operation: {}", getEntityName());
-                throw new UnsupportedOperationException("Entity type " + getEntityName() + " not supported for this operation");
-            }
+        User user = session.get(User.class, id);
+        if (user != null) {
+            user.setIsActive(isActive);
+            session.merge(user);
+            log.info("Updated isActive for User with ID={}", id);
         } else {
-            log.warn("Entity {} with ID={} not found to update isActive", getEntityName(), id);
-            throw new EntityNotFoundException("Entity " + getEntityName() + " with ID=" + id + " not found to activate and Deactivate profile");
+            log.warn("User with ID={} not found to update isActive", id);
+            throw new EntityNotFoundException("User with ID=" + id + " not found to activate and deactivate profile");
         }
     }
+
 
 }

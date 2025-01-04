@@ -15,7 +15,6 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public boolean login(String username, String password) {
-        // Допустим, проверяем юзера в БД
         var userOpt = userDAO.findByUsername(username);
         if (userOpt.isEmpty()) return false;
 
@@ -23,7 +22,6 @@ public class AuthServiceImpl implements AuthService {
         if (!user.getPassword().equals(password)) {
             return false;
         }
-        // Записываем в SecurityContext
         SecurityContext.setCurrentUser(username);
         return true;
     }
