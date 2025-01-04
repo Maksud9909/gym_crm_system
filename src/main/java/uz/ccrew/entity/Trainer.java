@@ -1,6 +1,5 @@
 package uz.ccrew.entity;
 
-import uz.ccrew.entity.base.UserAware;
 import uz.ccrew.entity.base.BaseEntity;
 
 import lombok.*;
@@ -18,7 +17,7 @@ import java.util.List;
 @ToString(callSuper = true, exclude = {"trainees", "training"})
 @Entity
 @Table(name = "trainers")
-public class Trainer extends BaseEntity implements UserAware {
+public class Trainer extends BaseEntity {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "trainee_trainer",
             joinColumns = @JoinColumn(name = "trainer_id"),
@@ -27,7 +26,7 @@ public class Trainer extends BaseEntity implements UserAware {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "training_type_id", nullable = false)
     private TrainingType trainingType;
-    @OneToMany(mappedBy = "trainer",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "trainer", fetch = FetchType.LAZY)
     private List<Training> training = new ArrayList<>();
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)

@@ -1,7 +1,7 @@
 package uz.ccrew.dao.base.advancedBase;
 
 import uz.ccrew.entity.User;
-import uz.ccrew.entity.base.UserAware;
+import uz.ccrew.entity.Trainee;
 import uz.ccrew.exp.EntityNotFoundException;
 
 import org.hibernate.Session;
@@ -11,7 +11,7 @@ import org.hibernate.SessionFactory;
 import java.util.Optional;
 
 @Slf4j
-public abstract class AbstractAdvancedUserBaseCRUDDAO<T extends UserAware, D, U> extends AbstractAdvancedBaseCRUDDAO<T, D, U> implements BaseAdvancedUserCRUDDAO<T, D, U> {
+public abstract class AbstractAdvancedUserBaseCRUDDAO<T , D, U> extends AbstractAdvancedBaseCRUDDAO<T, D, U> implements BaseAdvancedUserCRUDDAO<T, D, U> {
 
     public static final String FIND_BY_USERNAME = "FROM %s t JOIN FETCH t.user u where u.username = :username";
 
@@ -33,10 +33,15 @@ public abstract class AbstractAdvancedUserBaseCRUDDAO<T extends UserAware, D, U>
         Session session = getSessionFactory().getCurrentSession();
         T entity = session.get(getEntityClass(), id);
         if (entity != null) {
-            User user = entity.getUser();
-            user.setPassword(newPassword);
-            session.merge(user);
-            log.info("Password updated for {} with ID={}", getEntityName(), id);
+            if (entity instanceof Trainee) {
+                User user = ((Trainee) entity).getUser();
+                user.setPassword(newPassword);
+                session.merge(user);
+                log.info("Password updated for {} with ID={}", getEntityName(), id);
+            } else {
+                log.warn("Unsupported entity type for changePassword operation: {}", getEntityName());
+                throw new UnsupportedOperationException("Entity type " + getEntityName() + " not supported for this operation");
+            }
         } else {
             log.warn("Entity {} with ID={} not found to change password", getEntityName(), id);
             throw new EntityNotFoundException("Entity " + getEntityName() + " with ID=" + id + " not found to change password");
@@ -48,13 +53,19 @@ public abstract class AbstractAdvancedUserBaseCRUDDAO<T extends UserAware, D, U>
         Session session = getSessionFactory().getCurrentSession();
         T entity = session.get(getEntityClass(), id);
         if (entity != null) {
-            User user = entity.getUser();
-            user.setIsActive(isActive);
-            session.merge(user);
-            log.info("Updated isActive for {} ID={}", getEntityName(), id);
+            if (entity instanceof Trainee) {
+                User user = ((Trainee) entity).getUser();
+                user.setIsActive(isActive);
+                session.merge(user);
+                log.info("Updated isActive for {} ID={}", getEntityName(), id);
+            } else {
+                log.warn("Unsupported entity type for activateDeactivate operation: {}", getEntityName());
+                throw new UnsupportedOperationException("Entity type " + getEntityName() + " not supported for this operation");
+            }
         } else {
             log.warn("Entity {} with ID={} not found to update isActive", getEntityName(), id);
             throw new EntityNotFoundException("Entity " + getEntityName() + " with ID=" + id + " not found to activate and Deactivate profile");
         }
     }
+
 }

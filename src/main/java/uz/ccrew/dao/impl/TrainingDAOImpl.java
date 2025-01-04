@@ -6,8 +6,8 @@ import uz.ccrew.dao.base.base.AbstractBaseDAO;
 
 import org.hibernate.Session;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
