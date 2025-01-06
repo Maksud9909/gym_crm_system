@@ -109,18 +109,24 @@ public class ApplicationRunner {
 
     private static void advancedTrainingOperations(@NotNull ApplicationFacade facade) {
         List<Training> trainings = facade.getTrainingService().getTraineeTrainings(
-                "Jane.Smith",
+                "Michael.Brown",
                 LocalDate.of(2023, 1, 1),
-                LocalDate.of(2023, 12, 31),
-                "Lev",
-                3L);
+                LocalDate.of(2024, 12, 31),
+                "John",
+                null);
+        log.info("Printing trainings for {} trainings", trainings.size());
         trainings.forEach(t -> log.info("Training: {}, Trainer: {}",
                 t.getTrainingName(),
                 t.getTrainer().getUser().getFirstName()));
-                facade.getTrainingService().getTrainerTrainings(
-                        "Test",
-                        LocalDate.of(2023, 1, 1),
-                        LocalDate.of(2023, 12, 31),
-                        "Jane");
+
+        List<Training> list = facade.getTrainingService().getTrainerTrainings(
+                "Test",
+                LocalDate.of(2023, 1, 1),
+                LocalDate.of(2023, 12, 31),
+                "Jane");
+        log.info("Printing trainings for {} trainings", list.size());
+        trainings.forEach(t -> log.info("Training: {},Trainee {}",
+                t.getTrainingName(),
+                t.getTrainee().getUser().getFirstName()));
     }
 }

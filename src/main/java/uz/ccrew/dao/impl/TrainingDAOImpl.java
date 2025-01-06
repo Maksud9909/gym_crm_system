@@ -43,6 +43,8 @@ public class TrainingDAOImpl extends AbstractBaseDAO<Training> implements Traini
         String builtQuery = QueryBuilder.buildTraineeTrainingsQuery(fromDate, toDate, trainerName, trainingTypeId);
         Query<Training> query = session.createQuery(builtQuery, Training.class);
 
+        log.debug("Generated HQL Query: {}", builtQuery);
+
         query.setParameter("username", username);
         if (fromDate != null) query.setParameter("fromDate", fromDate);
         if (toDate != null) query.setParameter("toDate", toDate);
@@ -60,6 +62,8 @@ public class TrainingDAOImpl extends AbstractBaseDAO<Training> implements Traini
         Session session = getSessionFactory().getCurrentSession();
         String builtQuery = QueryBuilder.buildTrainerTrainingsQuery(fromDate, toDate, traineeName);
         Query<Training> query = session.createQuery(builtQuery, Training.class);
+
+        log.debug("Generated HQL Query: {}", builtQuery);
 
         query.setParameter("username", username);
         if (fromDate != null) query.setParameter("fromDate", fromDate);

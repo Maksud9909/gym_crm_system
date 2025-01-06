@@ -4,8 +4,7 @@ import java.time.LocalDate;
 
 public class QueryBuilder {
     public static String buildTraineeTrainingsQuery(LocalDate fromDate, LocalDate toDate, String trainerName, Long trainingTypeId) {
-        StringBuilder query = new StringBuilder("SELECT t FROM Training t JOIN t.trainer tr JOIN tr.user u" +
-                                                " WHERE u.username = :username");
+        StringBuilder query = new StringBuilder("SELECT t FROM Training t JOIN t.trainer tr JOIN tr.user u WHERE u.username = :username");
 
         if (fromDate != null) {
             query.append(" AND t.trainingDate >= :fromDate");
@@ -14,7 +13,7 @@ public class QueryBuilder {
             query.append(" AND t.trainingDate <= :toDate");
         }
         if (trainerName != null) {
-            query.append(" AND (u.firstName LIKE CONCAT('%', :trainerName, '%')");
+            query.append(" AND u.firstName LIKE CONCAT('%', :trainerName, '%')");
         }
         if (trainingTypeId != null) {
             query.append(" AND t.trainingType.id = :trainingTypeId");
@@ -33,7 +32,7 @@ public class QueryBuilder {
             query.append(" AND t.trainingDate <= :toDate");
         }
         if (traineeName != null) {
-            query.append(" AND (tu.firstName LIKE CONCAT('%', :traineeName, '%')");
+            query.append(" AND tu.firstName LIKE CONCAT('%', :traineeName, '%')");
         }
 
         return query.toString();
