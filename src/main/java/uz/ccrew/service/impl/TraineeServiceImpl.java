@@ -46,7 +46,7 @@ public class TraineeServiceImpl extends AbstractAdvancedUserService<Trainee, Tra
         Optional<Trainee> trainee = traineeDAO.findById(id);
         if (trainee.isPresent()) {
             Trainee traineeEntity = trainee.get();
-            authService.login(traineeEntity.getUser().getUsername(), traineeEntity.getUser().getPassword());
+            authService.register(traineeEntity.getUser().getUsername());
         }
         log.info("{} created with ID={}", getEntityName(), id);
         return id;

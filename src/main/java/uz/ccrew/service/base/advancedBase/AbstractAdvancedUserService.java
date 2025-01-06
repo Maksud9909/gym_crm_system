@@ -27,7 +27,6 @@ public abstract class AbstractAdvancedUserService<T, D, U> extends AbstractAdvan
                 .orElseThrow(() -> new EntityNotFoundException(getEntityName() + " with username=" + username + " not found"));
     }
 
-
     @Override
     @Transactional
     public void changePassword(Long id, String newPassword) {

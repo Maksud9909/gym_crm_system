@@ -26,7 +26,7 @@ public class TrainerServiceImpl extends AbstractAdvancedUserService<Trainer, Tra
 
     @Autowired
     public TrainerServiceImpl(AuthService authService, TrainerDAO trainerDAO) {
-        super(trainerDAO,authService);
+        super(trainerDAO, authService);
         this.authService = authService;
         this.trainerDAO = trainerDAO;
         log.debug("TrainerService initialized");
@@ -55,7 +55,7 @@ public class TrainerServiceImpl extends AbstractAdvancedUserService<Trainer, Tra
         Optional<Trainer> trainer = trainerDAO.findById(id);
         if (trainer.isPresent()) {
             Trainer traineeEntity = trainer.get();
-            authService.login(traineeEntity.getUser().getUsername(), traineeEntity.getUser().getPassword());
+            authService.register(traineeEntity.getUser().getUsername());
         }
         log.info("{} created with ID={}", getEntityName(), id);
         return id;

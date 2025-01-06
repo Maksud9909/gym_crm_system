@@ -36,7 +36,7 @@ public abstract class AbstractAdvancedUserBaseCRUDDAO<T, D, U> extends AbstractA
             session.merge(user);
             log.info("Password updated for User with ID={}", id);
         } else {
-            log.warn("User with ID={} not found to change password", id);
+            log.error("User with ID={} not found to change password", id);
             throw new EntityNotFoundException("User with ID=" + id + " not found to change password");
         }
     }
@@ -50,10 +50,8 @@ public abstract class AbstractAdvancedUserBaseCRUDDAO<T, D, U> extends AbstractA
             session.merge(user);
             log.info("Updated isActive for User with ID={}", id);
         } else {
-            log.warn("User with ID={} not found to update isActive", id);
+            log.error("User with ID={} not found to update isActive", id);
             throw new EntityNotFoundException("User with ID=" + id + " not found to activate and deactivate profile");
         }
     }
-
-
 }

@@ -30,7 +30,7 @@ public class TrainingTypeDAOImpl implements TrainingTypeDAO {
             log.info("Found TrainingType {} with ID={}", trainingType.getTrainingTypeName(), id);
             return Optional.of(trainingType);
         } else {
-            log.warn("No TrainingType found with ID={}", id);
+            log.error("No TrainingType found with ID={}", id);
             return Optional.empty();
         }
     }

@@ -41,7 +41,7 @@ public abstract class AbstractAdvancedBaseCRUDDAO<T, D, U> implements BaseAdvanc
             session.remove(entity);
             log.info("Deleted {} with ID={}", getEntityName(), id);
         } else {
-            log.warn("Entity {} with ID={} not found for deletion", getEntityName(), id);
+            log.error("Entity {} with ID={} not found for deletion", getEntityName(), id);
             throw new EntityNotFoundException(getEntityName() + " with ID=" + id + " not found");
         }
     }

@@ -28,7 +28,7 @@ public abstract class AbstractBaseDAO<T> implements BaseDAO<T> {
             log.info("Found {} by ID={}: {}", getEntityName(), id, entity);
             return Optional.of(entity);
         } else {
-            log.warn("{} not found for ID={}", getEntityName(), id);
+            log.error("{} not found for ID={}", getEntityName(), id);
             return Optional.empty();
         }
     }

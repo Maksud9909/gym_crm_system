@@ -77,7 +77,7 @@ public class TraineeDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainee, Tra
 
         Trainee trainee = session.get(Trainee.class, id);
         if (trainee == null) {
-            log.warn("Trainee with ID={} not found", id);
+            log.error("Trainee with ID={} not found", id);
             throw new EntityNotFoundException("Trainee not found for update with ID=" + id);
         }
 
@@ -107,7 +107,7 @@ public class TraineeDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainee, Tra
             session.remove(trainee);
             log.info("Deleted Trainee profile with username={}", username);
         } else {
-            log.warn("Trainee with username={} not found", username);
+            log.error("Trainee with username={} not found", username);
             throw new EntityNotFoundException("Trainee with username=" + username + " not found for delete with username");
         }
     }
@@ -134,7 +134,7 @@ public class TraineeDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainee, Tra
             session.merge(trainee);
             log.info("Updated trainers list for Trainee ID={}", traineeId);
         } else {
-            log.warn("Trainee with ID={} not found", traineeId);
+            log.error("Trainee with ID={} not found", traineeId);
             throw new EntityNotFoundException("Trainee with ID=" + traineeId + " not found for update Trainee Trainers");
         }
     }

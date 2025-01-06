@@ -2,6 +2,7 @@ package uz.ccrew.dao.impl;
 
 import uz.ccrew.dao.TrainingDAO;
 import uz.ccrew.entity.Training;
+import uz.ccrew.utils.QueryBuilder;
 import uz.ccrew.dao.base.base.AbstractBaseDAO;
 
 import org.hibernate.Session;
@@ -17,37 +18,6 @@ import java.time.LocalDate;
 @Repository
 public class TrainingDAOImpl extends AbstractBaseDAO<Training> implements TrainingDAO {
     private static final String ENTITY_NAME = "Training";
-
-    private static final String GET_TRAINEE_TRAININGS = """
-            SELECT t FROM Training t
-            JOIN t.trainee tr
-            JOIN tr.user u
-            JOIN t.trainer tn
-            JOIN tn.user tu
-            WHERE u.username = :username
-            AND (cast(:fromDate as date) IS NULL OR t.trainingDate >= :fromDate)
-            AND (cast(:toDate as date) IS NULL OR t.trainingDate <= :toDate)
-            AND (:trainerName IS NULL 
-                OR LOWER(tu.firstName) LIKE LOWER(CONCAT('%', :trainerName, '%'))
-                OR LOWER(tu.lastName) LIKE LOWER(CONCAT('%', :trainerName, '%')))
-            AND (cast(:trainingTypeId as long) IS NULL OR t.trainingType.id = :trainingTypeId)
-            ORDER BY t.trainingDate ASC
-            """;
-
-    private static final String GET_TRAINER_TRAININGS = """
-            SELECT t FROM Training t
-            JOIN t.trainer tr
-            JOIN tr.user u
-            JOIN t.trainee te
-            JOIN te.user tu
-            WHERE u.username = :username
-            AND (cast(:fromDate as date) IS NULL OR t.trainingDate >= :fromDate)
-            AND (cast(:toDate as date) IS NULL OR t.trainingDate <= :toDate)
-            AND (:traineeName IS NULL 
-                OR LOWER(tu.firstName) LIKE LOWER(CONCAT('%', :traineeName, '%'))
-                OR LOWER(tu.lastName) LIKE LOWER(CONCAT('%', :traineeName, '%')))
-            ORDER BY t.trainingDate ASC
-            """;
 
     public TrainingDAOImpl(SessionFactory sessionFactory) {
         super(sessionFactory, Training.class);
@@ -70,18 +40,16 @@ public class TrainingDAOImpl extends AbstractBaseDAO<Training> implements Traini
                                               String trainerName,
                                               Long trainingTypeId) {
         Session session = getSessionFactory().getCurrentSession();
-        Query<Training> query = session.createQuery(GET_TRAINEE_TRAININGS, Training.class);
+        String builtQuery = QueryBuilder.buildTraineeTrainingsQuery(fromDate, toDate, trainerName, trainingTypeId);
+        Query<Training> query = session.createQuery(builtQuery, Training.class);
 
         query.setParameter("username", username);
-        query.setParameter("fromDate", fromDate);
-        query.setParameter("toDate", toDate);
-        query.setParameter("trainerName", trainerName);
-        query.setParameter("trainingTypeId", trainingTypeId);
+        if (fromDate != null) query.setParameter("fromDate", fromDate);
+        if (toDate != null) query.setParameter("toDate", toDate);
+        if (trainerName != null) query.setParameter("trainerName", trainerName);
+        if (trainingTypeId != null) query.setParameter("trainingTypeId", trainingTypeId);
 
-        List<Training> trainings = query.getResultList();
-        log.debug("Found {} trainee trainings for username: {}", trainings.size(), username);
-
-        return trainings;
+        return query.getResultList();
     }
 
     @Override
@@ -90,17 +58,15 @@ public class TrainingDAOImpl extends AbstractBaseDAO<Training> implements Traini
                                               LocalDate toDate,
                                               String traineeName) {
         Session session = getSessionFactory().getCurrentSession();
-        Query<Training> query = session.createQuery(GET_TRAINER_TRAININGS, Training.class);
+        String builtQuery = QueryBuilder.buildTrainerTrainingsQuery(fromDate, toDate, traineeName);
+        Query<Training> query = session.createQuery(builtQuery, Training.class);
 
         query.setParameter("username", username);
-        query.setParameter("fromDate", fromDate);
-        query.setParameter("toDate", toDate);
-        query.setParameter("traineeName", traineeName);
+        if (fromDate != null) query.setParameter("fromDate", fromDate);
+        if (toDate != null) query.setParameter("toDate", toDate);
+        if (traineeName != null) query.setParameter("traineeName", traineeName);
 
-        List<Training> trainings = query.getResultList();
-        log.debug("Found {} trainer trainings for username: {}", trainings.size(), username);
-
-        return trainings;
+        return query.getResultList();
     }
 
     @Override
