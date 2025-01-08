@@ -7,8 +7,6 @@ import uz.ccrew.service.TraineeService;
 import uz.ccrew.service.TrainerService;
 import uz.ccrew.service.TrainingService;
 import uz.ccrew.service.TrainingTypeService;
-import uz.ccrew.dto.trainee.TraineeCreateDTO;
-import uz.ccrew.dto.trainer.TrainerCreateDTO;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +32,7 @@ public class ApplicationFacade {
         log.info("ApplicationFacade initialized with services");
     }
 
-    public Long createTrainee(TraineeCreateDTO trainee) {
+    public Long createTrainee(Trainee trainee) {
         return traineeService.create(trainee);
     }
 
@@ -46,7 +44,7 @@ public class ApplicationFacade {
         return traineeService.findAll();
     }
 
-    public Long createTrainer(TrainerCreateDTO trainer) {
+    public Long createTrainer(Trainer trainer) {
         return trainerService.create(trainer);
     }
 

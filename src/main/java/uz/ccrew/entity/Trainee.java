@@ -25,9 +25,9 @@ public class Trainee extends BaseEntity {
     private String address;
     @ManyToMany(mappedBy = "trainees", fetch = FetchType.LAZY)
     private List<Trainer> trainers = new ArrayList<>();
-    @OneToMany(mappedBy = "trainee", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "trainee", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Training> training = new ArrayList<>();
     @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @JoinColumn(name = "user_id", unique = true)
     private User user;
 }

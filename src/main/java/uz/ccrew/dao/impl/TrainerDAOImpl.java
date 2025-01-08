@@ -1,31 +1,27 @@
 package uz.ccrew.dao.impl;
 
-import uz.ccrew.dao.UserDAO;
-import uz.ccrew.dto.trainee.TraineeUpdateDTO;
-import uz.ccrew.dto.trainer.TrainerUpdateDTO;
 import uz.ccrew.entity.User;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.dao.TrainerDAO;
-import uz.ccrew.entity.TrainingType;
-import uz.ccrew.dto.trainer.TrainerCreateDTO;
-import uz.ccrew.dao.base.advancedBase.AbstractAdvancedUserBaseCRUDDAO;
+import uz.ccrew.exp.EntityNotFoundException;
 
+import lombok.Getter;
 import org.hibernate.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
-import uz.ccrew.exp.EntityNotFoundException;
-import uz.ccrew.utils.UserUtils;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
+@Getter
 @Repository
-public class TrainerDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainer, TrainerCreateDTO, TrainerUpdateDTO> implements TrainerDAO {
-    private final UserDAO userDAO;
-    private final UserUtils userUtils;
-    private static final String ENTITY_NAME = "Trainer";
+public class TrainerDAOImpl implements TrainerDAO {
+    private static final String FIND_ALL = "SELECT t from Trainer t";
+    private static final String FIND_BY_USERNAME = "SELECT t from Trainer t where t.username = :username";
+    private final SessionFactory sessionFactory;
     public static final String FIND_UNASSIGNED_TRAINERS = """
                 SELECT tr FROM Trainer tr
                 WHERE tr.id NOT IN (
@@ -36,88 +32,100 @@ public class TrainerDAOImpl extends AbstractAdvancedUserBaseCRUDDAO<Trainer, Tra
             """;
 
     @Autowired
-    public TrainerDAOImpl(SessionFactory sessionFactory, UserDAO userDAO, UserUtils userUtils) {
-        super(sessionFactory, Trainer.class);
-        this.userDAO = userDAO;
-        this.userUtils = userUtils;
+    public TrainerDAOImpl(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
         log.debug("TrainerDAO instantiated");
     }
 
     @Override
-    public Long create(TrainerCreateDTO dto) {
+    public Long create(Trainer trainer) {
         Session session = getSessionFactory().getCurrentSession();
-
-        String firstName = dto.firstName();
-        String lastName = dto.lastName();
-
-        String username = userUtils.generateUniqueUsername(firstName, lastName);
-        String password = userUtils.generateRandomPassword();
-
-        User user = User.builder()
-                .firstName(firstName)
-                .lastName(lastName)
-                .username(username)
-                .password(password)
-                .isActive(Boolean.TRUE)
-                .build();
-
-        Long userId = userDAO.create(user);
-
-        user = userDAO.findById(userId).orElseThrow();
-
-        TrainingType trainingType = session.get(TrainingType.class, dto.trainingTypeId());
-
-        Trainer trainer = Trainer.builder()
-                .user(user)
-                .trainingType(trainingType)
-                .build();
-
         session.persist(trainer);
-
-        log.info("Created {}: ID={}, Trainer={}", getEntityName(), trainer.getId(), dto);
-
+        log.info("Created Trainer:{} with ID:{}", trainer, trainer.getId());
         return trainer.getId();
+    }
+
+    @Override
+    public Optional<Trainer> findById(Long id) {
+        Session session = getSessionFactory().getCurrentSession();
+        return Optional.ofNullable(session.get(Trainer.class, id));
+    }
+
+    @Override
+    public List<Trainer> findAll() {
+        Session session = getSessionFactory().getCurrentSession();
+        return session.createQuery(FIND_ALL, Trainer.class).getResultList();
     }
 
 
     @Override
-    public void update(Long id, TrainerUpdateDTO dto) {
+    public void delete(Long id) {
         Session session = getSessionFactory().getCurrentSession();
-
         Trainer trainer = session.get(Trainer.class, id);
-        if (trainer == null) {
-            log.error("Trainer with ID={} not found", id);
-            throw new EntityNotFoundException("Trainer with ID=" + id + " not found for update");
+        if (trainer != null) {
+            session.remove(trainer);
+            log.info("Deleted Trainer:{} with ID:{}", trainer, trainer.getId());
+        } else {
+            log.error("Trainer with ID:{} not found for delete", id);
+            throw new EntityNotFoundException("Trainer with ID:" + id + " not found for delete");
         }
-
-        User user = trainer.getUser();
-        user.setFirstName(dto.firstName());
-        user.setLastName(dto.lastName());
-        user.setUsername(dto.username());
-        user.setPassword(dto.password());
-
-        TrainingType trainingType = session.get(TrainingType.class, dto.trainingTypeId());
-
-        trainer.setTrainingType(trainingType);
-
-        session.merge(user);
-        session.merge(trainer);
-
-        log.info("Updated {}: ID={}, Trainer={}", getEntityName(), id, dto);
     }
 
+    @Override
+    public void update(Trainer trainer) {
+        Session session = getSessionFactory().getCurrentSession();
+        Trainer existingTrainer = session.get(Trainer.class, trainer.getId());
+        if (existingTrainer == null) {
+            log.error("Trainer with ID={} not found", trainer.getId());
+            throw new EntityNotFoundException("Trainer with ID=" + trainer.getId() + " not found for update");
+        }
+
+        session.merge(trainer);
+        log.info("Updated Trainer:{} with ID:{}", trainer, trainer.getId());
+    }
+
+    @Override
+    public Optional<Trainer> findByUsername(String username) {
+        Session session = getSessionFactory().getCurrentSession();
+        Trainer trainer = session.createQuery(FIND_BY_USERNAME, Trainer.class)
+                .setParameter("username", username)
+                .uniqueResult();
+        return Optional.ofNullable(trainer);
+    }
+
+    @Override
+    public void changePassword(Long id, String newPassword) {
+        Session session = getSessionFactory().getCurrentSession();
+        User user = session.get(User.class, id);
+        if (user != null) {
+            user.setPassword(newPassword);
+            session.merge(user);
+            log.info("Password updated for User with ID={}", id);
+        } else {
+            log.error("User with ID={} not found to change password", id);
+            throw new EntityNotFoundException("User with ID=" + id + " not found to change password");
+        }
+    }
+
+    @Override
+    public void activateDeactivate(Long id, Boolean isActive) {
+        Session session = getSessionFactory().getCurrentSession();
+        User user = session.get(User.class, id);
+        if (user != null) {
+            user.setIsActive(isActive);
+            session.merge(user);
+            log.info("Updated isActive for User with ID={}", id);
+        } else {
+            log.error("User with ID={} not found to update isActive", id);
+            throw new EntityNotFoundException("User with ID=" + id + " not found to activate and deactivate profile");
+        }
+    }
 
     @Override
     public List<Trainer> getUnassignedTrainers(String traineeUsername) {
         Session session = getSessionFactory().getCurrentSession();
-
         return session.createQuery(FIND_UNASSIGNED_TRAINERS, Trainer.class)
                 .setParameter("traineeUsername", traineeUsername)
                 .list();
-    }
-
-    @Override
-    protected String getEntityName() {
-        return ENTITY_NAME;
     }
 }

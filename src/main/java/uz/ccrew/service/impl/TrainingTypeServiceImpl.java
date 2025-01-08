@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 public class TrainingTypeServiceImpl implements TrainingTypeService {
-    private static final String ENTITY_NAME = "TrainingType";
     private final TrainingTypeDAO dao;
 
     @Autowired
@@ -24,8 +23,8 @@ public class TrainingTypeServiceImpl implements TrainingTypeService {
     @Override
     @Transactional(readOnly = true)
     public TrainingType findById(Long id) {
-        log.info("Finding {} by ID={}", ENTITY_NAME, id);
+        log.info("Finding TrainingType by ID={}", id);
         return dao.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(ENTITY_NAME + " with ID=" + id + " not found"));
+                .orElseThrow(() -> new EntityNotFoundException("TrainingType with ID=" + id + " not found"));
     }
 }

@@ -1,15 +1,10 @@
 package uz.ccrew;
 
-import uz.ccrew.entity.Trainee;
-import uz.ccrew.entity.Trainer;
-import uz.ccrew.entity.Training;
+import uz.ccrew.entity.*;
 import uz.ccrew.config.AppConfig;
-import uz.ccrew.entity.TrainingType;
 import uz.ccrew.config.HibernateConfig;
 import uz.ccrew.config.DataSourceConfig;
 import uz.ccrew.config.ApplicationFacade;
-import uz.ccrew.dto.trainee.TraineeCreateDTO;
-import uz.ccrew.dto.trainer.TrainerCreateDTO;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -28,25 +23,30 @@ public class ApplicationRunner {
 
         log.info("---- Starting Application ----");
 
-        createAndListTrainees(facade);
-        createAndListTrainers(facade);
-        createAndListTrainings(facade);
-        advancedTrainingOperations(facade);
-        advancedTraineeOperations(facade);
-        advancedTrainerOperations(facade);
+//        createAndListTrainees(facade);
+//        createAndListTrainers(facade);
+//        createAndListTrainings(facade);
+//        advancedTrainingOperations(facade);
+//        advancedTraineeOperations(facade);
+//        advancedTrainerOperations(facade);
         log.info("---- Application Finished ----");
     }
 
     private static void createAndListTrainees(@NotNull ApplicationFacade facade) {
         log.info("---- Trainee Operations ----");
 
-        TraineeCreateDTO traineeDTO = TraineeCreateDTO.builder()
-                .firstName("Log")
+        User user = User.builder()
+                .firstName("Rustam")
+                .lastName("jj")
                 .lastName("Rustamov")
-                .birthOfDate(LocalDate.of(2005, 1, 1))
+                .build();
+
+        Trainee trainee = Trainee.builder()
+                .user(user)
+                .dateOfBirth(LocalDate.of(2005, 1, 1))
                 .address("Test")
                 .build();
-        Long id = facade.getTraineeService().create(traineeDTO);
+        Long id = facade.getTraineeService().create(trainee);
         log.info("Created Trainee ID: {}", id);
 
         List<Trainee> trainees = facade.getTraineeService().findAll();
@@ -56,13 +56,19 @@ public class ApplicationRunner {
     private static void createAndListTrainers(@NotNull ApplicationFacade facade) {
         log.info("---- Trainer Operations ----");
 
-        TrainerCreateDTO trainerDTO = TrainerCreateDTO.builder()
-                .firstName("Lev")
-                .lastName("Smith")
-                .trainingTypeId(1L)
+        TrainingType trainingType = facade.getTrainingTypeService().findById(1L);
+
+        User user = User.builder()
+                .firstName("Sasha")
+                .lastName("Jukov")
                 .build();
-        Long trainerId = facade.getTrainerService().create(trainerDTO);
-        log.info("Created Trainer ID: {}", trainerId);
+
+        Trainer trainer = Trainer.builder()
+                .trainingType(trainingType)
+                .user(user)
+                .build();
+        Long id = facade.getTrainerService().create(trainer);
+        log.info("Created Trainer ID: {}", id);
 
         List<Trainer> trainers = facade.getTrainerService().findAll();
         trainers.forEach(t -> log.info("Trainer: {} {}, ID: {}", t.getUser().getFirstName(), t.getUser().getLastName(), t.getId()));
@@ -75,7 +81,7 @@ public class ApplicationRunner {
 
         Training training = Training.builder()
                 .trainee(facade.getTraineeService().findById(1L))
-                .trainer(facade.getTrainerService().findById(11L))
+                .trainer(facade.getTrainerService().findById(1L))
                 .trainingName("Morning Yoga Session")
                 .trainingType(trainingType)
                 .trainingDate(LocalDate.now())

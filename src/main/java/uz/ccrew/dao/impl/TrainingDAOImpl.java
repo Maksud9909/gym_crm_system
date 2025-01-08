@@ -3,24 +3,40 @@ package uz.ccrew.dao.impl;
 import uz.ccrew.dao.TrainingDAO;
 import uz.ccrew.entity.Training;
 import uz.ccrew.utils.QueryBuilder;
-import uz.ccrew.dao.base.base.AbstractBaseDAO;
 
+import lombok.Getter;
 import org.hibernate.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.query.Query;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Optional;
 import java.time.LocalDate;
 
 @Slf4j
+@Getter
 @Repository
-public class TrainingDAOImpl extends AbstractBaseDAO<Training> implements TrainingDAO {
-    private static final String ENTITY_NAME = "Training";
+public class TrainingDAOImpl implements TrainingDAO {
+    private final SessionFactory sessionFactory;
+    public static final String FIND_ALL = """
+            SELECT t FROM Training t JOIN FETCH t.trainee
+            JOIN FETCH t.trainer
+            JOIN FETCH t.trainingType
+            """;
+    private static final String FIND_BY_ID = """
+            SELECT t FROM Training t
+            JOIN FETCH t.trainee
+            JOIN FETCH t.trainer
+            JOIN FETCH t.trainingType
+            WHERE t.id = :id
+            """;
 
+    @Autowired
     public TrainingDAOImpl(SessionFactory sessionFactory) {
-        super(sessionFactory, Training.class);
+        this.sessionFactory = sessionFactory;
         log.debug("TrainingDAO instantiated");
     }
 
@@ -29,8 +45,23 @@ public class TrainingDAOImpl extends AbstractBaseDAO<Training> implements Traini
         Session session = getSessionFactory().getCurrentSession();
         session.persist(training);
         Long id = training.getId();
-        log.info("Created {}: ID={}, Training={}", getEntityName(), id, training);
+        log.info("Created Training:{} with ID:{}", training, id);
         return id;
+    }
+
+    @Override
+    public Optional<Training> findById(Long id) {
+        Session session = getSessionFactory().getCurrentSession();
+        return session.createQuery(FIND_BY_ID, Training.class)
+                .setParameter("id", id)
+                .uniqueResultOptional();
+    }
+
+    @Override
+    public List<Training> findAll() {
+        Session session = getSessionFactory().getCurrentSession();
+        return session.createQuery(FIND_ALL, Training.class)
+                .getResultList();
     }
 
     @Override
@@ -39,6 +70,7 @@ public class TrainingDAOImpl extends AbstractBaseDAO<Training> implements Traini
                                               LocalDate toDate,
                                               String trainerName,
                                               Long trainingTypeId) {
+
         Session session = getSessionFactory().getCurrentSession();
         String builtQuery = QueryBuilder.buildTraineeTrainingsQuery(fromDate, toDate, trainerName, trainingTypeId);
         Query<Training> query = session.createQuery(builtQuery, Training.class);
@@ -59,6 +91,7 @@ public class TrainingDAOImpl extends AbstractBaseDAO<Training> implements Traini
                                               LocalDate fromDate,
                                               LocalDate toDate,
                                               String traineeName) {
+
         Session session = getSessionFactory().getCurrentSession();
         String builtQuery = QueryBuilder.buildTrainerTrainingsQuery(fromDate, toDate, traineeName);
         Query<Training> query = session.createQuery(builtQuery, Training.class);
@@ -71,10 +104,5 @@ public class TrainingDAOImpl extends AbstractBaseDAO<Training> implements Traini
         if (traineeName != null) query.setParameter("traineeName", traineeName);
 
         return query.getResultList();
-    }
-
-    @Override
-    protected String getEntityName() {
-        return ENTITY_NAME;
     }
 }

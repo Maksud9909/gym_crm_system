@@ -1,7 +1,7 @@
 package uz.ccrew.service;
 
 import uz.ccrew.entity.Training;
-import uz.ccrew.service.base.base.BaseService;
+import uz.ccrew.service.base.BaseService;
 
 import java.util.List;
 import java.time.LocalDate;

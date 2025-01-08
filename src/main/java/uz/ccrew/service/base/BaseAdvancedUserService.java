@@ -1,6 +1,6 @@
-package uz.ccrew.service.base.advancedBase;
+package uz.ccrew.service.base;
 
-public interface BaseAdvancedUserService<T, D, U> extends BaseAdvancedService<T, D, U> {
+public interface BaseAdvancedUserService<T> extends BaseAdvancedService<T> {
     T findByUsername(String username);
 
     void changePassword(Long id, String newPassword);

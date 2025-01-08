@@ -1,4 +1,4 @@
-package uz.ccrew.service.base.base;
+package uz.ccrew.service.base;
 
 import java.util.List;
 
