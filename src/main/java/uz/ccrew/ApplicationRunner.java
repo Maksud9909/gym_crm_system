@@ -23,12 +23,12 @@ public class ApplicationRunner {
 
         log.info("---- Starting Application ----");
 
-//        createAndListTrainees(facade);
-//        createAndListTrainers(facade);
-//        createAndListTrainings(facade);
-//        advancedTrainingOperations(facade);
-//        advancedTraineeOperations(facade);
-//        advancedTrainerOperations(facade);
+        createAndListTrainees(facade);
+        createAndListTrainers(facade);
+        createAndListTrainings(facade);
+        advancedTrainingOperations(facade);
+        advancedTraineeOperations(facade);
+        advancedTrainerOperations(facade);
         log.info("---- Application Finished ----");
     }
 
