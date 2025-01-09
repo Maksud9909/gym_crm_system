@@ -1,5 +1,6 @@
 package uz.ccrew.dao.impl;
 
+import uz.ccrew.entity.Training;
 import uz.ccrew.entity.User;
 import uz.ccrew.entity.Trainee;
 import uz.ccrew.entity.Trainer;
@@ -23,7 +24,7 @@ public class TraineeDAOImpl implements TraineeDAO {
     private final SessionFactory sessionFactory;
     private static final String FIND_ALL = "SELECT t FROM Trainee t";
     private static final String FIND_BY_USERNAME = "FROM Trainee t where t.user.username = :username";
-    private static final String FIND_TRAINERS_BY_IDS = "FROM Trainer t WHERE t.id IN :ids";
+    private static final String FIND_TRAINERS_BY_IDS = "FROM Training t WHERE t.trainer.id IN :ids";
 
     @Autowired
     public TraineeDAOImpl(SessionFactory sessionFactory) {
@@ -126,15 +127,20 @@ public class TraineeDAOImpl implements TraineeDAO {
         }
 
         List<Trainer> newTrainers = session.createQuery(
-                        FIND_TRAINERS_BY_IDS, Trainer.class)
+                        "FROM Trainer t WHERE t.id IN :ids", Trainer.class)
                 .setParameter("ids", newTrainerIds)
                 .getResultList();
 
-        for (Trainer trainer : newTrainers) {
-            if (!trainee.getTrainers().contains(trainer)) {
-                trainee.getTrainers().add(trainer);
-                trainer.getTrainees().add(trainee);
-            }
+        if (newTrainers.isEmpty()) {
+            log.warn("No valid trainers found for IDs: {}", newTrainerIds);
+            throw new IllegalArgumentException("No valid trainers found for the provided IDs");
+        }
+
+        List<Training> existingTrainings = trainee.getTraining();
+        for (int i = 0; i < existingTrainings.size() && i < newTrainers.size(); i++) {
+            Trainer newTrainer = newTrainers.get(i);
+            existingTrainings.get(i).setTrainer(newTrainer);
+            log.info("Updated Training ID={} with new Trainer ID={}", existingTrainings.get(i).getId(), newTrainer.getId());
         }
 
         session.merge(trainee);

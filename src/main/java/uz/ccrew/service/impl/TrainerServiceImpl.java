@@ -1,12 +1,12 @@
 package uz.ccrew.service.impl;
 
-import uz.ccrew.dao.TrainingTypeDAO;
 import uz.ccrew.dao.UserDAO;
-import uz.ccrew.entity.Trainer;
-import uz.ccrew.dao.TrainerDAO;
-import uz.ccrew.entity.TrainingType;
 import uz.ccrew.entity.User;
+import uz.ccrew.dao.TrainerDAO;
+import uz.ccrew.entity.Trainer;
 import uz.ccrew.utils.UserUtils;
+import uz.ccrew.dao.TrainingTypeDAO;
+import uz.ccrew.entity.TrainingType;
 import uz.ccrew.service.TrainerService;
 import uz.ccrew.exp.EntityNotFoundException;
 
@@ -23,8 +23,8 @@ import java.util.Optional;
 public class TrainerServiceImpl implements TrainerService {
     private final UserDAO userDAO;
     private final UserUtils userUtils;
-    private final TrainingTypeDAO trainingTypeDAO;
     private final TrainerDAO trainerDAO;
+    private final TrainingTypeDAO trainingTypeDAO;
 
     @Autowired
     public TrainerServiceImpl(UserDAO userDAO, TrainerDAO trainerDAO, UserUtils userUtils, TrainingTypeDAO trainingTypeDAO) {

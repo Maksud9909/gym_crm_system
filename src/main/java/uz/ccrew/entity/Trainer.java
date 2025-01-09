@@ -13,15 +13,10 @@ import java.util.List;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(callSuper = true, exclude = {"trainees", "training"})
+@ToString(callSuper = true, exclude = {"training"})
 @Entity
 @Table(name = "trainers")
 public class Trainer extends BaseEntity {
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "trainee_trainer",
-            joinColumns = @JoinColumn(name = "trainer_id"),
-            inverseJoinColumns = @JoinColumn(name = "trainee_id"))
-    private List<Trainee> trainees = new ArrayList<>();
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "training_type_id", nullable = false)
     private TrainingType trainingType;

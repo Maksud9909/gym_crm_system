@@ -23,12 +23,12 @@ public class ApplicationRunner {
 
         log.info("---- Starting Application ----");
 
-        createAndListTrainees(facade);
-        createAndListTrainers(facade);
-        createAndListTrainings(facade);
-        advancedTrainingOperations(facade);
-        advancedTraineeOperations(facade);
-        advancedTrainerOperations(facade);
+//        createAndListTrainees(facade);
+//        createAndListTrainers(facade);
+//        createAndListTrainings(facade);
+//        advancedTrainingOperations(facade);
+//        advancedTraineeOperations(facade);
+//        advancedTrainerOperations(facade);
         log.info("---- Application Finished ----");
     }
 
@@ -59,7 +59,7 @@ public class ApplicationRunner {
         TrainingType trainingType = facade.getTrainingTypeService().findById(1L);
 
         User user = User.builder()
-                .firstName("Sasha")
+                .firstName("Maks")
                 .lastName("Jukov")
                 .build();
 
@@ -98,11 +98,11 @@ public class ApplicationRunner {
     private static void advancedTraineeOperations(@NotNull ApplicationFacade facade) {
         log.info("---- Advanced Trainee Operations ----");
 
-        String usernameToDelete = "John.Doe";
-        facade.getTraineeService().deleteTraineeByUsername(usernameToDelete);
-        log.info("Deleted Trainee with username: {}", usernameToDelete);
+//        String usernameToDelete = "John.Doe";
+//        facade.getTraineeService().deleteTraineeByUsername(usernameToDelete);
+//        log.info("Deleted Trainee with username: {}", usernameToDelete);
 
-        facade.getTraineeService().updateTraineeTrainers(2L, List.of(15L, 16L));
+        facade.getTraineeService().updateTraineeTrainers(1L, List.of(2L));
         log.info("Updated trainers for Trainee ID: 2");
     }
 

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(callSuper = true, exclude = {"trainers", "training"})
+@ToString(callSuper = true, exclude = {"training"})
 @Entity
 @Table(name = "trainees")
 public class Trainee extends BaseEntity {
@@ -23,8 +23,6 @@ public class Trainee extends BaseEntity {
     private LocalDate dateOfBirth;
     @Column(name = "address")
     private String address;
-    @ManyToMany(mappedBy = "trainees", fetch = FetchType.LAZY)
-    private List<Trainer> trainers = new ArrayList<>();
     @OneToMany(mappedBy = "trainee", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Training> training = new ArrayList<>();
     @OneToOne(fetch = FetchType.EAGER)

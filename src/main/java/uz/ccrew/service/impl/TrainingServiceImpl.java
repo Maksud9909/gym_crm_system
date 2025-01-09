@@ -82,5 +82,4 @@ public class TrainingServiceImpl implements TrainingService {
         log.info("Found {} Trainings", trainings.size());
         return trainings;
     }
-
 }
