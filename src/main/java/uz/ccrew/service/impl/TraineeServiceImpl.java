@@ -5,6 +5,8 @@ import uz.ccrew.entity.User;
 import uz.ccrew.entity.Trainee;
 import uz.ccrew.dao.TraineeDAO;
 import uz.ccrew.utils.UserUtils;
+import uz.ccrew.service.AuthService;
+import uz.ccrew.dto.UserCredentials;
 import uz.ccrew.service.TraineeService;
 import uz.ccrew.exp.EntityNotFoundException;
 
@@ -21,12 +23,14 @@ public class TraineeServiceImpl implements TraineeService {
     private final UserDAO userDAO;
     private final UserUtils userUtils;
     private final TraineeDAO traineeDAO;
+    private final AuthService authService;
 
     @Autowired
-    public TraineeServiceImpl(TraineeDAO traineeDAO, UserUtils userUtils, UserDAO userDAO) {
+    public TraineeServiceImpl(TraineeDAO traineeDAO, UserUtils userUtils, UserDAO userDAO, AuthService authService) {
         this.userDAO = userDAO;
         this.userUtils = userUtils;
         this.traineeDAO = traineeDAO;
+        this.authService = authService;
         log.debug("TraineeService initialized");
     }
 
@@ -56,7 +60,8 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     @Transactional
-    public void update(Trainee trainee) {
+    public void update(Trainee trainee, UserCredentials userCredentials) {
+        authService.verifyUserCredentials(userCredentials);
         if (trainee == null || trainee.getId() == null) {
             log.error("Trainee or Trainee ID is null");
             throw new IllegalArgumentException("Trainee and Trainee ID must not be null");
@@ -108,14 +113,16 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     @Transactional(readOnly = true)
-    public Trainee findById(Long id) {
+    public Trainee findById(Long id,UserCredentials userCredentials) {
+        authService.verifyUserCredentials(userCredentials);
         log.info("Fetching trainee for id={}", id);
         return traineeDAO.findById(id).orElseThrow(() -> new EntityNotFoundException("Trainee with id=" + id + " not found"));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Trainee findByUsername(String username) {
+    public Trainee findByUsername(String username,UserCredentials userCredentials) {
+        authService.verifyUserCredentials(userCredentials);
         log.info("Fetching trainee for username={}", username);
         Trainee trainee = traineeDAO.findByUsername(username)
                 .orElseThrow(() -> {
@@ -128,21 +135,24 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Trainee> findAll() {
+    public List<Trainee> findAll(UserCredentials userCredentials) {
+        authService.verifyUserCredentials(userCredentials);
         log.info("Fetching all trainees");
         return traineeDAO.findAll();
     }
 
     @Override
     @Transactional
-    public void delete(Long id) {
+    public void delete(Long id,UserCredentials userCredentials) {
+        authService.verifyUserCredentials(userCredentials);
         log.info("Deleting trainee={}", id);
         traineeDAO.delete(id);
     }
 
     @Override
     @Transactional
-    public void deleteTraineeByUsername(String username) {
+    public void deleteTraineeByUsername(String username,UserCredentials userCredentials) {
+        authService.verifyUserCredentials(userCredentials);
         log.info("Deleting trainee by username={}", username);
         Trainee trainee = traineeDAO.findByUsername(username)
                 .orElseThrow(() -> {
@@ -155,14 +165,16 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     @Transactional
-    public void changePassword(Long id, String newPassword) {
+    public void changePassword(Long id, String newPassword,UserCredentials userCredentials) {
+        authService.verifyUserCredentials(userCredentials);
         log.info("Changing password for trainee={}", id);
         traineeDAO.changePassword(id, newPassword);
     }
 
     @Override
     @Transactional
-    public void activateDeactivate(Long id, Boolean isActive) {
+    public void activateDeactivate(Long id, Boolean isActive,UserCredentials userCredentials) {
+        authService.verifyUserCredentials(userCredentials);
         log.info("Activating/deactivating trainee={}", id);
         User user = userDAO.findById(id);
         if (user.getIsActive().equals(isActive)) {
@@ -175,7 +187,8 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     @Transactional
-    public void updateTraineeTrainers(Long traineeId, List<Long> newTrainerIds) {
+    public void updateTraineeTrainers(Long traineeId, List<Long> newTrainerIds,UserCredentials userCredentials) {
+        authService.verifyUserCredentials(userCredentials);
         log.info("Updating trainers for Trainee ID={}", traineeId);
 
         if (traineeId == null) {

@@ -1,9 +1,11 @@
 package uz.ccrew.service.impl;
 
 import uz.ccrew.dao.UserDAO;
+import uz.ccrew.dto.UserCredentials;
 import uz.ccrew.entity.User;
 import uz.ccrew.dao.TrainerDAO;
 import uz.ccrew.entity.Trainer;
+import uz.ccrew.service.AuthService;
 import uz.ccrew.utils.UserUtils;
 import uz.ccrew.dao.TrainingTypeDAO;
 import uz.ccrew.entity.TrainingType;
@@ -25,13 +27,15 @@ public class TrainerServiceImpl implements TrainerService {
     private final UserUtils userUtils;
     private final TrainerDAO trainerDAO;
     private final TrainingTypeDAO trainingTypeDAO;
+    private final AuthService authService;
 
     @Autowired
-    public TrainerServiceImpl(UserDAO userDAO, TrainerDAO trainerDAO, UserUtils userUtils, TrainingTypeDAO trainingTypeDAO) {
+    public TrainerServiceImpl(UserDAO userDAO, TrainerDAO trainerDAO, UserUtils userUtils, TrainingTypeDAO trainingTypeDAO, AuthService authService) {
         this.userDAO = userDAO;
         this.trainerDAO = trainerDAO;
         this.userUtils = userUtils;
         this.trainingTypeDAO = trainingTypeDAO;
+        this.authService = authService;
         log.debug("TrainerService initialized");
     }
 
@@ -63,7 +67,8 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     @Transactional
-    public void update(Trainer trainer) {
+    public void update(Trainer trainer, UserCredentials userCredentials) {
+        authService.verifyUserCredentials(userCredentials);
         if (trainer == null || trainer.getId() == null) {
             log.error("Trainer or Trainer ID is null");
             throw new IllegalArgumentException("Trainer and Trainer ID must not be null");
@@ -101,14 +106,16 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     @Transactional(readOnly = true)
-    public Trainer findById(Long id) {
+    public Trainer findById(Long id, UserCredentials userCredentials) {
+        authService.verifyUserCredentials(userCredentials);
         log.info("Fetching trainer for id={}", id);
         return trainerDAO.findById(id).orElseThrow(() -> new EntityNotFoundException("Trainer with id=" + id + " not found"));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Trainer findByUsername(String username) {
+    public Trainer findByUsername(String username, UserCredentials userCredentials) {
+        authService.verifyUserCredentials(userCredentials);
         log.info("Fetching trainer for username={}", username);
         Trainer trainer = trainerDAO.findByUsername(username)
                 .orElseThrow(() -> {
@@ -121,28 +128,32 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Trainer> findAll() {
+    public List<Trainer> findAll(UserCredentials userCredentials) {
+        authService.verifyUserCredentials(userCredentials);
         log.info("Fetching all trainers");
         return trainerDAO.findAll();
     }
 
     @Override
     @Transactional
-    public void delete(Long id) {
+    public void delete(Long id, UserCredentials userCredentials) {
+        authService.verifyUserCredentials(userCredentials);
         log.info("Deleting trainer={}", id);
         trainerDAO.delete(id);
     }
 
     @Override
     @Transactional
-    public void changePassword(Long id, String newPassword) {
+    public void changePassword(Long id, String newPassword, UserCredentials userCredentials) {
+        authService.verifyUserCredentials(userCredentials);
         log.info("Changing password for trainer={}", id);
         trainerDAO.changePassword(id, newPassword);
     }
 
     @Override
     @Transactional
-    public void activateDeactivate(Long id, Boolean isActive) {
+    public void activateDeactivate(Long id, Boolean isActive, UserCredentials userCredentials) {
+        authService.verifyUserCredentials(userCredentials);
         log.info("Activating/deactivating trainer={}", id);
         User user = userDAO.findById(id);
         if (user.getIsActive().equals(isActive)) {
@@ -155,7 +166,8 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Trainer> getUnassignedTrainers(String traineeUsername) {
+    public List<Trainer> getUnassignedTrainers(String traineeUsername, UserCredentials userCredentials) {
+        authService.verifyUserCredentials(userCredentials);
         log.info("Fetching unassigned trainers for Trainee username={}", traineeUsername);
         return trainerDAO.getUnassignedTrainers(traineeUsername);
     }

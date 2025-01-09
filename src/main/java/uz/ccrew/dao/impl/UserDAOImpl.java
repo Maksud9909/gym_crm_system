@@ -10,12 +10,15 @@ import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Optional;
+
 @Slf4j
 @Getter
 @Repository
 public class UserDAOImpl implements UserDAO {
     private final SessionFactory sessionFactory;
     private static final String CHECK_USERNAME_QUERY = "SELECT COUNT(u) FROM User u WHERE u.username = :username";
+    public static final String FIND_BY_USERNAME_AND_PASSWORD_QUERY = "FROM User u WHERE u.username = :username AND u.password = :password";
 
     @Autowired
     public UserDAOImpl(SessionFactory sessionFactory) {
@@ -51,5 +54,15 @@ public class UserDAOImpl implements UserDAO {
         Session session = getSessionFactory().getCurrentSession();
         session.merge(user);
         log.info("Updated User:{} ", user);
+    }
+
+    @Override
+    public Optional<User> findByUsernameAndPassword(String username, String password) {
+        Session session = sessionFactory.getCurrentSession();
+        User user = session.createQuery(FIND_BY_USERNAME_AND_PASSWORD_QUERY, User.class)
+                .setParameter("username", username)
+                .setParameter("password", password)
+                .uniqueResult();
+        return Optional.ofNullable(user);
     }
 }

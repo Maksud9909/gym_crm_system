@@ -1,7 +1,9 @@
 package uz.ccrew.service.base;
 
-public interface BaseAdvancedService<T> extends BaseService<T> {
-    void delete(Long id);
+import uz.ccrew.dto.UserCredentials;
 
-    void update(T t);
+public interface BaseAdvancedService<T> extends BaseService<T> {
+    void delete(Long id, UserCredentials userCredentials);
+
+    void update(T t, UserCredentials userCredentials);
 }

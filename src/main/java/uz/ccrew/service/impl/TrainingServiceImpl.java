@@ -1,11 +1,13 @@
 package uz.ccrew.service.impl;
 
+import uz.ccrew.dto.UserCredentials;
 import uz.ccrew.entity.Trainee;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.dao.TraineeDAO;
 import uz.ccrew.dao.TrainerDAO;
 import uz.ccrew.dao.TrainingDAO;
 import uz.ccrew.entity.Training;
+import uz.ccrew.service.AuthService;
 import uz.ccrew.service.TrainingService;
 import uz.ccrew.exp.EntityNotFoundException;
 
@@ -23,25 +25,31 @@ public class TrainingServiceImpl implements TrainingService {
     private final TraineeDAO traineeDAO;
     private final TrainerDAO trainerDAO;
     private final TrainingDAO trainingDAO;
+    private final AuthService authService;
 
     @Autowired
-    public TrainingServiceImpl(TrainingDAO trainingDAO, TraineeDAO traineeDAO, TrainerDAO trainerDAO) {
+    public TrainingServiceImpl(TrainingDAO trainingDAO, TraineeDAO traineeDAO, TrainerDAO trainerDAO, AuthService authService) {
         this.trainingDAO = trainingDAO;
         this.traineeDAO = traineeDAO;
         this.trainerDAO = trainerDAO;
+        this.authService = authService;
         log.debug("TrainingServiceImpl initialized");
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Training> getTraineeTrainings(String traineeUsername, LocalDate fromDate, LocalDate toDate, String trainerName, Long trainingTypeId) {
+    public List<Training> getTraineeTrainings(String traineeUsername, LocalDate fromDate, LocalDate toDate,
+                                              String trainerName, Long trainingTypeId, UserCredentials userCredentials) {
+        authService.verifyUserCredentials(userCredentials);
         log.info("Fetching trainings for Trainee username={} with filters", traineeUsername);
         return trainingDAO.getTraineeTrainings(traineeUsername, fromDate, toDate, trainerName, trainingTypeId);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Training> getTrainerTrainings(String trainerUsername, LocalDate fromDate, LocalDate toDate, String traineeName) {
+    public List<Training> getTrainerTrainings(String trainerUsername, LocalDate fromDate, LocalDate toDate,
+                                              String traineeName, UserCredentials userCredentials) {
+        authService.verifyUserCredentials(userCredentials);
         log.info("Fetching trainings for Trainer username={} with filters", trainerUsername);
         return trainingDAO.getTrainerTrainings(trainerUsername, fromDate, toDate, traineeName);
     }
@@ -66,7 +74,8 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Override
     @Transactional(readOnly = true)
-    public Training findById(Long id) {
+    public Training findById(Long id, UserCredentials userCredentials) {
+        authService.verifyUserCredentials(userCredentials);
         log.info("Finding Training with ID={}", id);
         Training training = trainingDAO.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Training with ID=" + id + " not found"));
@@ -76,7 +85,8 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Training> findAll() {
+    public List<Training> findAll(UserCredentials userCredentials) {
+        authService.verifyUserCredentials(userCredentials);
         log.info("Fetching all Trainings");
         List<Training> trainings = trainingDAO.findAll();
         log.info("Found {} Trainings", trainings.size());
