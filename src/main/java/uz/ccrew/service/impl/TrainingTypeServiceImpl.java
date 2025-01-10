@@ -1,7 +1,9 @@
 package uz.ccrew.service.impl;
 
 import uz.ccrew.dao.TrainingTypeDAO;
+import uz.ccrew.dto.UserCredentials;
 import uz.ccrew.entity.TrainingType;
+import uz.ccrew.service.AuthService;
 import uz.ccrew.exp.EntityNotFoundException;
 import uz.ccrew.service.TrainingTypeService;
 
@@ -13,19 +15,21 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 public class TrainingTypeServiceImpl implements TrainingTypeService {
-    private static final String ENTITY_NAME = "TrainingType";
     private final TrainingTypeDAO dao;
+    private final AuthService authService;
 
     @Autowired
-    public TrainingTypeServiceImpl(TrainingTypeDAO trainingTypeDAO) {
+    public TrainingTypeServiceImpl(TrainingTypeDAO trainingTypeDAO, AuthService authService) {
         this.dao = trainingTypeDAO;
+        this.authService = authService;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public TrainingType findById(Long id) {
-        log.info("Finding {} by ID={}", ENTITY_NAME, id);
+    public TrainingType findById(Long id, UserCredentials userCredentials) {
+        authService.verifyUserCredentials(userCredentials);
+        log.info("Finding TrainingType by ID={}", id);
         return dao.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(ENTITY_NAME + " with ID=" + id + " not found"));
+                .orElseThrow(() -> new EntityNotFoundException("TrainingType with ID=" + id + " not found"));
     }
 }

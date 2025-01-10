@@ -1,6 +1,5 @@
 package uz.ccrew.config;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,18 +8,16 @@ import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
 
 @Configuration
-public class DataSourceConfig {
+public class TestDataSourceConfig {
 
-    private final Dotenv dotenv = Dotenv.configure().load();
-
-    @Bean
+    @Bean("dataSource")
     public DataSource dataSource() {
         ComboPooledDataSource dataSource = new ComboPooledDataSource();
         try {
-            dataSource.setDriverClass("org.postgresql.Driver");
-            dataSource.setJdbcUrl(dotenv.get("DB_URL"));
-            dataSource.setUser(dotenv.get("DB_USERNAME"));
-            dataSource.setPassword(dotenv.get("DB_PASSWORD"));
+            dataSource.setDriverClass("org.h2.Driver");
+            dataSource.setJdbcUrl("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false");
+            dataSource.setUser("sa");
+            dataSource.setPassword("");
         } catch (PropertyVetoException e) {
             throw new RuntimeException(e);
         }

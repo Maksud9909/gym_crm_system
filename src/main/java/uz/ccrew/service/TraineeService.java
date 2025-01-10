@@ -1,14 +1,13 @@
 package uz.ccrew.service;
 
+import uz.ccrew.dto.UserCredentials;
 import uz.ccrew.entity.Trainee;
-import uz.ccrew.dto.trainee.TraineeUpdateDTO;
-import uz.ccrew.dto.trainee.TraineeCreateDTO;
-import uz.ccrew.service.base.advancedBase.BaseAdvancedUserService;
+import uz.ccrew.service.base.BaseAdvancedUserService;
 
 import java.util.List;
 
-public interface TraineeService extends BaseAdvancedUserService<Trainee, TraineeCreateDTO, TraineeUpdateDTO> {
-    void deleteTraineeByUsername(String username);
+public interface TraineeService extends BaseAdvancedUserService<Trainee> {
+    void deleteTraineeByUsername(String username, UserCredentials userCredentials);
 
-    void updateTraineeTrainers(Long traineeId, List<Long> newTrainerIds);
+    void updateTraineeTrainers(Long traineeId, List<Long> newTrainerIds, UserCredentials userCredentials);
 }

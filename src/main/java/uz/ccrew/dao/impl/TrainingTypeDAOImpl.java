@@ -8,6 +8,7 @@ import org.hibernate.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 
@@ -17,6 +18,7 @@ import java.util.Optional;
 public class TrainingTypeDAOImpl implements TrainingTypeDAO {
     private final SessionFactory sessionFactory;
 
+    @Autowired
     public TrainingTypeDAOImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
         log.debug("TrainingTypeDAO instantiated");

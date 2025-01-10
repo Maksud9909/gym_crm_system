@@ -1,19 +1,17 @@
 package uz.ccrew.dao;
 
 import uz.ccrew.entity.User;
-import uz.ccrew.dao.base.base.BaseDAO;
 
-import java.util.List;
 import java.util.Optional;
 
-public interface UserDAO extends BaseDAO<User> {
+public interface UserDAO {
     Long create(User user);
 
-    Optional<User> findById(Long id);
-
-    List<User> findAll();
-
-    Optional<User> findByUsername(String username);
+    User findById(Long id);
 
     boolean isUsernameExists(String username);
+
+    void update(User user);
+
+    Optional<User> findByUsernameAndPassword(String username, String password);
 }

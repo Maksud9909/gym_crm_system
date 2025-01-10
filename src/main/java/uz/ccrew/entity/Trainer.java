@@ -1,10 +1,9 @@
 package uz.ccrew.entity;
 
-import uz.ccrew.entity.base.BaseEntity;
-
 import lombok.*;
 import jakarta.persistence.*;
 import lombok.experimental.SuperBuilder;
+import uz.ccrew.entity.base.BaseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,21 +13,16 @@ import java.util.List;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(callSuper = true, exclude = {"trainees", "training"})
+@ToString(callSuper = true, exclude = {"training"})
 @Entity
 @Table(name = "trainers")
 public class Trainer extends BaseEntity {
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "trainee_trainer",
-            joinColumns = @JoinColumn(name = "trainer_id"),
-            inverseJoinColumns = @JoinColumn(name = "trainee_id"))
-    private List<Trainee> trainees = new ArrayList<>();
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "training_type_id", nullable = false)
     private TrainingType trainingType;
     @OneToMany(mappedBy = "trainer", fetch = FetchType.LAZY)
     private List<Training> training = new ArrayList<>();
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }

@@ -1,7 +1,7 @@
 package uz.ccrew.dao;
 
 import uz.ccrew.entity.Training;
-import uz.ccrew.dao.base.base.BaseDAO;
+import uz.ccrew.dao.base.BaseDAO;
 
 import java.util.List;
 import java.time.LocalDate;

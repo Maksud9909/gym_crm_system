@@ -1,12 +1,7 @@
 package uz.ccrew.service;
 
+import uz.ccrew.dto.UserCredentials;
+
 public interface AuthService {
-
-    void register(String username);
-
-    boolean login(String username, String password);
-
-    void logout();
-
-    void checkAuth();
+    void verifyUserCredentials(UserCredentials credentials);
 }
