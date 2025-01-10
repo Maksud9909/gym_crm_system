@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 })
 @Transactional
 @Sql(scripts = "/trainee-data.sql")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class TraineeServiceImplTest {
     private Trainee trainee;
     private UserCredentials userCredentials;
@@ -49,7 +49,7 @@ class TraineeServiceImplTest {
     @Test
     void create() {
         Long id = traineeService.create(trainee);
-        assertNotNull(id);
+        assertEquals(trainee.getUser().getUsername(), "Maksud.Rustamov");
     }
 
     @Test

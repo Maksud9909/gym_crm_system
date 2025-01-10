@@ -1,5 +1,6 @@
 package uz.ccrew.dao.impl;
 
+import org.springframework.test.annotation.DirtiesContext;
 import uz.ccrew.dao.TraineeDAO;
 import uz.ccrew.entity.*;
 import uz.ccrew.config.TestAppConfig;
@@ -30,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
         TestHibernateConfig.class
 })
 @Transactional
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class TraineeDAOImplTest {
     private Trainee trainee;
     @Autowired

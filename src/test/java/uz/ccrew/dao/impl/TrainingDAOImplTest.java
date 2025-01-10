@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 })
 @Transactional
 @Sql(scripts = "/training-type-data.sql")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class TrainingDAOImplTest {
     private Training training;
     @Autowired

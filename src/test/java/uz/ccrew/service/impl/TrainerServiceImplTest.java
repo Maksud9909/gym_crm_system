@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
 })
 @Transactional
 @Sql(scripts = "/trainer-data.sql")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class TrainerServiceImplTest {
     private Trainer trainer;
     private UserCredentials userCredentials;
