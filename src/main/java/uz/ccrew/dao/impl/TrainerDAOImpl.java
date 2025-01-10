@@ -23,11 +23,14 @@ public class TrainerDAOImpl implements TrainerDAO {
     private static final String FIND_BY_USERNAME = "FROM Trainer tr where tr.user.username = :username";
     private final SessionFactory sessionFactory;
     public static final String FIND_UNASSIGNED_TRAINERS = """
-                SELECT tr FROM Trainer tr
+                SELECT tr
+                FROM Trainer tr
                 WHERE tr.id NOT IN (
-                    SELECT trainer.id FROM Trainee trainee
-                    JOIN trainee.trainers trainer
-                    WHERE trainee.user.username = :traineeUsername
+                    SELECT trn.id
+                    FROM Training t
+                    JOIN t.trainer trn
+                    JOIN t.trainee tn
+                    WHERE tn.user.username = :traineeUsername
                 )
             """;
 

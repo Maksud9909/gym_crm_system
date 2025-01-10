@@ -16,7 +16,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import uz.ccrew.utils.UserUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,8 +35,6 @@ class TraineeDAOImplTest {
     private Trainee trainee;
     @Autowired
     private TraineeDAO traineeDAO;
-    @Autowired
-    private UserUtils userUtils;
 
     @BeforeEach
     void setUp() {

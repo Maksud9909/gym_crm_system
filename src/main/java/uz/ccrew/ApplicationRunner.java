@@ -17,6 +17,7 @@ import java.time.LocalDate;
 
 @Slf4j
 public class ApplicationRunner {
+    private static final UserCredentials userCredentials = new UserCredentials("Test", "Test");
 
     public static void main(String[] args) {
         ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class, DataSourceConfig.class, HibernateConfig.class);
@@ -35,7 +36,6 @@ public class ApplicationRunner {
 
         User user = User.builder()
                 .firstName("Rustam")
-                .lastName("jj")
                 .lastName("Rustamov")
                 .build();
 
@@ -47,14 +47,14 @@ public class ApplicationRunner {
         Long id = facade.getTraineeService().create(trainee);
         log.info("Created Trainee ID: {}", id);
 
-        List<Trainee> trainees = facade.getTraineeService().findAll(new UserCredentials("Test", "Test"));
+        List<Trainee> trainees = facade.getTraineeService().findAll(userCredentials);
         trainees.forEach(t -> log.info("Trainee: {} {}, ID: {}", t.getUser().getFirstName(), t.getUser().getLastName(), t.getId()));
     }
 
     private static void createAndListTrainers(@NotNull ApplicationFacade facade) {
         log.info("---- Trainer Operations ----");
 
-        TrainingType trainingType = facade.getTrainingTypeService().findById(1L, new UserCredentials("Test", "Test"));
+        TrainingType trainingType = facade.getTrainingTypeService().findById(1L, userCredentials);
 
         User user = User.builder()
                 .firstName("Maks")
@@ -68,18 +68,18 @@ public class ApplicationRunner {
         Long id = facade.getTrainerService().create(trainer);
         log.info("Created Trainer ID: {}", id);
 
-        List<Trainer> trainers = facade.getTrainerService().findAll(new UserCredentials(user.getUsername(), user.getPassword()));
+        List<Trainer> trainers = facade.getTrainerService().findAll(userCredentials);
         trainers.forEach(t -> log.info("Trainer: {} {}, ID: {}", t.getUser().getFirstName(), t.getUser().getLastName(), t.getId()));
     }
 
     private static void createAndListTrainings(@NotNull ApplicationFacade facade) {
         log.info("---- Training Operations ----");
 
-        TrainingType trainingType = facade.getTrainingTypeService().findById(2L, new UserCredentials("Test", "Test"));
+        TrainingType trainingType = facade.getTrainingTypeService().findById(2L, userCredentials);
 
         Training training = Training.builder()
-                .trainee(facade.getTraineeService().findById(1L, new UserCredentials("Test", "Test")))
-                .trainer(facade.getTrainerService().findById(1L, new UserCredentials("Test", "Test")))
+                .trainee(facade.getTraineeService().findById(1L, userCredentials))
+                .trainer(facade.getTrainerService().findById(1L, userCredentials))
                 .trainingName("Morning Yoga Session")
                 .trainingType(trainingType)
                 .trainingDate(LocalDate.now())
@@ -88,7 +88,7 @@ public class ApplicationRunner {
         Long trainingId = facade.getTrainingService().create(training);
         log.info("Created Training ID: {}", trainingId);
 
-        List<Training> trainings = facade.getTrainingService().findAll(new UserCredentials("Test", "Test"));
+        List<Training> trainings = facade.getTrainingService().findAll(userCredentials);
         trainings.forEach(t -> log.info("Training: {}, Date: {}, Duration: {} minutes",
                 t.getTrainingName(), t.getTrainingDate(), t.getTrainingDuration()));
     }
