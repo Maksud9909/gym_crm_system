@@ -3,8 +3,8 @@ package uz.ccrew.service.impl;
 import uz.ccrew.dao.TrainingTypeDAO;
 import uz.ccrew.dto.UserCredentials;
 import uz.ccrew.entity.TrainingType;
-import uz.ccrew.exp.EntityNotFoundException;
 import uz.ccrew.service.AuthService;
+import uz.ccrew.exp.EntityNotFoundException;
 import uz.ccrew.service.TrainingTypeService;
 
 import lombok.extern.slf4j.Slf4j;

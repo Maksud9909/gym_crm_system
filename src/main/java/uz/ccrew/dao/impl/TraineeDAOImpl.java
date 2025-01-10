@@ -1,10 +1,10 @@
 package uz.ccrew.dao.impl;
 
-import uz.ccrew.entity.Training;
 import uz.ccrew.entity.User;
 import uz.ccrew.entity.Trainee;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.dao.TraineeDAO;
+import uz.ccrew.entity.Training;
 import uz.ccrew.exp.EntityNotFoundException;
 
 import lombok.Getter;
@@ -24,7 +24,7 @@ public class TraineeDAOImpl implements TraineeDAO {
     private final SessionFactory sessionFactory;
     private static final String FIND_ALL = "SELECT t FROM Trainee t";
     private static final String FIND_BY_USERNAME = "FROM Trainee t where t.user.username = :username";
-    private static final String FIND_TRAINERS_BY_IDS = "FROM Training t WHERE t.trainer.id IN :ids";
+    private static final String FIND_TRAINERS_BY_IDS = "FROM Trainer t WHERE t.id IN :ids";
 
     @Autowired
     public TraineeDAOImpl(SessionFactory sessionFactory) {
@@ -127,7 +127,7 @@ public class TraineeDAOImpl implements TraineeDAO {
         }
 
         List<Trainer> newTrainers = session.createQuery(
-                        "FROM Trainer t WHERE t.id IN :ids", Trainer.class)
+                        FIND_TRAINERS_BY_IDS, Trainer.class)
                 .setParameter("ids", newTrainerIds)
                 .getResultList();
 

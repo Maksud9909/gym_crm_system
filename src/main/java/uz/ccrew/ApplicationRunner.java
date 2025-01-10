@@ -68,7 +68,7 @@ public class ApplicationRunner {
         Long id = facade.getTrainerService().create(trainer);
         log.info("Created Trainer ID: {}", id);
 
-        List<Trainer> trainers = facade.getTrainerService().findAll(new UserCredentials("Test", "Test"));
+        List<Trainer> trainers = facade.getTrainerService().findAll(new UserCredentials(user.getUsername(), user.getPassword()));
         trainers.forEach(t -> log.info("Trainer: {} {}, ID: {}", t.getUser().getFirstName(), t.getUser().getLastName(), t.getId()));
     }
 
