@@ -21,7 +21,8 @@ import java.time.LocalDate;
 @Repository
 public class TrainingDAOImpl implements TrainingDAO {
     private final SessionFactory sessionFactory;
-    public static final String FIND_ALL = """
+    private static final String HQL_QUERY_LOG = "Generated HQL Query: {}";
+    private static final String FIND_ALL = """
             SELECT t FROM Training t JOIN FETCH t.trainee
             JOIN FETCH t.trainer
             JOIN FETCH t.trainingType
@@ -75,7 +76,7 @@ public class TrainingDAOImpl implements TrainingDAO {
         String builtQuery = QueryBuilder.buildTraineeTrainingsQuery(fromDate, toDate, trainerName, trainingTypeId);
         Query<Training> query = session.createQuery(builtQuery, Training.class);
 
-        log.debug("Generated HQL Query: {}", builtQuery);
+        log.debug(HQL_QUERY_LOG, builtQuery);
 
         query.setParameter("username", username);
         if (fromDate != null) query.setParameter("fromDate", fromDate);
@@ -96,7 +97,7 @@ public class TrainingDAOImpl implements TrainingDAO {
         String builtQuery = QueryBuilder.buildTrainerTrainingsQuery(fromDate, toDate, traineeName);
         Query<Training> query = session.createQuery(builtQuery, Training.class);
 
-        log.debug("Generated HQL Query: {}", builtQuery);
+        log.debug(HQL_QUERY_LOG, builtQuery);
 
         query.setParameter("username", username);
         if (fromDate != null) query.setParameter("fromDate", fromDate);

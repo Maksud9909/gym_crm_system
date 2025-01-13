@@ -18,7 +18,7 @@ import java.util.Optional;
 public class UserDAOImpl implements UserDAO {
     private final SessionFactory sessionFactory;
     private static final String CHECK_USERNAME_QUERY = "SELECT COUNT(u) FROM User u WHERE u.username = :username";
-    public static final String FIND_BY_USERNAME_AND_PASSWORD_QUERY = "FROM User u WHERE u.username = :username AND u.password = :password";
+    private static final String FIND_BY_USERNAME_AND_PASSWORD_QUERY = "FROM User u WHERE u.username = :username AND u.password = :password";
 
     @Autowired
     public UserDAOImpl(SessionFactory sessionFactory) {

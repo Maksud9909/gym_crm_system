@@ -22,7 +22,7 @@ public class TrainerDAOImpl implements TrainerDAO {
     private static final String FIND_ALL = "SELECT t from Trainer t";
     private static final String FIND_BY_USERNAME = "FROM Trainer tr where tr.user.username = :username";
     private final SessionFactory sessionFactory;
-    public static final String FIND_UNASSIGNED_TRAINERS = """
+    private static final String FIND_UNASSIGNED_TRAINERS = """
                 SELECT tr
                 FROM Trainer tr
                 WHERE tr.id NOT IN (

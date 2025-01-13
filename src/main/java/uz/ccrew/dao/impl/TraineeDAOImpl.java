@@ -22,6 +22,7 @@ import java.util.Optional;
 @Repository
 public class TraineeDAOImpl implements TraineeDAO {
     private final SessionFactory sessionFactory;
+    private static final String NOT_FOUND_LOG = "Trainee with ID={} not found";
     private static final String FIND_ALL = "SELECT t FROM Trainee t";
     private static final String FIND_BY_USERNAME = "FROM Trainee t where t.user.username = :username";
     private static final String FIND_TRAINERS_BY_IDS = "FROM Trainer t WHERE t.id IN :ids";
@@ -70,7 +71,7 @@ public class TraineeDAOImpl implements TraineeDAO {
         Session session = getSessionFactory().getCurrentSession();
         Trainee existingTrainer = session.get(Trainee.class, trainee.getId());
         if (existingTrainer == null) {
-            log.error("Trainee with ID={} not found", trainee.getId());
+            log.error(NOT_FOUND_LOG, trainee.getId());
             throw new EntityNotFoundException("Trainee with ID=" + trainee.getId() + " not found for update");
         }
 
@@ -122,7 +123,7 @@ public class TraineeDAOImpl implements TraineeDAO {
 
         Trainee trainee = session.get(Trainee.class, traineeId);
         if (trainee == null) {
-            log.error("Trainee with ID={} not found", traineeId);
+            log.error(NOT_FOUND_LOG, traineeId);
             throw new EntityNotFoundException("Trainee with ID=" + traineeId + " not found for updating trainers list");
         }
 
