@@ -71,39 +71,23 @@ public class TrainingDAOImpl implements TrainingDAO {
                                               LocalDate toDate,
                                               String trainerName,
                                               Long trainingTypeId) {
-
         Session session = getSessionFactory().getCurrentSession();
-        String builtQuery = QueryBuilder.buildTraineeTrainingsQuery(fromDate, toDate, trainerName, trainingTypeId);
-        Query<Training> query = session.createQuery(builtQuery, Training.class);
-
-        log.debug(HQL_QUERY_LOG, builtQuery);
-
-        query.setParameter("username", username);
-        if (fromDate != null) query.setParameter("fromDate", fromDate);
-        if (toDate != null) query.setParameter("toDate", toDate);
-        if (trainerName != null) query.setParameter("trainerName", trainerName);
-        if (trainingTypeId != null) query.setParameter("trainingTypeId", trainingTypeId);
-
+        Query<Training> query = QueryBuilder.buildAndSetTraineeTrainingsQuery(session, username, fromDate,
+                toDate, trainerName, trainingTypeId);
+        log.debug(HQL_QUERY_LOG, query);
         return query.getResultList();
     }
+
 
     @Override
     public List<Training> getTrainerTrainings(String username,
                                               LocalDate fromDate,
                                               LocalDate toDate,
                                               String traineeName) {
-
         Session session = getSessionFactory().getCurrentSession();
-        String builtQuery = QueryBuilder.buildTrainerTrainingsQuery(fromDate, toDate, traineeName);
-        Query<Training> query = session.createQuery(builtQuery, Training.class);
-
-        log.debug(HQL_QUERY_LOG, builtQuery);
-
-        query.setParameter("username", username);
-        if (fromDate != null) query.setParameter("fromDate", fromDate);
-        if (toDate != null) query.setParameter("toDate", toDate);
-        if (traineeName != null) query.setParameter("traineeName", traineeName);
-
+        Query<Training> query = QueryBuilder.buildAndSetTrainerTrainingsQuery(session, username, fromDate,
+                toDate, traineeName);
+        log.debug(HQL_QUERY_LOG, query);
         return query.getResultList();
     }
 }
