@@ -11,17 +11,17 @@ public class QueryBuilder {
 
     private static final StringBuilder TRAINEE_TRAININGS_QUERY = new StringBuilder(
             "SELECT t FROM Training t " +
-            "JOIN t.trainee tr " +
-            "JOIN tr.user u " +
+            "JOIN t.trainee tr ON tr.id = t.trainee.id " +
+            "JOIN tr.user u ON u.id = tr.user.id " +
             "WHERE u.username = :username"
     );
 
     private static final StringBuilder TRAINER_TRAININGS_QUERY = new StringBuilder(
             "SELECT t FROM Training t " +
-            "JOIN t.trainer tr " +
-            "JOIN tr.user u " +
-            "JOIN t.trainee te " +
-            "JOIN te.user tu " +
+            "JOIN t.trainer tr ON tr.id = t.trainer.id " +
+            "JOIN tr.user u ON u.id = tr.user.id " +
+            "JOIN t.trainee te ON te.id = t.trainee.id " +
+            "JOIN te.user tu ON tu.id = te.user.id " +
             "WHERE u.username = :username"
     );
 
