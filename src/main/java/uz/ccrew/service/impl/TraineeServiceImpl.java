@@ -100,48 +100,7 @@ public class TraineeServiceImpl implements TraineeService {
         }
 
         if (trainee.getUser() != null) {
-            User newUserData = trainee.getUser();
-
-            if (newUserData.getFirstName() != null) {
-                if (newUserData.getFirstName().trim().isEmpty()) {
-                    log.error("First name cannot be empty");
-                    throw new IllegalArgumentException("First name cannot be empty");
-                }
-                existingUser.setFirstName(newUserData.getFirstName().trim());
-            }
-
-            if (newUserData.getLastName() != null) {
-                if (newUserData.getLastName().trim().isEmpty()) {
-                    log.error("Last name cannot be empty");
-                    throw new IllegalArgumentException("Last name cannot be empty");
-                }
-                existingUser.setLastName(newUserData.getLastName().trim());
-            }
-
-            if (newUserData.getUsername() != null) {
-                if (newUserData.getUsername().trim().isEmpty()) {
-                    log.error("Username cannot be empty");
-                    throw new IllegalArgumentException("Username cannot be empty");
-                }
-                if (!existingUser.getUsername().equals(newUserData.getUsername().trim()) &&
-                    userDAO.isUsernameExists(newUserData.getUsername().trim())) {
-                    log.error("Username {} already exists", newUserData.getUsername());
-                    throw new IllegalArgumentException("Username already exists");
-                }
-                existingUser.setUsername(newUserData.getUsername().trim());
-            }
-
-            if (newUserData.getPassword() != null) {
-                if (newUserData.getPassword().trim().isEmpty()) {
-                    log.error("Password cannot be empty");
-                    throw new IllegalArgumentException("Password cannot be empty");
-                }
-                existingUser.setPassword(newUserData.getPassword());
-            }
-
-            if (newUserData.getIsActive() != null) {
-                existingUser.setIsActive(newUserData.getIsActive());
-            }
+            validateAndUpdateUser(existingUser, trainee.getUser());
         }
 
         if (trainee.getDateOfBirth() != null) {
@@ -156,7 +115,6 @@ public class TraineeServiceImpl implements TraineeService {
             existingTrainee.setAddress(trainee.getAddress().trim());
         }
 
-        userDAO.update(existingUser);
         traineeDAO.update(existingTrainee);
 
         log.info("Updated trainee with ID={} and associated user with ID={}",
@@ -256,5 +214,48 @@ public class TraineeServiceImpl implements TraineeService {
 
         traineeDAO.updateTraineeTrainers(traineeId, newTrainerIds);
         log.info("Trainers updated successfully for Trainee ID={}", traineeId);
+    }
+
+    private void validateAndUpdateUser(User existingUser, User newUserData) {
+        if (newUserData.getFirstName() != null) {
+            if (newUserData.getFirstName().trim().isEmpty()) {
+                log.error("First name cannot be empty");
+                throw new IllegalArgumentException("First name cannot be empty");
+            }
+            existingUser.setFirstName(newUserData.getFirstName().trim());
+        }
+
+        if (newUserData.getLastName() != null) {
+            if (newUserData.getLastName().trim().isEmpty()) {
+                log.error("Last name cannot be empty");
+                throw new IllegalArgumentException("Last name cannot be empty");
+            }
+            existingUser.setLastName(newUserData.getLastName().trim());
+        }
+
+        if (newUserData.getUsername() != null) {
+            if (newUserData.getUsername().trim().isEmpty()) {
+                log.error("Username cannot be empty");
+                throw new IllegalArgumentException("Username cannot be empty");
+            }
+            if (!existingUser.getUsername().equals(newUserData.getUsername().trim()) &&
+                userDAO.isUsernameExists(newUserData.getUsername().trim())) {
+                log.error("Username {} already exists", newUserData.getUsername());
+                throw new IllegalArgumentException("Username already exists");
+            }
+            existingUser.setUsername(newUserData.getUsername().trim());
+        }
+
+        if (newUserData.getPassword() != null) {
+            if (newUserData.getPassword().trim().isEmpty()) {
+                log.error("Password cannot be empty");
+                throw new IllegalArgumentException("Password cannot be empty");
+            }
+            existingUser.setPassword(newUserData.getPassword());
+        }
+
+        if (newUserData.getIsActive() != null) {
+            existingUser.setIsActive(newUserData.getIsActive());
+        }
     }
 }

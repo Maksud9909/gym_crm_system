@@ -104,54 +104,12 @@ public class TrainerServiceImpl implements TrainerService {
 
 
         if (trainer.getUser() != null) {
-            User newUserData = trainer.getUser();
-            if (newUserData.getFirstName() != null) {
-                if (newUserData.getFirstName().trim().isEmpty()) {
-                    log.error("First name cannot be empty");
-                    throw new IllegalArgumentException("First name cannot be empty");
-                }
-                existingUser.setFirstName(newUserData.getFirstName().trim());
-            }
-            if (newUserData.getLastName() != null) {
-                if (newUserData.getLastName().trim().isEmpty()) {
-                    log.error("Last name cannot be empty");
-                    throw new IllegalArgumentException("Last name cannot be empty");
-                }
-                existingUser.setLastName(newUserData.getLastName().trim());
-            }
-
-            if (newUserData.getUsername() != null) {
-                if (newUserData.getUsername().trim().isEmpty()) {
-                    log.error("Username cannot be empty");
-                    throw new IllegalArgumentException("Username cannot be empty");
-                }
-                if (!existingUser.getUsername().equals(newUserData.getUsername().trim()) &&
-                    userDAO.isUsernameExists(newUserData.getUsername().trim())) {
-                    log.error("Username {} already exists", newUserData.getUsername());
-                    throw new IllegalArgumentException("Username already exists");
-                }
-                existingUser.setUsername(newUserData.getUsername().trim());
-            }
-
-            if (newUserData.getPassword() != null) {
-                if (newUserData.getPassword().trim().isEmpty()) {
-                    log.error("Password cannot be empty");
-                    throw new IllegalArgumentException("Password cannot be empty");
-                }
-                existingUser.setPassword(newUserData.getPassword());
-            }
-
-            if (newUserData.getIsActive() != null) {
-                existingUser.setIsActive(newUserData.getIsActive());
-            }
+            validateAndUpdateUser(existingUser, trainer.getUser());
         }
 
         if (trainer.getTrainingType() != null) {
-            TrainingType trainingType = trainingTypeDAO.findById(trainer.getTrainingType().getId())
-                    .orElseThrow(() -> new EntityNotFoundException("TrainingType with id=" + trainer.getTrainingType().getId() + " not found"));
-            existingTrainer.setTrainingType(trainingType);
+            existingTrainer.setTrainingType(trainer.getTrainingType());
         }
-        userDAO.update(existingUser);
         trainerDAO.update(existingTrainer);
         log.info("Updated trainer with ID={}", trainer.getId());
     }
@@ -223,5 +181,48 @@ public class TrainerServiceImpl implements TrainerService {
         authService.verifyUserCredentials(userCredentials);
         log.info("Fetching unassigned trainers for Trainee username={}", traineeUsername);
         return trainerDAO.getUnassignedTrainers(traineeUsername);
+    }
+
+    private void validateAndUpdateUser(User existingUser, User newUserData) {
+        if (newUserData.getFirstName() != null) {
+            if (newUserData.getFirstName().trim().isEmpty()) {
+                log.error("First name cannot be empty");
+                throw new IllegalArgumentException("First name cannot be empty");
+            }
+            existingUser.setFirstName(newUserData.getFirstName().trim());
+        }
+
+        if (newUserData.getLastName() != null) {
+            if (newUserData.getLastName().trim().isEmpty()) {
+                log.error("Last name cannot be empty");
+                throw new IllegalArgumentException("Last name cannot be empty");
+            }
+            existingUser.setLastName(newUserData.getLastName().trim());
+        }
+
+        if (newUserData.getUsername() != null) {
+            if (newUserData.getUsername().trim().isEmpty()) {
+                log.error("Username cannot be empty");
+                throw new IllegalArgumentException("Username cannot be empty");
+            }
+            if (!existingUser.getUsername().equals(newUserData.getUsername().trim()) &&
+                userDAO.isUsernameExists(newUserData.getUsername().trim())) {
+                log.error("Username {} already exists", newUserData.getUsername());
+                throw new IllegalArgumentException("Username already exists");
+            }
+            existingUser.setUsername(newUserData.getUsername().trim());
+        }
+
+        if (newUserData.getPassword() != null) {
+            if (newUserData.getPassword().trim().isEmpty()) {
+                log.error("Password cannot be empty");
+                throw new IllegalArgumentException("Password cannot be empty");
+            }
+            existingUser.setPassword(newUserData.getPassword());
+        }
+
+        if (newUserData.getIsActive() != null) {
+            existingUser.setIsActive(newUserData.getIsActive());
+        }
     }
 }
