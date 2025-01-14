@@ -43,32 +43,51 @@ public class TrainerServiceImpl implements TrainerService {
     @Transactional
     public Long create(Trainer trainer) {
         if (trainer == null) {
-            log.warn("Cannot create a null trainer");
+            log.error("Cannot create a null trainer");
             throw new IllegalArgumentException("Trainer cannot be null");
         }
-        log.info("Creating trainer: {}", trainer);
+
+        if (trainer.getUser() == null) {
+            log.error("Cannot create Trainer without User");
+            throw new IllegalArgumentException("Associated User cannot be null");
+        }
+
+        User user = trainer.getUser();
+        if (user.getFirstName() == null || user.getFirstName().trim().isEmpty()) {
+            log.error("User firstName is required");
+            throw new IllegalArgumentException("User firstName cannot be empty");
+        }
+        if (user.getLastName() == null || user.getLastName().trim().isEmpty()) {
+            log.error("User lastName is required");
+            throw new IllegalArgumentException("User lastName cannot be empty");
+        }
+
         String username = userUtils.generateUniqueUsername(trainer.getUser().getFirstName(), trainer.getUser().getLastName());
         String password = userUtils.generateRandomPassword();
-        User user = User.builder()
+
+        User newUser = User.builder()
                 .username(username)
                 .password(password)
                 .firstName(trainer.getUser().getFirstName())
                 .lastName(trainer.getUser().getLastName())
                 .isActive(Boolean.TRUE)
                 .build();
-        userDAO.create(user);
-        trainer.setUser(user);
+
+        userDAO.create(newUser);
+
+        trainer.setUser(newUser);
         Optional<TrainingType> trainingType = trainingTypeDAO.findById(trainer.getTrainingType().getId());
         trainingType.ifPresent(trainer::setTrainingType);
-        trainerDAO.create(trainer);
+        Long id = trainerDAO.create(trainer);
         log.info("Trainer created: {}", trainer);
-        return trainer.getId();
+        return id;
     }
 
     @Override
     @Transactional
     public void update(Trainer trainer, UserCredentials userCredentials) {
         authService.verifyUserCredentials(userCredentials);
+
         if (trainer == null || trainer.getId() == null) {
             log.error("Trainer or Trainer ID is null");
             throw new IllegalArgumentException("Trainer and Trainer ID must not be null");
@@ -78,18 +97,52 @@ public class TrainerServiceImpl implements TrainerService {
                 .orElseThrow(() -> new EntityNotFoundException("Trainer with id=" + trainer.getId() + " not found"));
 
         User existingUser = existingTrainer.getUser();
+        if (existingUser == null) {
+            log.error("Associated User not found for Trainer with id {}", trainer.getId());
+            throw new IllegalArgumentException("User with id=" + trainer.getId() + " not found");
+        }
+
+
         if (trainer.getUser() != null) {
-            if (trainer.getUser().getFirstName() != null) {
-                existingUser.setFirstName(trainer.getUser().getFirstName());
+            User newUserData = trainer.getUser();
+            if (newUserData.getFirstName() != null) {
+                if (newUserData.getFirstName().trim().isEmpty()) {
+                    log.error("First name cannot be empty");
+                    throw new IllegalArgumentException("First name cannot be empty");
+                }
+                existingUser.setFirstName(newUserData.getFirstName().trim());
             }
-            if (trainer.getUser().getLastName() != null) {
-                existingUser.setLastName(trainer.getUser().getLastName());
+            if (newUserData.getLastName() != null) {
+                if (newUserData.getLastName().trim().isEmpty()) {
+                    log.error("Last name cannot be empty");
+                    throw new IllegalArgumentException("Last name cannot be empty");
+                }
+                existingUser.setLastName(newUserData.getLastName().trim());
             }
-            if (trainer.getUser().getUsername() != null) {
-                existingUser.setUsername(trainer.getUser().getUsername());
+
+            if (newUserData.getUsername() != null) {
+                if (newUserData.getUsername().trim().isEmpty()) {
+                    log.error("Username cannot be empty");
+                    throw new IllegalArgumentException("Username cannot be empty");
+                }
+                if (!existingUser.getUsername().equals(newUserData.getUsername().trim()) &&
+                    userDAO.isUsernameExists(newUserData.getUsername().trim())) {
+                    log.error("Username {} already exists", newUserData.getUsername());
+                    throw new IllegalArgumentException("Username already exists");
+                }
+                existingUser.setUsername(newUserData.getUsername().trim());
             }
-            if (trainer.getUser().getPassword() != null) {
-                existingUser.setPassword(trainer.getUser().getPassword());
+
+            if (newUserData.getPassword() != null) {
+                if (newUserData.getPassword().trim().isEmpty()) {
+                    log.error("Password cannot be empty");
+                    throw new IllegalArgumentException("Password cannot be empty");
+                }
+                existingUser.setPassword(newUserData.getPassword());
+            }
+
+            if (newUserData.getIsActive() != null) {
+                existingUser.setIsActive(newUserData.getIsActive());
             }
         }
 
@@ -98,7 +151,7 @@ public class TrainerServiceImpl implements TrainerService {
                     .orElseThrow(() -> new EntityNotFoundException("TrainingType with id=" + trainer.getTrainingType().getId() + " not found"));
             existingTrainer.setTrainingType(trainingType);
         }
-
+        userDAO.update(existingUser);
         trainerDAO.update(existingTrainer);
         log.info("Updated trainer with ID={}", trainer.getId());
     }
