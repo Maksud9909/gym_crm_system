@@ -33,6 +33,7 @@ public class TrainerDAOImpl implements TrainerDAO {
                     WHERE tn.user.username = :traineeUsername
                 )
             """;
+    public static final String DELETE_BY_ID = "DELETE FROM Trainer tr where tr.id = :id";
 
     @Autowired
     public TrainerDAOImpl(SessionFactory sessionFactory) {
@@ -64,10 +65,11 @@ public class TrainerDAOImpl implements TrainerDAO {
     @Override
     public void delete(Long id) {
         Session session = getSessionFactory().getCurrentSession();
-        Trainer trainer = session.get(Trainer.class, id);
-        if (trainer != null) {
-            session.remove(trainer);
-            log.info("Deleted Trainer:{} with ID:{}", trainer, trainer.getId());
+        int deletedCount = session.createMutationQuery(DELETE_BY_ID)
+                .setParameter("id", id)
+                .executeUpdate();
+        if (deletedCount > 0) {
+            log.info("Deleted Trainer with ID:{}", id);
         } else {
             log.error("Trainer with ID:{} not found for delete", id);
             throw new EntityNotFoundException("Trainer with ID:" + id + " not found for delete");

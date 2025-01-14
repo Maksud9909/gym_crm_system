@@ -25,9 +25,9 @@ public class ApplicationRunner {
 
         log.info("---- Starting Application ----");
 
-//        createAndListTrainees(facade);
-//        createAndListTrainers(facade);
-//        createAndListTrainings(facade);
+        createAndListTrainees(facade);
+        createAndListTrainers(facade);
+        createAndListTrainings(facade);
 
         List<Training> trainings = facade.getTrainingService().getTraineeTrainings("Test", null, null
                 , null, null, userCredentials);
