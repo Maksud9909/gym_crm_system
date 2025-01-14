@@ -1,6 +1,5 @@
 package uz.ccrew.dao.impl;
 
-import uz.ccrew.entity.User;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.dao.TrainerDAO;
 import uz.ccrew.exp.EntityNotFoundException;
@@ -19,9 +18,11 @@ import java.util.Optional;
 @Getter
 @Repository
 public class TrainerDAOImpl implements TrainerDAO {
+    private static final String CHANGE_PASSWORD = "UPDATE User u SET u.password =:password WHERE u.id = :id";
+    private final SessionFactory sessionFactory;
     private static final String FIND_ALL = "SELECT t from Trainer t";
     private static final String FIND_BY_USERNAME = "FROM Trainer tr where tr.user.username = :username";
-    private final SessionFactory sessionFactory;
+    private static final String ACTIVATE_DEACTIVATE_BY_ID = "UPDATE User u SET u.isActive = :isActive WHERE u.id = :id";
     private static final String FIND_UNASSIGNED_TRAINERS = """
                 SELECT tr
                 FROM Trainer tr
@@ -101,10 +102,11 @@ public class TrainerDAOImpl implements TrainerDAO {
     @Override
     public void changePassword(Long id, String newPassword) {
         Session session = getSessionFactory().getCurrentSession();
-        User user = session.get(User.class, id);
-        if (user != null) {
-            user.setPassword(newPassword);
-            session.merge(user);
+        int updatedCount = session.createMutationQuery(CHANGE_PASSWORD)
+                .setParameter("password", newPassword)
+                .setParameter("id", id)
+                .executeUpdate();
+        if (updatedCount > 0) {
             log.info("Password updated for User with ID={}", id);
         } else {
             log.error("User with ID={} not found to change password", id);
@@ -115,11 +117,13 @@ public class TrainerDAOImpl implements TrainerDAO {
     @Override
     public void activateDeactivate(Long id, Boolean isActive) {
         Session session = getSessionFactory().getCurrentSession();
-        User user = session.get(User.class, id);
-        if (user != null) {
-            user.setIsActive(isActive);
-            session.merge(user);
-            log.info("Updated isActive for User with ID={}", id);
+        int updatedCount = session.createMutationQuery(
+                        ACTIVATE_DEACTIVATE_BY_ID)
+                .setParameter("isActive", isActive)
+                .setParameter("id", id)
+                .executeUpdate();
+        if (updatedCount > 0) {
+            log.info("Updated isActive={} for User with ID={}", isActive, id);
         } else {
             log.error("User with ID={} not found to update isActive", id);
             throw new EntityNotFoundException("User with ID=" + id + " not found to activate and deactivate profile");

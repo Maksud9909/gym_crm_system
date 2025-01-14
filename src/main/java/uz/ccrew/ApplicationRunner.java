@@ -29,8 +29,6 @@ public class ApplicationRunner {
         createAndListTrainers(facade);
         createAndListTrainings(facade);
 
-        facade.getTraineeService().delete(10L, userCredentials);
-
         log.info("---- Application Finished ----");
     }
 

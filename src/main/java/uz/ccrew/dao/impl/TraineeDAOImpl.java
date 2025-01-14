@@ -21,6 +21,8 @@ import java.util.Optional;
 @Getter
 @Repository
 public class TraineeDAOImpl implements TraineeDAO {
+    private static final String ACTIVATE_DEACTIVATE_BY_ID = "UPDATE User u SET u.isActive = :isActive WHERE u.id = :id";
+    private static final String CHANGE_PASSWORD = "UPDATE User u SET u.password =:password WHERE u.id = :id";
     private final SessionFactory sessionFactory;
     private static final String NOT_FOUND_LOG = "Trainee with ID={} not found";
     private static final String FIND_ALL = "SELECT t FROM Trainee t";
@@ -94,10 +96,11 @@ public class TraineeDAOImpl implements TraineeDAO {
     @Override
     public void changePassword(Long id, String newPassword) {
         Session session = getSessionFactory().getCurrentSession();
-        User user = session.get(User.class, id);
-        if (user != null) {
-            user.setPassword(newPassword);
-            session.merge(user);
+        int updatedCont = session.createMutationQuery(CHANGE_PASSWORD)
+                .setParameter("password", newPassword)
+                .setParameter("id", id)
+                .executeUpdate();
+        if (updatedCont > 0) {
             log.info("Password updated for User with ID={}", id);
         } else {
             log.error("User with ID={} not found to change password", id);
@@ -108,11 +111,13 @@ public class TraineeDAOImpl implements TraineeDAO {
     @Override
     public void activateDeactivate(Long id, Boolean isActive) {
         Session session = getSessionFactory().getCurrentSession();
-        User user = session.get(User.class, id);
-        if (user != null) {
-            user.setIsActive(isActive);
-            session.merge(user);
-            log.info("Updated isActive for User with ID={}", id);
+        int updatedCount = session.createMutationQuery(
+                        ACTIVATE_DEACTIVATE_BY_ID)
+                .setParameter("isActive", isActive)
+                .setParameter("id", id)
+                .executeUpdate();
+        if (updatedCount > 0) {
+            log.info("Updated isActive={} for User with ID={}", isActive, id);
         } else {
             log.error("User with ID={} not found to update isActive", id);
             throw new EntityNotFoundException("User with ID=" + id + " not found to activate and deactivate profile");
