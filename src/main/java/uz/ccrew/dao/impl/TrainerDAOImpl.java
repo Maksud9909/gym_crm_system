@@ -34,7 +34,7 @@ public class TrainerDAOImpl implements TrainerDAO {
                     WHERE tn.user.username = :traineeUsername
                 )
             """;
-    public static final String DELETE_BY_ID = "DELETE FROM Trainer tr where tr.id = :id";
+    private static final String DELETE_BY_ID = "DELETE FROM Trainer tr where tr.id = :id";
 
     @Autowired
     public TrainerDAOImpl(SessionFactory sessionFactory) {

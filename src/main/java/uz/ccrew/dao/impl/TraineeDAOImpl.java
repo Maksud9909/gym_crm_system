@@ -28,7 +28,7 @@ public class TraineeDAOImpl implements TraineeDAO {
     private static final String FIND_ALL = "SELECT t FROM Trainee t";
     private static final String FIND_BY_USERNAME = "FROM Trainee t where t.user.username = :username";
     private static final String FIND_TRAINERS_BY_IDS = "FROM Trainer t WHERE t.id IN :ids";
-    public static final String DELETE_BY_ID = "DELETE FROM Trainee t WHERE t.id = :id";
+    private static final String DELETE_BY_ID = "DELETE FROM Trainee t WHERE t.id = :id";
 
     @Autowired
     public TraineeDAOImpl(SessionFactory sessionFactory) {
