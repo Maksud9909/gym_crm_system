@@ -21,14 +21,12 @@ import java.util.Optional;
 @Getter
 @Repository
 public class TraineeDAOImpl implements TraineeDAO {
-    private static final String ACTIVATE_DEACTIVATE_BY_ID = "UPDATE User u SET u.isActive = :isActive WHERE u.id = :id";
-    private static final String CHANGE_PASSWORD = "UPDATE User u SET u.password =:password WHERE u.id = :id";
     private final SessionFactory sessionFactory;
     private static final String NOT_FOUND_LOG = "Trainee with ID={} not found";
     private static final String FIND_ALL = "SELECT t FROM Trainee t";
-    private static final String FIND_BY_USERNAME = "FROM Trainee t where t.user.username = :username";
-    private static final String FIND_TRAINERS_BY_IDS = "FROM Trainer t WHERE t.id IN :ids";
     private static final String DELETE_BY_ID = "DELETE FROM Trainee t WHERE t.id = :id";
+    private static final String FIND_TRAINERS_BY_IDS = "FROM Trainer t WHERE t.id IN :ids";
+    private static final String FIND_BY_USERNAME = "FROM Trainee t where t.user.username = :username";
 
     @Autowired
     public TraineeDAOImpl(SessionFactory sessionFactory) {
@@ -62,6 +60,8 @@ public class TraineeDAOImpl implements TraineeDAO {
         int deletedCount = session.createMutationQuery(DELETE_BY_ID)
                 .setParameter("id", id)
                 .executeUpdate();
+        session.flush();
+        session.clear();
 
         if (deletedCount > 0) {
             log.info("Deleted Trainee with ID:{}", id);
@@ -96,11 +96,11 @@ public class TraineeDAOImpl implements TraineeDAO {
     @Override
     public void changePassword(Long id, String newPassword) {
         Session session = getSessionFactory().getCurrentSession();
-        int updatedCont = session.createMutationQuery(CHANGE_PASSWORD)
-                .setParameter("password", newPassword)
-                .setParameter("id", id)
-                .executeUpdate();
-        if (updatedCont > 0) {
+        User user = session.get(User.class, id);
+
+        if (user != null) {
+            user.setPassword(newPassword);
+            session.merge(user);
             log.info("Password updated for User with ID={}", id);
         } else {
             log.error("User with ID={} not found to change password", id);
@@ -111,12 +111,11 @@ public class TraineeDAOImpl implements TraineeDAO {
     @Override
     public void activateDeactivate(Long id, Boolean isActive) {
         Session session = getSessionFactory().getCurrentSession();
-        int updatedCount = session.createMutationQuery(
-                        ACTIVATE_DEACTIVATE_BY_ID)
-                .setParameter("isActive", isActive)
-                .setParameter("id", id)
-                .executeUpdate();
-        if (updatedCount > 0) {
+        User user = session.get(User.class, id);
+
+        if (user != null) {
+            user.setIsActive(isActive);
+            session.merge(user);
             log.info("Updated isActive={} for User with ID={}", isActive, id);
         } else {
             log.error("User with ID={} not found to update isActive", id);

@@ -30,6 +30,8 @@
         <hibernate.validator.version>8.0.0.Final</hibernate.validator.version>
         <jakarta.el.version>6.0.1</jakarta.el.version>
         <h2.version>2.3.232</h2.version>
+        <swagger.version>2.2.27</swagger.version>
+        <open-api.version>1.8.0</open-api.version>
 
         <maven.compiler.plugin.version>3.10.1</maven.compiler.plugin.version>
     </properties>
@@ -47,6 +49,11 @@
             <version>${spring.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
@@ -149,6 +156,18 @@
             <groupId>jakarta.el</groupId>
             <artifactId>jakarta.el-api</artifactId>
             <version>${jakarta.el.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>${swagger.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>${open-api.version}</version>
         </dependency>
     </dependencies>
 

@@ -82,7 +82,9 @@ class TraineeDAOImplTest {
     void activateDeactivate() {
         Long id = traineeDAO.create(trainee);
         traineeDAO.activateDeactivate(id, Boolean.FALSE);
-        assertEquals(trainee.getUser().getIsActive(), Boolean.FALSE);
+        Optional<Trainee> updatedOpt = traineeDAO.findById(id);
+        assertTrue(updatedOpt.isPresent());
+        assertFalse(updatedOpt.get().getUser().getIsActive());
     }
 
     @Test
