@@ -1,12 +1,10 @@
-package uz.ccrew.dto;
+package uz.ccrew.dto.user;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.*;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserCredentials {

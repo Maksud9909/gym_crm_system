@@ -2,7 +2,7 @@ package uz.ccrew.service.impl;
 
 import uz.ccrew.dao.UserDAO;
 import uz.ccrew.entity.User;
-import uz.ccrew.dto.UserCredentials;
+import uz.ccrew.dto.user.UserCredentials;
 import uz.ccrew.exp.AuthenticationFailedException;
 
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,18 +1,19 @@
 package uz.ccrew.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import uz.ccrew.dao.UserDAO;
+import uz.ccrew.dto.trainee.TraineeCreateDTO;
 import uz.ccrew.entity.User;
 import uz.ccrew.entity.Trainee;
 import uz.ccrew.dao.TraineeDAO;
 import uz.ccrew.utils.UserUtils;
 import uz.ccrew.service.AuthService;
-import uz.ccrew.dto.UserCredentials;
+import uz.ccrew.dto.user.UserCredentials;
 import uz.ccrew.service.TraineeService;
 import uz.ccrew.exp.EntityNotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -20,61 +21,44 @@ import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class TraineeServiceImpl implements TraineeService {
     private final UserDAO userDAO;
     private final UserUtils userUtils;
     private final TraineeDAO traineeDAO;
     private final AuthService authService;
 
-    @Autowired
-    public TraineeServiceImpl(TraineeDAO traineeDAO, UserUtils userUtils, UserDAO userDAO, AuthService authService) {
-        this.userDAO = userDAO;
-        this.userUtils = userUtils;
-        this.traineeDAO = traineeDAO;
-        this.authService = authService;
-        log.debug("TraineeService initialized");
-    }
-
     @Override
     @Transactional
-    public Long create(Trainee trainee) {
-        if (trainee == null) {
+    public UserCredentials create(TraineeCreateDTO dto) {
+        if (dto == null) {
             log.error("Cannot create null Trainee");
             throw new IllegalArgumentException("Trainee cannot be null");
         }
-        if (trainee.getUser() == null) {
-            log.error("Cannot create Trainee without User");
-            throw new IllegalArgumentException("Associated User cannot be null");
-        }
 
-        User user = trainee.getUser();
-        if (user.getFirstName() == null || user.getFirstName().trim().isEmpty()) {
-            log.error("User firstName is required");
-            throw new IllegalArgumentException("User firstName cannot be empty");
-        }
-        if (user.getLastName() == null || user.getLastName().trim().isEmpty()) {
-            log.error("User lastName is required");
-            throw new IllegalArgumentException("User lastName cannot be empty");
-        }
-
-        String username = userUtils.generateUniqueUsername(user.getFirstName(), user.getLastName());
+        String username = userUtils.generateUniqueUsername(dto.getFirstName(), dto.getLastName());
         String password = userUtils.generateRandomPassword();
 
         User newUser = User.builder()
                 .username(username)
                 .password(password)
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
+                .firstName(dto.getFirstName())
+                .lastName(dto.getLastName())
                 .isActive(Boolean.TRUE)
                 .build();
 
-        userDAO.create(newUser);
+        Trainee trainee = Trainee.builder()
+                .address(dto.getAddress())
+                .dateOfBirth(dto.getDatOfBirth())
+                .user(newUser)
+                .build();
 
-        trainee.setUser(newUser);
-
-        Long id = traineeDAO.create(trainee);
-        log.info("Trainee created: {}", trainee);
-        return id;
+        traineeDAO.create(trainee);
+        log.info("Trainee created: {}", dto);
+        return UserCredentials.builder()
+                .username(username)
+                .password(password)
+                .build();
     }
 
     @Override

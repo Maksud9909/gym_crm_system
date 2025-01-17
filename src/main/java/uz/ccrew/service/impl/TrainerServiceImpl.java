@@ -1,7 +1,8 @@
 package uz.ccrew.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import uz.ccrew.dao.UserDAO;
-import uz.ccrew.dto.UserCredentials;
+import uz.ccrew.dto.user.UserCredentials;
 import uz.ccrew.entity.User;
 import uz.ccrew.dao.TrainerDAO;
 import uz.ccrew.entity.Trainer;
@@ -22,6 +23,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class TrainerServiceImpl implements TrainerService {
     private final UserDAO userDAO;
     private final UserUtils userUtils;
@@ -29,17 +31,7 @@ public class TrainerServiceImpl implements TrainerService {
     private final TrainingTypeDAO trainingTypeDAO;
     private final AuthService authService;
 
-    @Autowired
-    public TrainerServiceImpl(UserDAO userDAO, TrainerDAO trainerDAO, UserUtils userUtils, TrainingTypeDAO trainingTypeDAO, AuthService authService) {
-        this.userDAO = userDAO;
-        this.trainerDAO = trainerDAO;
-        this.userUtils = userUtils;
-        this.trainingTypeDAO = trainingTypeDAO;
-        this.authService = authService;
-        log.debug("TrainerService initialized");
-    }
-
-    @Override
+//    @Override
     @Transactional
     public Long create(Trainer trainer) {
         if (trainer == null) {
@@ -114,6 +106,11 @@ public class TrainerServiceImpl implements TrainerService {
         log.info("Updated trainer with ID={}", trainer.getId());
     }
 
+
+    @Override
+    public Object create(Object entity) {
+        return null;
+    }
 
     @Override
     @Transactional(readOnly = true)

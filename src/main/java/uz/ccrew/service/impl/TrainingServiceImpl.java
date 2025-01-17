@@ -1,6 +1,7 @@
 package uz.ccrew.service.impl;
 
-import uz.ccrew.dto.UserCredentials;
+import lombok.RequiredArgsConstructor;
+import uz.ccrew.dto.user.UserCredentials;
 import uz.ccrew.entity.Trainee;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.dao.TraineeDAO;
@@ -21,20 +22,12 @@ import java.time.LocalDate;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class TrainingServiceImpl implements TrainingService {
     private final TraineeDAO traineeDAO;
     private final TrainerDAO trainerDAO;
     private final TrainingDAO trainingDAO;
     private final AuthService authService;
-
-    @Autowired
-    public TrainingServiceImpl(TrainingDAO trainingDAO, TraineeDAO traineeDAO, TrainerDAO trainerDAO, AuthService authService) {
-        this.trainingDAO = trainingDAO;
-        this.traineeDAO = traineeDAO;
-        this.trainerDAO = trainerDAO;
-        this.authService = authService;
-        log.debug("TrainingServiceImpl initialized");
-    }
 
     @Override
     @Transactional(readOnly = true)
@@ -54,7 +47,7 @@ public class TrainingServiceImpl implements TrainingService {
         return trainingDAO.getTrainerTrainings(trainerUsername, fromDate, toDate, traineeName);
     }
 
-    @Override
+//    @Override
     @Transactional
     public Long create(Training training) {
         Trainee trainee = traineeDAO.findById(training.getTrainee().getId())
@@ -70,6 +63,11 @@ public class TrainingServiceImpl implements TrainingService {
 
         log.info("Created Training:{} with ID:{}", training, training.getId());
         return training.getId();
+    }
+
+    @Override
+    public Object create(Object entity) {
+        return null;
     }
 
     @Override

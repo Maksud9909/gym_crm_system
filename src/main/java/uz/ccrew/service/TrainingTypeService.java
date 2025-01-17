@@ -1,6 +1,6 @@
 package uz.ccrew.service;
 
-import uz.ccrew.dto.UserCredentials;
+import uz.ccrew.dto.user.UserCredentials;
 import uz.ccrew.entity.TrainingType;
 
 public interface TrainingTypeService {
