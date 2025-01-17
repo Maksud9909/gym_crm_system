@@ -14,7 +14,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import java.util.List;
 import java.time.LocalDate;
-import java.util.Optional;
 
 @Slf4j
 public class ApplicationRunner {
@@ -26,15 +25,9 @@ public class ApplicationRunner {
 
         log.info("---- Starting Application ----");
 
-//        createAndListTrainees(facade);
+        createAndListTrainees(facade);
 //        createAndListTrainers(facade);
 //        createAndListTrainings(facade);
-
-
-
-        facade.getTraineeService().delete(1L, userCredentials);
-//        Trainee trainee = facade.getTraineeService().findById(1L,userCredentials);
-//        System.out.println(trainee);
 
         log.info("---- Application Finished ----");
     }

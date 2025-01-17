@@ -11,9 +11,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/training-types")
-@RequiredArgsConstructor
 @Tag(name = "Training Type Controller", description = "Training Type API")
 public class TrainingTypeController {
+
+    public TrainingTypeController() {
+        System.out.println("TrainingTypeController loaded!");
+    }
+
     @GetMapping
     @Operation(summary = "Получить список типов тренировок")
     public List<String> getTrainingTypes() {
