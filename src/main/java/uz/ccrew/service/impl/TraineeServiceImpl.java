@@ -3,6 +3,12 @@ package uz.ccrew.service.impl;
 import lombok.RequiredArgsConstructor;
 import uz.ccrew.dao.UserDAO;
 import uz.ccrew.dto.trainee.TraineeCreateDTO;
+import uz.ccrew.dto.trainee.TraineeProfile;
+import uz.ccrew.dto.trainee.TraineeProfileUsername;
+import uz.ccrew.dto.trainee.TraineeUpdateDTO;
+import uz.ccrew.dto.trainer.TrainerDTO;
+import uz.ccrew.dto.trainingType.TrainingTypeDTO;
+import uz.ccrew.entity.Trainer;
 import uz.ccrew.entity.User;
 import uz.ccrew.entity.Trainee;
 import uz.ccrew.dao.TraineeDAO;
@@ -16,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -63,46 +68,41 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     @Transactional
-    public void update(Trainee trainee, UserCredentials userCredentials) {
-        authService.verifyUserCredentials(userCredentials);
+    public TraineeProfileUsername update(TraineeUpdateDTO dto) {
+        Trainee trainee = traineeDAO.findByUsername(dto.getUsername()).orElseThrow(
+                () -> new EntityNotFoundException("Trainee with username=" + dto.getUsername() + " not found"));
 
-        if (trainee == null || trainee.getId() == null) {
-            log.error("Trainee or Trainee ID is null");
-            throw new IllegalArgumentException("Trainee and Trainee ID must not be null");
-        }
+        trainee.getUser().setFirstName(dto.getFirstName());
+        trainee.getUser().setLastName(dto.getLastName());
+        trainee.getUser().setIsActive(dto.getIsActive());
+        trainee.setAddress(dto.getAddress());
+        trainee.setDateOfBirth(dto.getDatOfBirth());
 
-        Trainee existingTrainee = traineeDAO.findById(trainee.getId())
-                .orElseThrow(() -> {
-                    log.warn("Trainee with id={} not found", trainee.getId());
-                    return new EntityNotFoundException("Trainee with id=" + trainee.getId() + " not found");
-                });
+        traineeDAO.update(trainee);
 
-        User existingUser = existingTrainee.getUser();
-        if (existingUser == null) {
-            log.error("Associated User not found for Trainee with id {}", trainee.getId());
-            throw new EntityNotFoundException("Associated User not found");
-        }
+        List<TrainerDTO> trainerDTOS = trainee.getTraining().stream()
+                .map(training -> {
+                    Trainer trainer = training.getTrainer();
+                    return TrainerDTO.builder()
+                            .username(trainer.getUser().getUsername())
+                            .firstName(trainer.getUser().getFirstName())
+                            .lastName(trainer.getUser().getLastName())
+                            .trainingTypeDTO(TrainingTypeDTO.builder()
+                                    .trainingTypeName(trainer.getTrainingType().getTrainingTypeName())
+                                    .build())
+                            .build();
+                })
+                .toList();
 
-        if (trainee.getUser() != null) {
-            validateAndUpdateUser(existingUser, trainee.getUser());
-        }
-
-        if (trainee.getDateOfBirth() != null) {
-            if (trainee.getDateOfBirth().isAfter(LocalDate.now())) {
-                log.error("Date of birth cannot be in the future");
-                throw new IllegalArgumentException("Date of birth cannot be in the future");
-            }
-            existingTrainee.setDateOfBirth(trainee.getDateOfBirth());
-        }
-
-        if (trainee.getAddress() != null) {
-            existingTrainee.setAddress(trainee.getAddress().trim());
-        }
-
-        traineeDAO.update(existingTrainee);
-
-        log.info("Updated trainee with ID={} and associated user with ID={}",
-                trainee.getId(), existingUser.getId());
+        return TraineeProfileUsername.builder()
+                .username(trainee.getUser().getUsername())
+                .firstName(trainee.getUser().getFirstName())
+                .lastName(trainee.getUser().getLastName())
+                .datOfBirth(trainee.getDateOfBirth())
+                .address(trainee.getAddress())
+                .isActive(trainee.getUser().getIsActive())
+                .trainerDTOS(trainerDTOS)
+                .build();
     }
 
 
@@ -142,6 +142,11 @@ public class TraineeServiceImpl implements TraineeService {
         authService.verifyUserCredentials(userCredentials);
         log.info("Deleting trainee={}", id);
         traineeDAO.delete(id);
+    }
+
+    @Override
+    public void update(Trainee trainee, UserCredentials userCredentials) {
+
     }
 
     @Override
@@ -198,6 +203,35 @@ public class TraineeServiceImpl implements TraineeService {
 
         traineeDAO.updateTraineeTrainers(traineeId, newTrainerIds);
         log.info("Trainers updated successfully for Trainee ID={}", traineeId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public TraineeProfile getProfile(String username) {
+        Trainee trainee = traineeDAO.findByUsername(username).orElseThrow(() ->
+                new EntityNotFoundException("Trainee with username=" + username + " not found"));
+        List<TrainerDTO> trainerDTOS = trainee.getTraining().stream()
+                .map(training -> {
+                    Trainer trainer = training.getTrainer();
+                    return TrainerDTO.builder()
+                            .username(trainer.getUser().getUsername())
+                            .firstName(trainer.getUser().getFirstName())
+                            .lastName(trainer.getUser().getLastName())
+                            .trainingTypeDTO(TrainingTypeDTO.builder()
+                                    .trainingTypeName(trainer.getTrainingType().getTrainingTypeName())
+                                    .build())
+                            .build();
+                })
+                .toList();
+
+        return TraineeProfile.builder()
+                .firstName(trainee.getUser().getFirstName())
+                .lastName(trainee.getUser().getLastName())
+                .datOfBirth(trainee.getDateOfBirth())
+                .address(trainee.getAddress())
+                .isActive(trainee.getUser().getIsActive())
+                .trainerDTOS(trainerDTOS)
+                .build();
     }
 
     private void validateAndUpdateUser(User existingUser, User newUserData) {

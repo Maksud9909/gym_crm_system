@@ -3,20 +3,22 @@ package uz.ccrew.dto.trainee;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import jakarta.validation.constraints.NotBlank;
 import lombok.NoArgsConstructor;
+import uz.ccrew.dto.trainer.TrainerDTO;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TraineeCreateDTO {
-    @NotBlank(message = "FirstName should be not empty")
+public class TraineeProfileUsername {
+    private String username;
     private String firstName;
-    @NotBlank(message = "LastName should be not empty")
     private String lastName;
     private LocalDate datOfBirth;
     private String address;
+    private Boolean isActive;
+    List<TrainerDTO> trainerDTOS;
 }
