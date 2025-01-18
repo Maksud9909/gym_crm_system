@@ -160,8 +160,7 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     @Transactional
-    public void activateDeactivate(Long id, Boolean isActive, UserCredentials userCredentials) {
-        authService.verifyUserCredentials(userCredentials);
+    public void activateDeactivate(Long id, Boolean isActive) {
         log.info("Activating/deactivating trainer={}", id);
         User user = userDAO.findById(id);
         if (user.getIsActive().equals(isActive)) {

@@ -10,6 +10,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
 import java.util.Optional;
 
 @Getter
@@ -17,6 +18,7 @@ import java.util.Optional;
 @Repository
 public class TrainingTypeDAOImpl implements TrainingTypeDAO {
     private final SessionFactory sessionFactory;
+    public static final String FIND_ALL = "FROM training_types";
 
     @Autowired
     public TrainingTypeDAOImpl(SessionFactory sessionFactory) {
@@ -35,5 +37,11 @@ public class TrainingTypeDAOImpl implements TrainingTypeDAO {
             log.warn("No TrainingType found with ID={}", id);
             return Optional.empty();
         }
+    }
+
+    @Override
+    public List<TrainingType> findAll() {
+        Session session = getSessionFactory().getCurrentSession();
+        return session.createQuery(FIND_ALL, TrainingType.class).list();
     }
 }

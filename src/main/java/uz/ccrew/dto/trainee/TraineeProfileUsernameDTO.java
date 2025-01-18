@@ -1,6 +1,9 @@
 package uz.ccrew.dto.trainee;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import uz.ccrew.dto.trainer.TrainerDTO;
 
 import java.time.LocalDate;
@@ -10,7 +13,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TraineeProfile {
+public class TraineeProfileUsernameDTO {
+    private String username;
     private String firstName;
     private String lastName;
     private LocalDate datOfBirth;

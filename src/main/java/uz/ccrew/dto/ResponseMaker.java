@@ -10,7 +10,7 @@ public class ResponseMaker {
         return ResponseEntity.ok(response);
     }
 
-    public static <T> ResponseEntity<Response<T>> ok() {
+    public static ResponseEntity<Response<?>> ok() {
         return ResponseEntity.ok().build();
     }
 

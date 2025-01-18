@@ -34,6 +34,7 @@ public class TrainerDAOImpl implements TrainerDAO {
                 )
             """;
     private static final String DELETE_BY_ID = "DELETE FROM Trainer tr where tr.id = :id";
+    private static final String FIND_TRAINERS_BY_USERNAMES = "FROM Trainer t WHERE t.user.username IN :usernames";
 
     @Autowired
     public TrainerDAOImpl(SessionFactory sessionFactory) {
@@ -138,5 +139,14 @@ public class TrainerDAOImpl implements TrainerDAO {
         return session.createQuery(FIND_UNASSIGNED_TRAINERS, Trainer.class)
                 .setParameter("traineeUsername", traineeUsername)
                 .list();
+    }
+
+    @Override
+    public List<Trainer> findByTrainerUsername(List<String> usernames) {
+        Session session = getSessionFactory().getCurrentSession();
+        return session.createQuery(
+                        FIND_TRAINERS_BY_USERNAMES, Trainer.class)
+                .setParameter("usernames", usernames)
+                .getResultList();
     }
 }

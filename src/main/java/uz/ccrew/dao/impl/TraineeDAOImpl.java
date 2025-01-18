@@ -25,7 +25,7 @@ public class TraineeDAOImpl implements TraineeDAO {
     private static final String NOT_FOUND_LOG = "Trainee with ID={} not found";
     private static final String FIND_ALL = "SELECT t FROM Trainee t";
     private static final String DELETE_BY_ID = "DELETE FROM Trainee t WHERE t.id = :id";
-    private static final String FIND_TRAINERS_BY_IDS = "FROM Trainer t WHERE t.id IN :ids";
+    private static final String FIND_TRAINERS_BY_USERNAMES = "FROM Trainer t WHERE t.user.username IN :usernames";
     private static final String FIND_BY_USERNAME = "FROM Trainee t where t.user.username = :username";
 
     @Autowired
@@ -124,24 +124,26 @@ public class TraineeDAOImpl implements TraineeDAO {
     }
 
     @Override
-    public void updateTraineeTrainers(Long traineeId, List<Long> newTrainerIds) {
-        log.info("Updating trainers list for Trainee with ID={}", traineeId);
+    public void updateTraineeTrainers(String username, List<String> newTrainerUsernames) {
+        log.info("Updating trainers list for Trainee with ID={}", username);
         Session session = getSessionFactory().getCurrentSession();
 
-        Trainee trainee = session.get(Trainee.class, traineeId);
+        Trainee trainee = session.createQuery(FIND_BY_USERNAME, Trainee.class)
+                .setParameter("username", username)
+                .uniqueResult();
         if (trainee == null) {
-            log.error(NOT_FOUND_LOG, traineeId);
-            throw new EntityNotFoundException("Trainee with ID=" + traineeId + " not found for updating trainers list");
+            log.error(NOT_FOUND_LOG, username);
+            throw new EntityNotFoundException("Trainee with username=" + username + " not found for updating trainers list");
         }
 
         List<Trainer> newTrainers = session.createQuery(
-                        FIND_TRAINERS_BY_IDS, Trainer.class)
-                .setParameter("ids", newTrainerIds)
+                        FIND_TRAINERS_BY_USERNAMES, Trainer.class)
+                .setParameter("usernames", newTrainerUsernames)
                 .getResultList();
 
         if (newTrainers.isEmpty()) {
-            log.warn("No valid trainers found for IDs: {}", newTrainerIds);
-            throw new IllegalArgumentException("No valid trainers found for the provided IDs");
+            log.warn("No valid trainers found for IDs: {}", newTrainers);
+            throw new EntityNotFoundException("No valid trainers found for IDs: " + newTrainers);
         }
 
         List<Training> existingTrainings = trainee.getTraining();
@@ -152,6 +154,6 @@ public class TraineeDAOImpl implements TraineeDAO {
         }
 
         session.merge(trainee);
-        log.info("Updated trainers list for Trainee with ID={}", traineeId);
+        log.info("Updated trainers list for Trainee with ID={}", username);
     }
 }

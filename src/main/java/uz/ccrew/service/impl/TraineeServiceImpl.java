@@ -1,10 +1,11 @@
 package uz.ccrew.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import uz.ccrew.dao.TrainerDAO;
 import uz.ccrew.dao.UserDAO;
 import uz.ccrew.dto.trainee.TraineeCreateDTO;
-import uz.ccrew.dto.trainee.TraineeProfile;
-import uz.ccrew.dto.trainee.TraineeProfileUsername;
+import uz.ccrew.dto.trainee.TraineeProfileDTO;
+import uz.ccrew.dto.trainee.TraineeProfileUsernameDTO;
 import uz.ccrew.dto.trainee.TraineeUpdateDTO;
 import uz.ccrew.dto.trainer.TrainerDTO;
 import uz.ccrew.dto.trainingType.TrainingTypeDTO;
@@ -32,6 +33,7 @@ public class TraineeServiceImpl implements TraineeService {
     private final UserUtils userUtils;
     private final TraineeDAO traineeDAO;
     private final AuthService authService;
+    private final TrainerDAO trainerDAO;
 
     @Override
     @Transactional
@@ -68,7 +70,7 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     @Transactional
-    public TraineeProfileUsername update(TraineeUpdateDTO dto) {
+    public TraineeProfileUsernameDTO update(TraineeUpdateDTO dto) {
         Trainee trainee = traineeDAO.findByUsername(dto.getUsername()).orElseThrow(
                 () -> new EntityNotFoundException("Trainee with username=" + dto.getUsername() + " not found"));
 
@@ -94,7 +96,7 @@ public class TraineeServiceImpl implements TraineeService {
                 })
                 .toList();
 
-        return TraineeProfileUsername.builder()
+        return TraineeProfileUsernameDTO.builder()
                 .username(trainee.getUser().getUsername())
                 .firstName(trainee.getUser().getFirstName())
                 .lastName(trainee.getUser().getLastName())
@@ -151,8 +153,7 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     @Transactional
-    public void deleteTraineeByUsername(String username, UserCredentials userCredentials) {
-        authService.verifyUserCredentials(userCredentials);
+    public void deleteTraineeByUsername(String username) {
         log.info("Deleting trainee by username={}", username);
         Trainee trainee = traineeDAO.findByUsername(username)
                 .orElseThrow(() -> {
@@ -173,8 +174,7 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     @Transactional
-    public void activateDeactivate(Long id, Boolean isActive, UserCredentials userCredentials) {
-        authService.verifyUserCredentials(userCredentials);
+    public void activateDeactivate(Long id, Boolean isActive) {
         log.info("Activating/deactivating trainee={}", id);
         User user = userDAO.findById(id);
         if (user.getIsActive().equals(isActive)) {
@@ -187,27 +187,37 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     @Transactional
-    public void updateTraineeTrainers(Long traineeId, List<Long> newTrainerIds, UserCredentials userCredentials) {
-        authService.verifyUserCredentials(userCredentials);
-        log.info("Updating trainers for Trainee ID={}", traineeId);
+    public List<TrainerDTO> updateTraineeTrainers(String username, List<String> newTrainers) {
+        log.info("Updating trainers for Trainee ID={}", username);
 
-        if (traineeId == null) {
+        if (username == null) {
             log.warn("Trainee ID is null");
             throw new IllegalArgumentException("Trainee ID must not be null");
         }
 
-        if (newTrainerIds == null || newTrainerIds.isEmpty()) {
+        if (newTrainers == null || newTrainers.isEmpty()) {
             log.warn("No trainers provided for update");
             throw new IllegalArgumentException("Trainer IDs must not be null or empty");
         }
 
-        traineeDAO.updateTraineeTrainers(traineeId, newTrainerIds);
-        log.info("Trainers updated successfully for Trainee ID={}", traineeId);
+        traineeDAO.updateTraineeTrainers(username, newTrainers);
+        log.info("Trainers updated successfully for Trainee ID={}", username);
+        List<Trainer> trainers = trainerDAO.findByTrainerUsername(newTrainers);
+        return trainers.stream()
+                .map(trainer -> TrainerDTO.builder()
+                        .username(trainer.getUser().getUsername())
+                        .firstName(trainer.getUser().getFirstName())
+                        .lastName(trainer.getUser().getLastName())
+                        .trainingTypeDTO(TrainingTypeDTO.builder()
+                                .trainingTypeName(trainer.getTrainingType().getTrainingTypeName())
+                                .build())
+                        .build())
+                .toList();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public TraineeProfile getProfile(String username) {
+    public TraineeProfileDTO getProfile(String username) {
         Trainee trainee = traineeDAO.findByUsername(username).orElseThrow(() ->
                 new EntityNotFoundException("Trainee with username=" + username + " not found"));
         List<TrainerDTO> trainerDTOS = trainee.getTraining().stream()
@@ -224,7 +234,7 @@ public class TraineeServiceImpl implements TraineeService {
                 })
                 .toList();
 
-        return TraineeProfile.builder()
+        return TraineeProfileDTO.builder()
                 .firstName(trainee.getUser().getFirstName())
                 .lastName(trainee.getUser().getLastName())
                 .datOfBirth(trainee.getDateOfBirth())
@@ -232,48 +242,5 @@ public class TraineeServiceImpl implements TraineeService {
                 .isActive(trainee.getUser().getIsActive())
                 .trainerDTOS(trainerDTOS)
                 .build();
-    }
-
-    private void validateAndUpdateUser(User existingUser, User newUserData) {
-        if (newUserData.getFirstName() != null) {
-            if (newUserData.getFirstName().trim().isEmpty()) {
-                log.error("First name cannot be empty");
-                throw new IllegalArgumentException("First name cannot be empty");
-            }
-            existingUser.setFirstName(newUserData.getFirstName().trim());
-        }
-
-        if (newUserData.getLastName() != null) {
-            if (newUserData.getLastName().trim().isEmpty()) {
-                log.error("Last name cannot be empty");
-                throw new IllegalArgumentException("Last name cannot be empty");
-            }
-            existingUser.setLastName(newUserData.getLastName().trim());
-        }
-
-        if (newUserData.getUsername() != null) {
-            if (newUserData.getUsername().trim().isEmpty()) {
-                log.error("Username cannot be empty");
-                throw new IllegalArgumentException("Username cannot be empty");
-            }
-            if (!existingUser.getUsername().equals(newUserData.getUsername().trim()) &&
-                userDAO.isUsernameExists(newUserData.getUsername().trim())) {
-                log.error("Username {} already exists", newUserData.getUsername());
-                throw new IllegalArgumentException("Username already exists");
-            }
-            existingUser.setUsername(newUserData.getUsername().trim());
-        }
-
-        if (newUserData.getPassword() != null) {
-            if (newUserData.getPassword().trim().isEmpty()) {
-                log.error("Password cannot be empty");
-                throw new IllegalArgumentException("Password cannot be empty");
-            }
-            existingUser.setPassword(newUserData.getPassword());
-        }
-
-        if (newUserData.getIsActive() != null) {
-            existingUser.setIsActive(newUserData.getIsActive());
-        }
     }
 }

@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface TraineeDAO extends BaseUserCRUDDAO<Trainee> {
 
-    void updateTraineeTrainers(Long traineeId, List<Long> newTrainerIds);
+    void updateTraineeTrainers(String username, List<String> newTrainer);
 }
