@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
+import uz.ccrew.exp.EntityNotFoundException;
 
 import java.util.Optional;
 
@@ -64,5 +65,20 @@ public class UserDAOImpl implements UserDAO {
                 .setParameter("password", password)
                 .uniqueResult();
         return Optional.ofNullable(user);
+    }
+
+    @Override
+    public void changePassword(Long id, String newPassword) {
+        Session session = getSessionFactory().getCurrentSession();
+        User user = session.get(User.class, id);
+
+        if (user != null) {
+            user.setPassword(newPassword);
+            session.merge(user);
+            log.info("Password updated for User with ID={}", id);
+        } else {
+            log.error("User with ID={} not found to change password", id);
+            throw new EntityNotFoundException("User with ID=" + id + " not found to change password");
+        }
     }
 }

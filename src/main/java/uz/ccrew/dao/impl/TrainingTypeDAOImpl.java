@@ -19,11 +19,26 @@ import java.util.Optional;
 public class TrainingTypeDAOImpl implements TrainingTypeDAO {
     private final SessionFactory sessionFactory;
     public static final String FIND_ALL = "FROM training_types";
+    public static final String FIND_BY_NAME = "FROM training_types WHERE trainingTypeName = :name";
 
     @Autowired
     public TrainingTypeDAOImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
         log.debug("TrainingTypeDAO instantiated");
+    }
+
+    @Override
+    public Optional<TrainingType> findByName(String name) {
+        Session session = sessionFactory.getCurrentSession();
+        TrainingType trainingType = session.createQuery(FIND_BY_NAME, TrainingType.class)
+                .setParameter("name", name)
+                .uniqueResult();
+        if (trainingType != null) {
+            return Optional.of(trainingType);
+        } else {
+            log.warn("No TrainingType found with name={}", name);
+            return Optional.empty();
+        }
     }
 
     @Override

@@ -7,5 +7,8 @@ import java.util.Optional;
 
 public interface TrainingTypeDAO {
     Optional<TrainingType> findById(Long id);
+
     List<TrainingType> findAll();
+
+    Optional<TrainingType> findByName(String name);
 }

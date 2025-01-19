@@ -6,6 +6,5 @@ import uz.ccrew.dao.base.BaseUserCRUDDAO;
 import java.util.List;
 
 public interface TraineeDAO extends BaseUserCRUDDAO<Trainee> {
-
-    void updateTraineeTrainers(String username, List<String> newTrainer);
+    void updateTraineeTrainers(String username, List<String> newTrainerUsernames);
 }

@@ -14,4 +14,6 @@ public interface UserDAO {
     void update(User user);
 
     Optional<User> findByUsernameAndPassword(String username, String password);
+
+    void changePassword(Long id, String newPassword);
 }

@@ -2,6 +2,7 @@ package uz.ccrew.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import uz.ccrew.dao.UserDAO;
+import uz.ccrew.dto.trainer.TrainerCreateDTO;
 import uz.ccrew.dto.user.UserCredentials;
 import uz.ccrew.entity.User;
 import uz.ccrew.dao.TrainerDAO;
@@ -31,48 +32,37 @@ public class TrainerServiceImpl implements TrainerService {
     private final TrainingTypeDAO trainingTypeDAO;
     private final AuthService authService;
 
-//    @Override
+    @Override
     @Transactional
-    public Long create(Trainer trainer) {
-        if (trainer == null) {
+    public UserCredentials create(TrainerCreateDTO dto) {
+        if (dto == null) {
             log.error("Cannot create a null trainer");
             throw new IllegalArgumentException("Trainer cannot be null");
         }
 
-        if (trainer.getUser() == null) {
-            log.error("Cannot create Trainer without User");
-            throw new IllegalArgumentException("Associated User cannot be null");
-        }
-
-        User user = trainer.getUser();
-        if (user.getFirstName() == null || user.getFirstName().trim().isEmpty()) {
-            log.error("User firstName is required");
-            throw new IllegalArgumentException("User firstName cannot be empty");
-        }
-        if (user.getLastName() == null || user.getLastName().trim().isEmpty()) {
-            log.error("User lastName is required");
-            throw new IllegalArgumentException("User lastName cannot be empty");
-        }
-
-        String username = userUtils.generateUniqueUsername(trainer.getUser().getFirstName(), trainer.getUser().getLastName());
+        String username = userUtils.generateUniqueUsername(dto.getFirstName(), dto.getLastName());
         String password = userUtils.generateRandomPassword();
 
         User newUser = User.builder()
                 .username(username)
                 .password(password)
-                .firstName(trainer.getUser().getFirstName())
-                .lastName(trainer.getUser().getLastName())
+                .firstName(dto.getFirstName())
+                .lastName(dto.getLastName())
                 .isActive(Boolean.TRUE)
                 .build();
+        Optional<TrainingType> trainingType = trainingTypeDAO.findByName(dto.getTrainingTypeName());
 
-        userDAO.create(newUser);
+        Trainer trainer = Trainer.builder()
+                .trainingType(trainingType.get())
+                .user(newUser)
+                .build();
 
-        trainer.setUser(newUser);
-        Optional<TrainingType> trainingType = trainingTypeDAO.findById(trainer.getTrainingType().getId());
-        trainingType.ifPresent(trainer::setTrainingType);
-        Long id = trainerDAO.create(trainer);
-        log.info("Trainer created: {}", trainer);
-        return id;
+        trainerDAO.create(trainer);
+        log.info("Trainer created: {}", dto);
+        return UserCredentials.builder()
+                .username(username)
+                .password(password)
+                .build();
     }
 
     @Override
@@ -104,12 +94,6 @@ public class TrainerServiceImpl implements TrainerService {
         }
         trainerDAO.update(existingTrainer);
         log.info("Updated trainer with ID={}", trainer.getId());
-    }
-
-
-    @Override
-    public Object create(Object entity) {
-        return null;
     }
 
     @Override
