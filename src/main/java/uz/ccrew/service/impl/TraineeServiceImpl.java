@@ -1,25 +1,24 @@
 package uz.ccrew.service.impl;
 
-import lombok.RequiredArgsConstructor;
-import uz.ccrew.dao.TrainerDAO;
-import uz.ccrew.dao.UserDAO;
-import uz.ccrew.dto.trainee.TraineeCreateDTO;
-import uz.ccrew.dto.trainee.TraineeProfileDTO;
-import uz.ccrew.dto.trainee.TraineeProfileUsernameDTO;
-import uz.ccrew.dto.trainee.TraineeUpdateDTO;
-import uz.ccrew.dto.trainer.TrainerDTO;
-import uz.ccrew.dto.trainingType.TrainingTypeDTO;
-import uz.ccrew.entity.Trainer;
 import uz.ccrew.entity.User;
+import uz.ccrew.dao.UserDAO;
+import uz.ccrew.dao.TrainerDAO;
+import uz.ccrew.entity.Trainer;
 import uz.ccrew.entity.Trainee;
 import uz.ccrew.dao.TraineeDAO;
 import uz.ccrew.utils.UserUtils;
 import uz.ccrew.service.AuthService;
-import uz.ccrew.dto.user.UserCredentials;
+import uz.ccrew.dto.trainer.TrainerDTO;
 import uz.ccrew.service.TraineeService;
+import uz.ccrew.dto.user.UserCredentials;
 import uz.ccrew.exp.EntityNotFoundException;
+import uz.ccrew.dto.trainee.TraineeCreateDTO;
+import uz.ccrew.dto.trainee.TraineeUpdateDTO;
+import uz.ccrew.dto.trainee.TraineeProfileDTO;
+import uz.ccrew.dto.trainee.TraineeProfileUsernameDTO;
 
 import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -89,9 +88,7 @@ public class TraineeServiceImpl implements TraineeService {
                             .username(trainer.getUser().getUsername())
                             .firstName(trainer.getUser().getFirstName())
                             .lastName(trainer.getUser().getLastName())
-                            .trainingTypeDTO(TrainingTypeDTO.builder()
-                                    .trainingTypeName(trainer.getTrainingType().getTrainingTypeName())
-                                    .build())
+                            .trainingTypeName(trainer.getTrainingType().getTrainingTypeName())
                             .build();
                 })
                 .toList();
@@ -208,9 +205,7 @@ public class TraineeServiceImpl implements TraineeService {
                         .username(trainer.getUser().getUsername())
                         .firstName(trainer.getUser().getFirstName())
                         .lastName(trainer.getUser().getLastName())
-                        .trainingTypeDTO(TrainingTypeDTO.builder()
-                                .trainingTypeName(trainer.getTrainingType().getTrainingTypeName())
-                                .build())
+                        .trainingTypeName(trainer.getTrainingType().getTrainingTypeName())
                         .build())
                 .toList();
     }
@@ -227,9 +222,7 @@ public class TraineeServiceImpl implements TraineeService {
                             .username(trainer.getUser().getUsername())
                             .firstName(trainer.getUser().getFirstName())
                             .lastName(trainer.getUser().getLastName())
-                            .trainingTypeDTO(TrainingTypeDTO.builder()
-                                    .trainingTypeName(trainer.getTrainingType().getTrainingTypeName())
-                                    .build())
+                            .trainingTypeName(trainer.getTrainingType().getTrainingTypeName())
                             .build();
                 })
                 .toList();

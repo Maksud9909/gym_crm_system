@@ -2,8 +2,14 @@ package uz.ccrew.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import uz.ccrew.dao.UserDAO;
+import uz.ccrew.dto.TrainerUpdateDTO;
+import uz.ccrew.dto.trainee.TraineeShortDTO;
 import uz.ccrew.dto.trainer.TrainerCreateDTO;
+import uz.ccrew.dto.trainer.TrainerDTO;
+import uz.ccrew.dto.trainer.TrainerProfileDTO;
+import uz.ccrew.dto.trainer.TrainerProfileUsernameDTO;
 import uz.ccrew.dto.user.UserCredentials;
+import uz.ccrew.entity.Trainee;
 import uz.ccrew.entity.User;
 import uz.ccrew.dao.TrainerDAO;
 import uz.ccrew.entity.Trainer;
@@ -85,10 +91,6 @@ public class TrainerServiceImpl implements TrainerService {
         }
 
 
-        if (trainer.getUser() != null) {
-            validateAndUpdateUser(existingUser, trainer.getUser());
-        }
-
         if (trainer.getTrainingType() != null) {
             existingTrainer.setTrainingType(trainer.getTrainingType());
         }
@@ -157,52 +159,75 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Trainer> getUnassignedTrainers(String traineeUsername, UserCredentials userCredentials) {
-        authService.verifyUserCredentials(userCredentials);
+    public List<TrainerDTO> getUnassignedTrainers(String traineeUsername) {
         log.info("Fetching unassigned trainers for Trainee username={}", traineeUsername);
-        return trainerDAO.getUnassignedTrainers(traineeUsername);
+        List<Trainer> trainers = trainerDAO.getUnassignedTrainers(traineeUsername);
+
+        return trainers.stream()
+                .map(trainer -> TrainerDTO.builder()
+                        .username(trainer.getUser().getUsername())
+                        .firstName(trainer.getUser().getFirstName())
+                        .lastName(trainer.getUser().getLastName())
+                        .trainingTypeName(trainer.getTrainingType().getTrainingTypeName())
+                        .build())
+                .toList();
     }
 
-    private void validateAndUpdateUser(User existingUser, User newUserData) {
-        if (newUserData.getFirstName() != null) {
-            if (newUserData.getFirstName().trim().isEmpty()) {
-                log.error("First name cannot be empty");
-                throw new IllegalArgumentException("First name cannot be empty");
-            }
-            existingUser.setFirstName(newUserData.getFirstName().trim());
-        }
 
-        if (newUserData.getLastName() != null) {
-            if (newUserData.getLastName().trim().isEmpty()) {
-                log.error("Last name cannot be empty");
-                throw new IllegalArgumentException("Last name cannot be empty");
-            }
-            existingUser.setLastName(newUserData.getLastName().trim());
-        }
+    @Override
+    @Transactional(readOnly = true)
+    public TrainerProfileDTO getProfile(String username) {
+        Trainer trainer = trainerDAO.findByUsername(username).orElseThrow(() ->
+                new EntityNotFoundException("Trainer with username=" + username + " not found"));
+        List<TraineeShortDTO> traineeShortDTOS = trainer.getTraining().stream()
+                .map(training -> {
+                    Trainee trainee = training.getTrainee();
+                    return TraineeShortDTO.builder()
+                            .username(trainee.getUser().getUsername())
+                            .firstName(trainee.getUser().getFirstName())
+                            .lastName(trainee.getUser().getLastName())
+                            .build();
+                })
+                .toList();
+        return TrainerProfileDTO.builder()
+                .firstName(trainer.getUser().getFirstName())
+                .lastName(trainer.getUser().getLastName())
+                .trainingTypeName(trainer.getTrainingType().getTrainingTypeName())
+                .traineeShortDTOS(traineeShortDTOS)
+                .isActive(trainer.getUser().getIsActive())
+                .build();
+    }
 
-        if (newUserData.getUsername() != null) {
-            if (newUserData.getUsername().trim().isEmpty()) {
-                log.error("Username cannot be empty");
-                throw new IllegalArgumentException("Username cannot be empty");
-            }
-            if (!existingUser.getUsername().equals(newUserData.getUsername().trim()) &&
-                userDAO.isUsernameExists(newUserData.getUsername().trim())) {
-                log.error("Username {} already exists", newUserData.getUsername());
-                throw new IllegalArgumentException("Username already exists");
-            }
-            existingUser.setUsername(newUserData.getUsername().trim());
-        }
+    @Override
+    @Transactional
+    public TrainerProfileUsernameDTO update(TrainerUpdateDTO dto) {
+        Trainer trainer = trainerDAO.findByUsername(dto.getUsername()).orElseThrow(
+                () -> new EntityNotFoundException("Trainer with username=" + dto.getUsername() + " not found")
+        );
+        trainer.getUser().setFirstName(dto.getFirstName());
+        trainer.getUser().setLastName(dto.getLastName());
+        trainer.getUser().setIsActive(dto.getIsActive());
 
-        if (newUserData.getPassword() != null) {
-            if (newUserData.getPassword().trim().isEmpty()) {
-                log.error("Password cannot be empty");
-                throw new IllegalArgumentException("Password cannot be empty");
-            }
-            existingUser.setPassword(newUserData.getPassword());
-        }
+        trainerDAO.update(trainer);
 
-        if (newUserData.getIsActive() != null) {
-            existingUser.setIsActive(newUserData.getIsActive());
-        }
+        List<TraineeShortDTO> traineeShortDTOS = trainer.getTraining().stream()
+                .map(training -> {
+                    Trainee trainee = training.getTrainee();
+                    return TraineeShortDTO.builder()
+                            .username(trainee.getUser().getUsername())
+                            .firstName(trainee.getUser().getFirstName())
+                            .lastName(trainee.getUser().getLastName())
+                            .build();
+                })
+                .toList();
+
+        return TrainerProfileUsernameDTO.builder()
+                .username(dto.getUsername())
+                .firstName(trainer.getUser().getFirstName())
+                .lastName(trainer.getUser().getLastName())
+                .trainingTypeName(trainer.getTrainingType().getTrainingTypeName())
+                .isActive(trainer.getUser().getIsActive())
+                .traineeShortDTOS(traineeShortDTOS)
+                .build();
     }
 }

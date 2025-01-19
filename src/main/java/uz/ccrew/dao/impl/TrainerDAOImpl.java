@@ -31,7 +31,7 @@ public class TrainerDAOImpl implements TrainerDAO {
                     JOIN t.trainer trn
                     JOIN t.trainee tn
                     WHERE tn.user.username = :traineeUsername
-                )
+                ) AND tr.user.isActive = true
             """;
     private static final String DELETE_BY_ID = "DELETE FROM Trainer tr where tr.id = :id";
     private static final String FIND_TRAINERS_BY_USERNAMES = "FROM Trainer t WHERE t.user.username IN :usernames";
