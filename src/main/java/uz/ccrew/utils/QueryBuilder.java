@@ -1,7 +1,6 @@
 package uz.ccrew.utils;
 
 import uz.ccrew.entity.Training;
-
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -9,43 +8,34 @@ import java.time.LocalDate;
 
 public class QueryBuilder {
 
-    private static final StringBuilder TRAINEE_TRAININGS_QUERY = new StringBuilder(
-            "SELECT t FROM Training t " +
-            "JOIN t.trainee tr ON tr.id = t.trainee.id " +
-            "JOIN tr.user u ON u.id = tr.user.id " +
-            "WHERE u.username = :username"
-    );
-
-    private static final StringBuilder TRAINER_TRAININGS_QUERY = new StringBuilder(
-            "SELECT t FROM Training t " +
-            "JOIN t.trainer tr ON tr.id = t.trainer.id " +
-            "JOIN tr.user u ON u.id = tr.user.id " +
-            "JOIN t.trainee te ON te.id = t.trainee.id " +
-            "JOIN te.user tu ON tu.id = te.user.id " +
-            "WHERE u.username = :username"
-    );
-
-
     public static Query<Training> buildAndSetTraineeTrainingsQuery(Session session,
                                                                    String username,
                                                                    LocalDate fromDate,
                                                                    LocalDate toDate,
                                                                    String trainerName,
-                                                                   Long trainingTypeId) {
+                                                                   String trainingTypeName) {
+        StringBuilder queryBuilder = new StringBuilder(
+                "SELECT t FROM Training t " +
+                "JOIN t.trainee tr ON tr.id = t.trainee.id " +
+                "JOIN tr.user u ON u.id = tr.user.id " +
+                "JOIN t.trainer trainer ON trainer.id = t.trainer.id " +
+                "WHERE u.username = :username"
+        );
+
         if (fromDate != null) {
-            TRAINEE_TRAININGS_QUERY.append(" AND t.trainingDate >= :fromDate");
+            queryBuilder.append(" AND t.trainingDate >= :fromDate");
         }
         if (toDate != null) {
-            TRAINEE_TRAININGS_QUERY.append(" AND t.trainingDate <= :toDate");
+            queryBuilder.append(" AND t.trainingDate <= :toDate");
         }
         if (trainerName != null) {
-            TRAINEE_TRAININGS_QUERY.append(" AND u.firstName LIKE CONCAT('%', :trainerName, '%')");
+            queryBuilder.append(" AND trainer.user.firstName LIKE CONCAT('%', :trainerName, '%')");
         }
-        if (trainingTypeId != null) {
-            TRAINEE_TRAININGS_QUERY.append(" AND t.trainingType.id = :trainingTypeId");
+        if (trainingTypeName != null) {
+            queryBuilder.append(" AND t.trainingType.trainingTypeName = :trainingTypeName");
         }
 
-        Query<Training> query = session.createQuery(TRAINEE_TRAININGS_QUERY.toString(), Training.class);
+        Query<Training> query = session.createQuery(queryBuilder.toString(), Training.class);
         query.setParameter("username", username);
 
         if (fromDate != null) {
@@ -57,27 +47,40 @@ public class QueryBuilder {
         if (trainerName != null) {
             query.setParameter("trainerName", trainerName);
         }
-        if (trainingTypeId != null) {
-            query.setParameter("trainingTypeId", trainingTypeId);
+        if (trainingTypeName != null) {
+            query.setParameter("trainingTypeName", trainingTypeName);
         }
 
         return query;
     }
 
-    public static Query<Training> buildAndSetTrainerTrainingsQuery(Session session, String username, LocalDate fromDate, LocalDate toDate, String traineeName) {
+    public static Query<Training> buildAndSetTrainerTrainingsQuery(Session session,
+                                                                   String username,
+                                                                   LocalDate fromDate,
+                                                                   LocalDate toDate,
+                                                                   String traineeName) {
+        StringBuilder queryBuilder = new StringBuilder(
+                "SELECT t FROM Training t " +
+                "JOIN t.trainer tr ON tr.id = t.trainer.id " +
+                "JOIN tr.user u ON u.id = tr.user.id " +
+                "JOIN t.trainee te ON te.id = t.trainee.id " +
+                "JOIN te.user tu ON tu.id = te.user.id " +
+                "WHERE u.username = :username"
+        );
 
         if (fromDate != null) {
-            TRAINER_TRAININGS_QUERY.append(" AND t.trainingDate >= :fromDate");
+            queryBuilder.append(" AND t.trainingDate >= :fromDate");
         }
         if (toDate != null) {
-            TRAINER_TRAININGS_QUERY.append(" AND t.trainingDate <= :toDate");
+            queryBuilder.append(" AND t.trainingDate <= :toDate");
         }
         if (traineeName != null) {
-            TRAINER_TRAININGS_QUERY.append(" AND tu.firstName LIKE CONCAT('%', :traineeName, '%')");
+            queryBuilder.append(" AND tu.firstName LIKE CONCAT('%', :traineeName, '%')");
         }
 
-        Query<Training> query = session.createQuery(TRAINER_TRAININGS_QUERY.toString(), Training.class);
+        Query<Training> query = session.createQuery(queryBuilder.toString(), Training.class);
         query.setParameter("username", username);
+
         if (fromDate != null) {
             query.setParameter("fromDate", fromDate);
         }

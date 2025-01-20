@@ -6,7 +6,7 @@ import uz.ccrew.dao.UserDAO;
 import uz.ccrew.dto.TrainerUpdateDTO;
 import uz.ccrew.dto.trainee.TraineeShortDTO;
 import uz.ccrew.dto.trainer.*;
-import uz.ccrew.dto.training.TrainerTrainingDTO;
+import uz.ccrew.dto.trainer.TrainerTrainingDTO;
 import uz.ccrew.dto.user.UserCredentials;
 import uz.ccrew.entity.*;
 import uz.ccrew.dao.TrainerDAO;
@@ -18,7 +18,6 @@ import uz.ccrew.exp.EntityNotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -230,7 +229,7 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<TrainerTrainingDTO> getTrainerTrainings(String username, LocalDate fromDate, LocalDate toDate, String traineeName) {
         List<Training> trainings = trainingDAO.getTrainerTrainings(username, fromDate, toDate, traineeName);
         return trainings.stream().map(training -> {

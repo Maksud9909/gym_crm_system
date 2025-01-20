@@ -32,10 +32,10 @@ public class TrainingServiceImpl implements TrainingService {
     @Override
     @Transactional(readOnly = true)
     public List<Training> getTraineeTrainings(String traineeUsername, LocalDate fromDate, LocalDate toDate,
-                                              String trainerName, Long trainingTypeId, UserCredentials userCredentials) {
+                                              String trainerName, String trainingTypeName, UserCredentials userCredentials) {
         authService.verifyUserCredentials(userCredentials);
         log.info("Fetching trainings for Trainee username={} with filters", traineeUsername);
-        return trainingDAO.getTraineeTrainings(traineeUsername, fromDate, toDate, trainerName, trainingTypeId);
+        return trainingDAO.getTraineeTrainings(traineeUsername, fromDate, toDate, trainerName, trainingTypeName);
     }
 
     @Override

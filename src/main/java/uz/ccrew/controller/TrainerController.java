@@ -9,11 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import uz.ccrew.dto.Response;
 import uz.ccrew.dto.ResponseMaker;
 import uz.ccrew.dto.TrainerUpdateDTO;
-import uz.ccrew.dto.trainee.TraineeCreateDTO;
-import uz.ccrew.dto.trainee.TraineeProfileUsernameDTO;
-import uz.ccrew.dto.trainee.TraineeUpdateDTO;
 import uz.ccrew.dto.trainer.*;
-import uz.ccrew.dto.training.TrainerTrainingDTO;
+import uz.ccrew.dto.trainer.TrainerTrainingDTO;
 import uz.ccrew.dto.user.UserCredentials;
 import uz.ccrew.service.TrainerService;
 

@@ -10,7 +10,7 @@ import java.util.Objects;
 
 public interface TrainingService extends BaseService<Training, Object, Object> {
     List<Training> getTraineeTrainings(String traineeUsername, LocalDate fromDate,
-                                       LocalDate toDate, String trainerName, Long trainingTypeId,UserCredentials userCredentials);
+                                       LocalDate toDate, String trainerName, String trainingTypeName,UserCredentials userCredentials);
 
     List<Training> getTrainerTrainings(String trainerUsername, LocalDate fromDate, LocalDate toDate, String traineeName, UserCredentials userCredentials);
 }

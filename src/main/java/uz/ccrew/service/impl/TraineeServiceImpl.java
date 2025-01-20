@@ -1,10 +1,10 @@
 package uz.ccrew.service.impl;
 
-import uz.ccrew.entity.User;
+import uz.ccrew.dao.TrainingDAO;
+import uz.ccrew.dto.trainee.*;
+import uz.ccrew.entity.*;
 import uz.ccrew.dao.UserDAO;
 import uz.ccrew.dao.TrainerDAO;
-import uz.ccrew.entity.Trainer;
-import uz.ccrew.entity.Trainee;
 import uz.ccrew.dao.TraineeDAO;
 import uz.ccrew.utils.UserUtils;
 import uz.ccrew.service.AuthService;
@@ -12,16 +12,13 @@ import uz.ccrew.dto.trainer.TrainerDTO;
 import uz.ccrew.service.TraineeService;
 import uz.ccrew.dto.user.UserCredentials;
 import uz.ccrew.exp.EntityNotFoundException;
-import uz.ccrew.dto.trainee.TraineeCreateDTO;
-import uz.ccrew.dto.trainee.TraineeUpdateDTO;
-import uz.ccrew.dto.trainee.TraineeProfileDTO;
-import uz.ccrew.dto.trainee.TraineeProfileUsernameDTO;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -31,8 +28,9 @@ public class TraineeServiceImpl implements TraineeService {
     private final UserDAO userDAO;
     private final UserUtils userUtils;
     private final TraineeDAO traineeDAO;
-    private final AuthService authService;
     private final TrainerDAO trainerDAO;
+    private final AuthService authService;
+    private final TrainingDAO trainingDAO;
 
     @Override
     @Transactional
@@ -102,6 +100,23 @@ public class TraineeServiceImpl implements TraineeService {
                 .isActive(trainee.getUser().getIsActive())
                 .trainerDTOS(trainerDTOS)
                 .build();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TraineeTrainingDTO> getTraineeTrainings(String username, LocalDate periodFrom, LocalDate periodTo, String trainerName, String trainingTypeName) {
+        List<Training> trainings = trainingDAO.getTraineeTrainings(username, periodFrom, periodTo, trainerName, trainingTypeName);
+        return trainings.stream().map(training -> {
+            Trainer trainer = training.getTrainer();
+            TrainingType trainingType = training.getTrainingType();
+            return TraineeTrainingDTO.builder()
+                    .trainingName(training.getTrainingName())
+                    .trainingDate(training.getTrainingDate())
+                    .trainingType(trainingType.getTrainingTypeName())
+                    .trainingDuration(training.getTrainingDuration())
+                    .trainerName(trainer.getUser().getFirstName())
+                    .build();
+        }).toList();
     }
 
 

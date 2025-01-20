@@ -1,4 +1,4 @@
-package uz.ccrew.dto.training;
+package uz.ccrew.dto.trainee;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,16 +7,14 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-
 @Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TrainerTrainingDTO {
+public class TraineeTrainingDTO {
     private String trainingName;
     private LocalDate trainingDate;
     private String trainingType;
     private Double trainingDuration;
-    private String traineeName;
+    private String trainerName;
 }
-

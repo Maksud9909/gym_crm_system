@@ -70,10 +70,10 @@ public class TrainingDAOImpl implements TrainingDAO {
                                               LocalDate fromDate,
                                               LocalDate toDate,
                                               String trainerName,
-                                              Long trainingTypeId) {
+                                              String trainingTypeName) {
         Session session = getSessionFactory().getCurrentSession();
         Query<Training> query = QueryBuilder.buildAndSetTraineeTrainingsQuery(session, username, fromDate,
-                toDate, trainerName, trainingTypeId);
+                toDate, trainerName, trainingTypeName);
         log.debug(HQL_QUERY_LOG, query);
         return query.getResultList();
     }
