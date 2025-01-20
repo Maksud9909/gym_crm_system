@@ -1,6 +1,5 @@
 package uz.ccrew.dao.impl;
 
-import uz.ccrew.entity.User;
 import uz.ccrew.entity.Trainee;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.dao.TraineeDAO;
@@ -11,8 +10,8 @@ import lombok.Getter;
 import org.hibernate.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,19 +19,13 @@ import java.util.Optional;
 @Slf4j
 @Getter
 @Repository
+@RequiredArgsConstructor
 public class TraineeDAOImpl implements TraineeDAO {
     private final SessionFactory sessionFactory;
     private static final String NOT_FOUND_LOG = "Trainee with ID={} not found";
-    private static final String FIND_ALL = "SELECT t FROM Trainee t";
     private static final String DELETE_BY_ID = "DELETE FROM Trainee t WHERE t.id = :id";
-    private static final String FIND_TRAINERS_BY_USERNAMES = "FROM Trainer t WHERE t.user.username IN :usernames";
     private static final String FIND_BY_USERNAME = "FROM Trainee t where t.user.username = :username";
-
-    @Autowired
-    public TraineeDAOImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-        log.debug("TraineeDAO instantiated");
-    }
+    private static final String FIND_TRAINERS_BY_USERNAMES = "FROM Trainer t WHERE t.user.username IN :usernames";
 
     @Override
     public Long create(Trainee trainee) {
@@ -40,18 +33,6 @@ public class TraineeDAOImpl implements TraineeDAO {
         session.persist(trainee);
         log.info("Created Trainer:{} with ID:{}", trainee, trainee.getId());
         return trainee.getId();
-    }
-
-    @Override
-    public Optional<Trainee> findById(Long id) {
-        Session session = getSessionFactory().getCurrentSession();
-        return Optional.ofNullable(session.get(Trainee.class, id));
-    }
-
-    @Override
-    public List<Trainee> findAll() {
-        Session session = getSessionFactory().getCurrentSession();
-        return session.createQuery(FIND_ALL, Trainee.class).getResultList();
     }
 
     @Override
@@ -92,22 +73,6 @@ public class TraineeDAOImpl implements TraineeDAO {
                 .uniqueResult();
         return Optional.ofNullable(trainee);
     }
-
-    @Override
-    public void changePassword(Long id, String newPassword) {
-        Session session = getSessionFactory().getCurrentSession();
-        User user = session.get(User.class, id);
-
-        if (user != null) {
-            user.setPassword(newPassword);
-            session.merge(user);
-            log.info("Password updated for User with ID={}", id);
-        } else {
-            log.error("User with ID={} not found to change password", id);
-            throw new EntityNotFoundException("User with ID=" + id + " not found to change password");
-        }
-    }
-
 
     @Override
     public void updateTraineeTrainers(String username, List<String> newTrainerUsernames) {

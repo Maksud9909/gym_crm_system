@@ -1,6 +1,7 @@
 package uz.ccrew.utils;
 
 import uz.ccrew.entity.Training;
+
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 

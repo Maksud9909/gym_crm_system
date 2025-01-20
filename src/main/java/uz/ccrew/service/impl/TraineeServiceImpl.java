@@ -7,7 +7,6 @@ import uz.ccrew.dao.UserDAO;
 import uz.ccrew.dao.TrainerDAO;
 import uz.ccrew.dao.TraineeDAO;
 import uz.ccrew.utils.UserUtils;
-import uz.ccrew.service.AuthService;
 import uz.ccrew.dto.trainer.TrainerDTO;
 import uz.ccrew.service.TraineeService;
 import uz.ccrew.dto.user.UserCredentials;
@@ -30,7 +29,6 @@ public class TraineeServiceImpl implements TraineeService {
     private final UserUtils userUtils;
     private final TraineeDAO traineeDAO;
     private final TrainerDAO trainerDAO;
-    private final AuthService authService;
     private final TrainingDAO trainingDAO;
 
     @Override
@@ -120,50 +118,6 @@ public class TraineeServiceImpl implements TraineeService {
         }).toList();
     }
 
-
-    @Override
-    @Transactional(readOnly = true)
-    public Trainee findById(Long id, UserCredentials userCredentials) {
-        authService.verifyUserCredentials(userCredentials);
-        log.info("Fetching trainee for id={}", id);
-        return traineeDAO.findById(id).orElseThrow(() -> new EntityNotFoundException("Trainee with id=" + id + " not found"));
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Trainee findByUsername(String username, UserCredentials userCredentials) {
-        authService.verifyUserCredentials(userCredentials);
-        log.info("Fetching trainee for username={}", username);
-        Trainee trainee = traineeDAO.findByUsername(username)
-                .orElseThrow(() -> {
-                    log.warn("Trainee with username={} not found", username);
-                    return new EntityNotFoundException(username);
-                });
-        log.info("Found trainee: {}", trainee);
-        return trainee;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Trainee> findAll(UserCredentials userCredentials) {
-        authService.verifyUserCredentials(userCredentials);
-        log.info("Fetching all trainees");
-        return traineeDAO.findAll();
-    }
-
-    @Override
-    @Transactional
-    public void delete(Long id, UserCredentials userCredentials) {
-        authService.verifyUserCredentials(userCredentials);
-        log.info("Deleting trainee={}", id);
-        traineeDAO.delete(id);
-    }
-
-    @Override
-    public void update(Trainee trainee, UserCredentials userCredentials) {
-
-    }
-
     @Override
     @Transactional
     public void deleteTraineeByUsername(String username) {
@@ -175,14 +129,6 @@ public class TraineeServiceImpl implements TraineeService {
                 });
         traineeDAO.delete(trainee.getId());
         log.info("Trainee with username={} deleted successfully", username);
-    }
-
-    @Override
-    @Transactional
-    public void changePassword(Long id, String newPassword, UserCredentials userCredentials) {
-        authService.verifyUserCredentials(userCredentials);
-        log.info("Changing password for trainee={}", id);
-        traineeDAO.changePassword(id, newPassword);
     }
 
     @Override

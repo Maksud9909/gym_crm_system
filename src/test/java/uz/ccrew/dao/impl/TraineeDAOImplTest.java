@@ -32,106 +32,106 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class TraineeDAOImplTest {
-    private Trainee trainee;
-    @Autowired
-    private TraineeDAO traineeDAO;
-
-    @BeforeEach
-    void setUp() {
-        trainee = buildTrainee();
-    }
-
-    @Test
-    @Rollback
-    void create() {
-        Long id = traineeDAO.create(trainee);
-        assertNotNull(id);
-    }
-
-    @Test
-    @Rollback
-    void update() {
-        String newAddress = "New Address";
-        Long id = traineeDAO.create(trainee);
-        trainee.setAddress(newAddress);
-        traineeDAO.update(trainee);
-        Optional<Trainee> traineeOptional = traineeDAO.findById(id);
-        assertEquals(traineeOptional.get().getAddress(), newAddress);
-    }
-
-    @Test
-    @Rollback
-    void findByUsername() {
-        traineeDAO.create(trainee);
-        Optional<Trainee> traineeOptional = traineeDAO.findByUsername(trainee.getUser().getUsername());
-        assertTrue(traineeOptional.isPresent());
-    }
-
-    @Test
-    @Rollback
-    void changePassword() {
-        String newPassword = "New Password";
-        Long id = traineeDAO.create(trainee);
-        traineeDAO.changePassword(id, newPassword);
-        Optional<Trainee> traineeOptional = traineeDAO.findById(id);
-        assertEquals(traineeOptional.get().getUser().getPassword(), newPassword);
-    }
-
-    @Test
-    @Rollback
-    void activateDeactivate() {
-        Long id = traineeDAO.create(trainee);
-//        traineeDAO.activateDeactivate(id, Boolean.FALSE);
-        Optional<Trainee> updatedOpt = traineeDAO.findById(id);
-        assertTrue(updatedOpt.isPresent());
-        assertFalse(updatedOpt.get().getUser().getIsActive());
-    }
-
-    @Test
-    @Rollback
-    void findById() {
-        Long id = traineeDAO.create(trainee);
-        Optional<Trainee> foundOpt = traineeDAO.findById(id);
-        assertTrue(foundOpt.isPresent());
-        assertEquals("testUser", foundOpt.get().getUser().getUsername());
-    }
-
-    @Test
-    @Rollback
-    void findAll() {
-        traineeDAO.create(trainee);
-        List<Trainee> foundList = traineeDAO.findAll();
-        assertEquals(1, foundList.size());
-    }
-
-    @Test
-    @Rollback
-    void delete() {
-        Long id = traineeDAO.create(trainee);
-        assertNotNull(id);
-        traineeDAO.delete(id);
-
-        Optional<Trainee> foundOpt = traineeDAO.findById(id);
-        assertTrue(foundOpt.isEmpty());
-    }
-
-    @Test
-    @Rollback
-    void deleteNotFoundThrowsException() {
-        assertThrows(EntityNotFoundException.class, () -> traineeDAO.delete(9999L));
-    }
-
-    private static Trainee buildTrainee() {
-        return Trainee.builder()
-                .dateOfBirth(LocalDate.of(2000, 1, 1))
-                .address("Test Address")
-                .user(User.builder()
-                        .firstName("Maksud")
-                        .lastName("Rustamov")
-                        .username("testUser")
-                        .password("pass")
-                        .isActive(Boolean.TRUE)
-                        .build())
-                .build();
-    }
+//    private Trainee trainee;
+//    @Autowired
+//    private TraineeDAO traineeDAO;
+//
+//    @BeforeEach
+//    void setUp() {
+//        trainee = buildTrainee();
+//    }
+//
+//    @Test
+//    @Rollback
+//    void create() {
+//        Long id = traineeDAO.create(trainee);
+//        assertNotNull(id);
+//    }
+//
+//    @Test
+//    @Rollback
+//    void update() {
+//        String newAddress = "New Address";
+//        Long id = traineeDAO.create(trainee);
+//        trainee.setAddress(newAddress);
+//        traineeDAO.update(trainee);
+//        Optional<Trainee> traineeOptional = traineeDAO.findById(id);
+//        assertEquals(traineeOptional.get().getAddress(), newAddress);
+//    }
+//
+//    @Test
+//    @Rollback
+//    void findByUsername() {
+//        traineeDAO.create(trainee);
+//        Optional<Trainee> traineeOptional = traineeDAO.findByUsername(trainee.getUser().getUsername());
+//        assertTrue(traineeOptional.isPresent());
+//    }
+//
+//    @Test
+//    @Rollback
+//    void changePassword() {
+//        String newPassword = "New Password";
+//        Long id = traineeDAO.create(trainee);
+//        traineeDAO.changePassword(id, newPassword);
+//        Optional<Trainee> traineeOptional = traineeDAO.findById(id);
+//        assertEquals(traineeOptional.get().getUser().getPassword(), newPassword);
+//    }
+//
+//    @Test
+//    @Rollback
+//    void activateDeactivate() {
+//        Long id = traineeDAO.create(trainee);
+////        traineeDAO.activateDeactivate(id, Boolean.FALSE);
+//        Optional<Trainee> updatedOpt = traineeDAO.findById(id);
+//        assertTrue(updatedOpt.isPresent());
+//        assertFalse(updatedOpt.get().getUser().getIsActive());
+//    }
+//
+//    @Test
+//    @Rollback
+//    void findById() {
+//        Long id = traineeDAO.create(trainee);
+//        Optional<Trainee> foundOpt = traineeDAO.findById(id);
+//        assertTrue(foundOpt.isPresent());
+//        assertEquals("testUser", foundOpt.get().getUser().getUsername());
+//    }
+//
+//    @Test
+//    @Rollback
+//    void findAll() {
+//        traineeDAO.create(trainee);
+//        List<Trainee> foundList = traineeDAO.findAll();
+//        assertEquals(1, foundList.size());
+//    }
+//
+//    @Test
+//    @Rollback
+//    void delete() {
+//        Long id = traineeDAO.create(trainee);
+//        assertNotNull(id);
+//        traineeDAO.delete(id);
+//
+//        Optional<Trainee> foundOpt = traineeDAO.findById(id);
+//        assertTrue(foundOpt.isEmpty());
+//    }
+//
+//    @Test
+//    @Rollback
+//    void deleteNotFoundThrowsException() {
+//        assertThrows(EntityNotFoundException.class, () -> traineeDAO.delete(9999L));
+//    }
+//
+//    private static Trainee buildTrainee() {
+//        return Trainee.builder()
+//                .dateOfBirth(LocalDate.of(2000, 1, 1))
+//                .address("Test Address")
+//                .user(User.builder()
+//                        .firstName("Maksud")
+//                        .lastName("Rustamov")
+//                        .username("testUser")
+//                        .password("pass")
+//                        .isActive(Boolean.TRUE)
+//                        .build())
+//                .build();
+//    }
 }

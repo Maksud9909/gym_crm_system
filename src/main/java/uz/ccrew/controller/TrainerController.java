@@ -1,21 +1,22 @@
 package uz.ccrew.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import lombok.RequiredArgsConstructor;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import uz.ccrew.dto.Response;
+import uz.ccrew.dto.trainer.*;
 import uz.ccrew.dto.ResponseMaker;
 import uz.ccrew.dto.TrainerUpdateDTO;
-import uz.ccrew.dto.trainer.*;
-import uz.ccrew.dto.trainer.TrainerTrainingDTO;
-import uz.ccrew.dto.user.UserCredentials;
 import uz.ccrew.service.TrainerService;
+import uz.ccrew.dto.user.UserCredentials;
+import uz.ccrew.dto.trainer.TrainerTrainingDTO;
 
-import java.time.LocalDate;
+import lombok.RequiredArgsConstructor;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.List;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/v1/trainer")
@@ -47,7 +48,7 @@ public class TrainerController {
 
     @GetMapping("/trainees/{username}/trainers/unassigned")
     @Operation(summary = "Get not assigned on trainee active trainers")
-    public ResponseEntity<Response<List<TrainerDTO>>> getUnassignedActiveTrainers(@PathVariable("username") String username) {
+    public ResponseEntity<Response<List<TrainerDTO>>> getUnassignedTrainers(@PathVariable("username") String username) {
         List<TrainerDTO> result = trainerService.getUnassignedTrainers(username);
         return ResponseMaker.ok(result);
     }

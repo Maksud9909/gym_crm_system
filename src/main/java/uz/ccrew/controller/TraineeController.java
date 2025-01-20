@@ -1,22 +1,21 @@
 package uz.ccrew.controller;
 
-import org.springframework.format.annotation.DateTimeFormat;
 import uz.ccrew.dto.Response;
-import uz.ccrew.dto.ResponseMaker;
 import uz.ccrew.dto.trainee.*;
+import uz.ccrew.dto.ResponseMaker;
 import uz.ccrew.dto.trainer.TrainerDTO;
-import uz.ccrew.dto.trainer.TrainerTrainingDTO;
 import uz.ccrew.service.TraineeService;
 import uz.ccrew.dto.user.UserCredentials;
-import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDate;
 import java.util.List;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/v1/trainee")

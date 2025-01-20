@@ -10,7 +10,6 @@ import uz.ccrew.dto.trainer.TrainerTrainingDTO;
 import uz.ccrew.dto.user.UserCredentials;
 import uz.ccrew.entity.*;
 import uz.ccrew.dao.TrainerDAO;
-import uz.ccrew.service.AuthService;
 import uz.ccrew.utils.UserUtils;
 import uz.ccrew.dao.TrainingTypeDAO;
 import uz.ccrew.service.TrainerService;
@@ -31,7 +30,6 @@ public class TrainerServiceImpl implements TrainerService {
     private final UserDAO userDAO;
     private final UserUtils userUtils;
     private final TrainerDAO trainerDAO;
-    private final AuthService authService;
     private final TrainingDAO trainingDAO;
     private final TrainingTypeDAO trainingTypeDAO;
 
@@ -53,10 +51,11 @@ public class TrainerServiceImpl implements TrainerService {
                 .lastName(dto.getLastName())
                 .isActive(Boolean.TRUE)
                 .build();
-        Optional<TrainingType> trainingType = trainingTypeDAO.findByName(dto.getTrainingTypeName());
+        TrainingType trainingType = trainingTypeDAO.findByName(dto.getTrainingTypeName()).orElseThrow(
+                () -> new EntityNotFoundException("Training type not found with name: " + dto.getTrainingTypeName()));
 
         Trainer trainer = Trainer.builder()
-                .trainingType(trainingType.get())
+                .trainingType(trainingType)
                 .user(newUser)
                 .build();
 
@@ -66,79 +65,6 @@ public class TrainerServiceImpl implements TrainerService {
                 .username(username)
                 .password(password)
                 .build();
-    }
-
-    @Override
-    @Transactional
-    public void update(Trainer trainer, UserCredentials userCredentials) {
-        authService.verifyUserCredentials(userCredentials);
-
-        if (trainer == null || trainer.getId() == null) {
-            log.error("Trainer or Trainer ID is null");
-            throw new IllegalArgumentException("Trainer and Trainer ID must not be null");
-        }
-
-        Trainer existingTrainer = trainerDAO.findById(trainer.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Trainer with id=" + trainer.getId() + " not found"));
-
-        User existingUser = existingTrainer.getUser();
-        if (existingUser == null) {
-            log.error("Associated User not found for Trainer with id {}", trainer.getId());
-            throw new IllegalArgumentException("User with id=" + trainer.getId() + " not found");
-        }
-
-
-        if (trainer.getTrainingType() != null) {
-            existingTrainer.setTrainingType(trainer.getTrainingType());
-        }
-        trainerDAO.update(existingTrainer);
-        log.info("Updated trainer with ID={}", trainer.getId());
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Trainer findById(Long id, UserCredentials userCredentials) {
-        authService.verifyUserCredentials(userCredentials);
-        log.info("Fetching trainer for id={}", id);
-        return trainerDAO.findById(id).orElseThrow(() -> new EntityNotFoundException("Trainer with id=" + id + " not found"));
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Trainer findByUsername(String username, UserCredentials userCredentials) {
-        authService.verifyUserCredentials(userCredentials);
-        log.info("Fetching trainer for username={}", username);
-        Trainer trainer = trainerDAO.findByUsername(username)
-                .orElseThrow(() -> {
-                    log.warn("Trainer with username={} not found", username);
-                    return new EntityNotFoundException(username);
-                });
-        log.info("Found trainer: {}", trainer);
-        return trainer;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Trainer> findAll(UserCredentials userCredentials) {
-        authService.verifyUserCredentials(userCredentials);
-        log.info("Fetching all trainers");
-        return trainerDAO.findAll();
-    }
-
-    @Override
-    @Transactional
-    public void delete(Long id, UserCredentials userCredentials) {
-        authService.verifyUserCredentials(userCredentials);
-        log.info("Deleting trainer={}", id);
-        trainerDAO.delete(id);
-    }
-
-    @Override
-    @Transactional
-    public void changePassword(Long id, String newPassword, UserCredentials userCredentials) {
-        authService.verifyUserCredentials(userCredentials);
-        log.info("Changing password for trainer={}", id);
-        trainerDAO.changePassword(id, newPassword);
     }
 
     @Override

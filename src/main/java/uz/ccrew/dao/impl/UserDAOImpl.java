@@ -2,45 +2,26 @@ package uz.ccrew.dao.impl;
 
 import uz.ccrew.dao.UserDAO;
 import uz.ccrew.entity.User;
+import uz.ccrew.exp.EntityNotFoundException;
 
 import lombok.Getter;
 import org.hibernate.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.beans.factory.annotation.Autowired;
-import uz.ccrew.exp.EntityNotFoundException;
 
 import java.util.Optional;
 
 @Slf4j
 @Getter
 @Repository
+@RequiredArgsConstructor
 public class UserDAOImpl implements UserDAO {
-    private static final String FIND_BY_USERNAME = "FROM User u WHERE u.username = :username";
     private final SessionFactory sessionFactory;
+    private static final String FIND_BY_USERNAME = "FROM User u WHERE u.username = :username";
     private static final String CHECK_USERNAME_QUERY = "SELECT COUNT(u) FROM User u WHERE u.username = :username";
     private static final String FIND_BY_USERNAME_AND_PASSWORD_QUERY = "FROM User u WHERE u.username = :username AND u.password = :password";
-
-    @Autowired
-    public UserDAOImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
-
-    @Override
-    public Long create(User user) {
-        Session session = getSessionFactory().getCurrentSession();
-        session.persist(user);
-        Long id = user.getId();
-        log.info("Created User:{} with ID:{}", user, id);
-        return id;
-    }
-
-    @Override
-    public User findById(Long id) {
-        Session session = getSessionFactory().getCurrentSession();
-        return session.get(User.class, id);
-    }
 
     @Override
     public boolean isUsernameExists(String username) {
@@ -49,13 +30,6 @@ public class UserDAOImpl implements UserDAO {
                 .setParameter("username", username)
                 .uniqueResult();
         return count > 0;
-    }
-
-    @Override
-    public void update(User user) {
-        Session session = getSessionFactory().getCurrentSession();
-        session.merge(user);
-        log.info("Updated User:{} ", user);
     }
 
     @Override
