@@ -108,20 +108,6 @@ public class TraineeDAOImpl implements TraineeDAO {
         }
     }
 
-    @Override
-    public void activateDeactivate(Long id, Boolean isActive) {
-        Session session = getSessionFactory().getCurrentSession();
-        User user = session.get(User.class, id);
-
-        if (user != null) {
-            user.setIsActive(isActive);
-            session.merge(user);
-            log.info("Updated isActive={} for User with ID={}", isActive, id);
-        } else {
-            log.error("User with ID={} not found to update isActive", id);
-            throw new EntityNotFoundException("User with ID=" + id + " not found to activate and deactivate profile");
-        }
-    }
 
     @Override
     public void updateTraineeTrainers(String username, List<String> newTrainerUsernames) {

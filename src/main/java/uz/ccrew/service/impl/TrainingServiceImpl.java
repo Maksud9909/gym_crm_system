@@ -1,6 +1,7 @@
 package uz.ccrew.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import uz.ccrew.dto.training.TrainingDTO;
 import uz.ccrew.dto.user.UserCredentials;
 import uz.ccrew.entity.Trainee;
 import uz.ccrew.entity.Trainer;
@@ -47,7 +48,27 @@ public class TrainingServiceImpl implements TrainingService {
         return trainingDAO.getTrainerTrainings(trainerUsername, fromDate, toDate, traineeName);
     }
 
-//    @Override
+    @Override
+    @Transactional
+    public void addTraining(TrainingDTO dto) {
+        Trainee trainee = traineeDAO.findByUsername(dto.getTraineeUsername())
+                .orElseThrow(() -> new EntityNotFoundException("Trainee with username=" + dto.getTraineeUsername() + " not found"));
+
+        Trainer trainer = trainerDAO.findByUsername(dto.getTrainerUsername())
+                .orElseThrow(() -> new EntityNotFoundException("Trainer with username=" + dto.getTrainerUsername() + " not found"));
+
+        Training training = Training.builder()
+                .trainee(trainee)
+                .trainer(trainer)
+                .trainingDate(dto.getTrainingDate())
+                .trainingName(dto.getTrainingName())
+                .trainingDuration(dto.getTrainingDuration())
+                .trainingType(trainer.getTrainingType())
+                .build();
+        trainingDAO.create(training);
+    }
+
+    //    @Override
     @Transactional
     public Long create(Training training) {
         Trainee trainee = traineeDAO.findById(training.getTrainee().getId())

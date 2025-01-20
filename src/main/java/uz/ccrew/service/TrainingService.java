@@ -1,5 +1,6 @@
 package uz.ccrew.service;
 
+import uz.ccrew.dto.training.TrainingDTO;
 import uz.ccrew.dto.user.UserCredentials;
 import uz.ccrew.entity.Training;
 import uz.ccrew.service.base.BaseService;
@@ -13,4 +14,6 @@ public interface TrainingService extends BaseService<Training, Object, Object> {
                                        LocalDate toDate, String trainerName, String trainingTypeName,UserCredentials userCredentials);
 
     List<Training> getTrainerTrainings(String trainerUsername, LocalDate fromDate, LocalDate toDate, String traineeName, UserCredentials userCredentials);
+
+    void addTraining(TrainingDTO dto);
 }

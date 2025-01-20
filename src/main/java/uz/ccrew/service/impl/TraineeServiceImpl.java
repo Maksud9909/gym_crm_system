@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -186,15 +187,17 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     @Transactional
-    public void activateDeactivate(Long id, Boolean isActive) {
-        log.info("Activating/deactivating trainee={}", id);
-        User user = userDAO.findById(id);
-        if (user.getIsActive().equals(isActive)) {
-            log.warn("Trainee with ID={} is already in the desired state (isActive={})", id, isActive);
-            return;
+    public void activateDeactivate(String username, Boolean isActive) {
+        log.info("Activating/deactivating trainee={}", username);
+        Optional<User> user = userDAO.findByUsername(username);
+        if (user.isPresent()) {
+            if (user.get().getIsActive().equals(isActive)) {
+                log.warn("Trainee with ID={} is already in the desired state (isActive={})", username, isActive);
+                return;
+            }
         }
-        traineeDAO.activateDeactivate(id, isActive);
-        log.info("Trainee with ID={} is now isActive={}", id, isActive);
+        userDAO.activateDeactivate(username, isActive);
+        log.info("Trainee with ID={} is now isActive={}", username, isActive);
     }
 
     @Override

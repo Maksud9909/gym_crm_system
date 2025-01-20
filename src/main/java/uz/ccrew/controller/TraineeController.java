@@ -55,9 +55,9 @@ public class TraineeController {
 
     @PatchMapping("/activate/deactivate")
     @Operation(summary = "Activate/Deactivate profile")
-    public ResponseEntity<Response<?>> activateDeactivate(@RequestParam(name = "id", defaultValue = "1") Long id,
+    public ResponseEntity<Response<?>> activateDeactivate(@RequestParam(name = "username") String username,
                                                           @RequestParam(name = "isActive", defaultValue = "true") Boolean isActive) {
-        traineeService.activateDeactivate(id, isActive);
+        traineeService.activateDeactivate(username, isActive);
         return ResponseMaker.ok();
     }
 

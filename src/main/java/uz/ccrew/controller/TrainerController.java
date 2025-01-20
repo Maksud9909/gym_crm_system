@@ -61,4 +61,12 @@ public class TrainerController {
         List<TrainerTrainingDTO> result = trainerService.getTrainerTrainings(username, periodFrom, periodTo, traineeName);
         return ResponseMaker.ok(result);
     }
+
+    @PatchMapping("/activate/deactivate")
+    @Operation(summary = "Activate/Deactivate profile")
+    public ResponseEntity<Response<?>> activateDeactivate(@RequestParam(name = "username") String username,
+                                                          @RequestParam(name = "isActive", defaultValue = "true") Boolean isActive) {
+        trainerService.activateDeactivate(username, isActive);
+        return ResponseMaker.ok();
+    }
 }

@@ -16,4 +16,8 @@ public interface UserDAO {
     Optional<User> findByUsernameAndPassword(String username, String password);
 
     void changePassword(Long id, String newPassword);
+
+    Optional<User> findByUsername(String username);
+
+    void activateDeactivate(String username, Boolean isActive);
 }

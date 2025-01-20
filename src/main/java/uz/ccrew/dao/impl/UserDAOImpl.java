@@ -17,6 +17,7 @@ import java.util.Optional;
 @Getter
 @Repository
 public class UserDAOImpl implements UserDAO {
+    private static final String FIND_BY_USERNAME = "FROM User u WHERE u.username = :username";
     private final SessionFactory sessionFactory;
     private static final String CHECK_USERNAME_QUERY = "SELECT COUNT(u) FROM User u WHERE u.username = :username";
     private static final String FIND_BY_USERNAME_AND_PASSWORD_QUERY = "FROM User u WHERE u.username = :username AND u.password = :password";
@@ -79,6 +80,32 @@ public class UserDAOImpl implements UserDAO {
         } else {
             log.error("User with ID={} not found to change password", id);
             throw new EntityNotFoundException("User with ID=" + id + " not found to change password");
+        }
+    }
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        Session session = getSessionFactory().getCurrentSession();
+        User user = session.createQuery(FIND_BY_USERNAME, User.class)
+                .setParameter("username", username)
+                .uniqueResult();
+        return Optional.ofNullable(user);
+    }
+
+    @Override
+    public void activateDeactivate(String username, Boolean isActive) {
+        Session session = getSessionFactory().getCurrentSession();
+        User user = session.createQuery(FIND_BY_USERNAME, User.class)
+                .setParameter("username", username)
+                .uniqueResult();
+
+        if (user != null) {
+            user.setIsActive(isActive);
+            session.merge(user);
+            log.info("Updated isActive={} for User with username={}", isActive, username);
+        } else {
+            log.error("User with username={} not found to update isActive", username);
+            throw new EntityNotFoundException("User with username=" + username + " not found to activate and deactivate profile");
         }
     }
 }
