@@ -3,6 +3,7 @@ package uz.ccrew.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.ccrew.dto.Response;
@@ -11,13 +12,12 @@ import uz.ccrew.dto.TrainerUpdateDTO;
 import uz.ccrew.dto.trainee.TraineeCreateDTO;
 import uz.ccrew.dto.trainee.TraineeProfileUsernameDTO;
 import uz.ccrew.dto.trainee.TraineeUpdateDTO;
-import uz.ccrew.dto.trainer.TrainerCreateDTO;
-import uz.ccrew.dto.trainer.TrainerDTO;
-import uz.ccrew.dto.trainer.TrainerProfileDTO;
-import uz.ccrew.dto.trainer.TrainerProfileUsernameDTO;
+import uz.ccrew.dto.trainer.*;
+import uz.ccrew.dto.training.TrainerTrainingDTO;
 import uz.ccrew.dto.user.UserCredentials;
 import uz.ccrew.service.TrainerService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -52,6 +52,16 @@ public class TrainerController {
     @Operation(summary = "Get not assigned on trainee active trainers")
     public ResponseEntity<Response<List<TrainerDTO>>> getUnassignedActiveTrainers(@PathVariable("username") String username) {
         List<TrainerDTO> result = trainerService.getUnassignedTrainers(username);
+        return ResponseMaker.ok(result);
+    }
+
+    @GetMapping("/{username}/trainings")
+    @Operation(summary = "Get Trainer Trainings List")
+    public ResponseEntity<Response<List<TrainerTrainingDTO>>> getTrainerTrainings(@PathVariable("username") String username,
+                                                                                  @RequestParam(name = "periodFrom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate periodFrom,
+                                                                                  @RequestParam(name = "periodTo", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate periodTo,
+                                                                                  @RequestParam(name = "traineeName", required = false) String traineeName) {
+        List<TrainerTrainingDTO> result = trainerService.getTrainerTrainings(username, periodFrom, periodTo, traineeName);
         return ResponseMaker.ok(result);
     }
 }

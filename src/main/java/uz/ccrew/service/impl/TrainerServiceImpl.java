@@ -1,22 +1,18 @@
 package uz.ccrew.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import uz.ccrew.dao.TrainingDAO;
 import uz.ccrew.dao.UserDAO;
 import uz.ccrew.dto.TrainerUpdateDTO;
 import uz.ccrew.dto.trainee.TraineeShortDTO;
-import uz.ccrew.dto.trainer.TrainerCreateDTO;
-import uz.ccrew.dto.trainer.TrainerDTO;
-import uz.ccrew.dto.trainer.TrainerProfileDTO;
-import uz.ccrew.dto.trainer.TrainerProfileUsernameDTO;
+import uz.ccrew.dto.trainer.*;
+import uz.ccrew.dto.training.TrainerTrainingDTO;
 import uz.ccrew.dto.user.UserCredentials;
-import uz.ccrew.entity.Trainee;
-import uz.ccrew.entity.User;
+import uz.ccrew.entity.*;
 import uz.ccrew.dao.TrainerDAO;
-import uz.ccrew.entity.Trainer;
 import uz.ccrew.service.AuthService;
 import uz.ccrew.utils.UserUtils;
 import uz.ccrew.dao.TrainingTypeDAO;
-import uz.ccrew.entity.TrainingType;
 import uz.ccrew.service.TrainerService;
 import uz.ccrew.exp.EntityNotFoundException;
 
@@ -25,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,8 +32,9 @@ public class TrainerServiceImpl implements TrainerService {
     private final UserDAO userDAO;
     private final UserUtils userUtils;
     private final TrainerDAO trainerDAO;
-    private final TrainingTypeDAO trainingTypeDAO;
     private final AuthService authService;
+    private final TrainingDAO trainingDAO;
+    private final TrainingTypeDAO trainingTypeDAO;
 
     @Override
     @Transactional
@@ -229,5 +227,21 @@ public class TrainerServiceImpl implements TrainerService {
                 .isActive(trainer.getUser().getIsActive())
                 .traineeShortDTOS(traineeShortDTOS)
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public List<TrainerTrainingDTO> getTrainerTrainings(String username, LocalDate fromDate, LocalDate toDate, String traineeName) {
+        List<Training> trainings = trainingDAO.getTrainerTrainings(username, fromDate, toDate, traineeName);
+        return trainings.stream().map(training -> {
+            Trainee trainee = training.getTrainee();
+            return TrainerTrainingDTO.builder()
+                    .trainingName(training.getTrainingName())
+                    .trainingDate(training.getTrainingDate())
+                    .trainingType(training.getTrainingType().getTrainingTypeName())
+                    .trainingDuration(training.getTrainingDuration())
+                    .traineeName(trainee.getUser().getFirstName())
+                    .build();
+        }).toList();
     }
 }
