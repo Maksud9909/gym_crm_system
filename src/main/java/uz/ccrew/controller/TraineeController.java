@@ -7,6 +7,7 @@ import uz.ccrew.dto.trainer.TrainerDTO;
 import uz.ccrew.service.TraineeService;
 import uz.ccrew.dto.user.UserCredentials;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,7 +27,7 @@ public class TraineeController {
 
     @PostMapping("/create")
     @Operation(summary = "Create a Trainee")
-    public ResponseEntity<Response<UserCredentials>> create(@RequestBody TraineeCreateDTO dto) {
+    public ResponseEntity<Response<UserCredentials>> create(@Valid @RequestBody TraineeCreateDTO dto) {
         UserCredentials result = traineeService.create(dto);
         return ResponseMaker.ok(result);
     }
@@ -40,7 +41,7 @@ public class TraineeController {
 
     @PutMapping("/update")
     @Operation(summary = "Update Trainee")
-    public ResponseEntity<Response<TraineeProfileUsernameDTO>> update(@RequestBody TraineeUpdateDTO dto) {
+    public ResponseEntity<Response<TraineeProfileUsernameDTO>> update(@Valid @RequestBody TraineeUpdateDTO dto) {
         TraineeProfileUsernameDTO result = traineeService.update(dto);
         return ResponseMaker.ok(result);
     }

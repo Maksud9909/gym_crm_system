@@ -34,11 +34,6 @@ public class TraineeServiceImpl implements TraineeService {
     @Override
     @Transactional
     public UserCredentials create(TraineeCreateDTO dto) {
-        if (dto == null) {
-            log.error("Cannot create null Trainee");
-            throw new IllegalArgumentException("Trainee cannot be null");
-        }
-
         String username = userUtils.generateUniqueUsername(dto.getFirstName(), dto.getLastName());
         String password = userUtils.generateRandomPassword();
 
@@ -124,7 +119,7 @@ public class TraineeServiceImpl implements TraineeService {
         log.info("Deleting trainee by username={}", username);
         Trainee trainee = traineeDAO.findByUsername(username)
                 .orElseThrow(() -> {
-                    log.warn("Trainee with username={} not found", username);
+                    log.error("Trainee with username={} not found", username);
                     return new EntityNotFoundException("Trainee with username=" + username + " not found");
                 });
         traineeDAO.delete(trainee.getId());

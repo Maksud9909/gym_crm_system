@@ -1,6 +1,7 @@
-package uz.ccrew.dto;
+package uz.ccrew.dto.trainer;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@NotNull
 public class TrainerUpdateDTO {
     @NotBlank(message = "Username should be not empty")
     private String username;
@@ -18,6 +20,6 @@ public class TrainerUpdateDTO {
     @NotBlank(message = "LastName should be not empty")
     private String lastName;
     private String trainingTypeName;
-    @NotBlank(message = "IsActive should be not empty")
+    @NotNull(message = "IsActive should be not null")
     private Boolean isActive;
 }

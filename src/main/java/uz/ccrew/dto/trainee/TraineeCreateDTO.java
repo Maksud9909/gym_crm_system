@@ -1,5 +1,6 @@
 package uz.ccrew.dto.trainee;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 @Getter
+@NotNull
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

@@ -1,5 +1,6 @@
 package uz.ccrew.controller;
 
+import jakarta.validation.Valid;
 import uz.ccrew.dto.Response;
 import uz.ccrew.dto.ResponseMaker;
 import uz.ccrew.service.TrainingService;
@@ -23,7 +24,7 @@ public class TrainingController {
 
     @PostMapping("/add")
     @Operation(summary = "Add Training")
-    public ResponseEntity<Response<?>> addTraining(@RequestBody TrainingDTO dto) {
+    public ResponseEntity<Response<?>> addTraining(@Valid @RequestBody TrainingDTO dto) {
         trainingService.addTraining(dto);
         return ResponseMaker.ok();
     }

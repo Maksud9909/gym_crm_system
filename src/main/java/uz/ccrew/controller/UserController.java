@@ -1,5 +1,6 @@
 package uz.ccrew.controller;
 
+import jakarta.validation.Valid;
 import uz.ccrew.dto.Response;
 import uz.ccrew.dto.ResponseMaker;
 import uz.ccrew.service.UserService;
@@ -23,7 +24,7 @@ public class UserController {
 
     @PostMapping("/change-password")
     @Operation(summary = "Change password")
-    public ResponseEntity<Response<?>> changePassword(@RequestBody ChangePasswordDTO dto) {
+    public ResponseEntity<Response<?>> changePassword(@Valid @RequestBody ChangePasswordDTO dto) {
         userService.changePassword(dto);
         return ResponseMaker.ok();
     }

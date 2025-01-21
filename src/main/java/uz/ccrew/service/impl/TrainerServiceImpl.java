@@ -3,7 +3,7 @@ package uz.ccrew.service.impl;
 import lombok.RequiredArgsConstructor;
 import uz.ccrew.dao.TrainingDAO;
 import uz.ccrew.dao.UserDAO;
-import uz.ccrew.dto.TrainerUpdateDTO;
+import uz.ccrew.dto.trainer.TrainerUpdateDTO;
 import uz.ccrew.dto.trainee.TraineeShortDTO;
 import uz.ccrew.dto.trainer.*;
 import uz.ccrew.dto.trainer.TrainerTrainingDTO;

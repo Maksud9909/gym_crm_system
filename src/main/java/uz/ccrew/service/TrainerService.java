@@ -1,6 +1,6 @@
 package uz.ccrew.service;
 
-import uz.ccrew.dto.TrainerUpdateDTO;
+import uz.ccrew.dto.trainer.TrainerUpdateDTO;
 import uz.ccrew.dto.trainer.*;
 import uz.ccrew.dto.trainer.TrainerTrainingDTO;
 import uz.ccrew.dto.user.UserCredentials;

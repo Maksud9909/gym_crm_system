@@ -1,9 +1,10 @@
 package uz.ccrew.controller;
 
+import jakarta.validation.Valid;
 import uz.ccrew.dto.Response;
 import uz.ccrew.dto.trainer.*;
 import uz.ccrew.dto.ResponseMaker;
-import uz.ccrew.dto.TrainerUpdateDTO;
+import uz.ccrew.dto.trainer.TrainerUpdateDTO;
 import uz.ccrew.service.TrainerService;
 import uz.ccrew.dto.user.UserCredentials;
 import uz.ccrew.dto.trainer.TrainerTrainingDTO;
@@ -27,7 +28,7 @@ public class TrainerController {
 
     @PostMapping("/create")
     @Operation(summary = "Create a Trainer")
-    public ResponseEntity<Response<UserCredentials>> create(@RequestBody TrainerCreateDTO dto) {
+    public ResponseEntity<Response<UserCredentials>> create(@Valid @RequestBody TrainerCreateDTO dto) {
         UserCredentials result = trainerService.create(dto);
         return ResponseMaker.ok(result);
     }
@@ -41,7 +42,7 @@ public class TrainerController {
 
     @PutMapping("/update")
     @Operation(summary = "Update Trainer")
-    public ResponseEntity<Response<TrainerProfileUsernameDTO>> update(@RequestBody TrainerUpdateDTO dto) {
+    public ResponseEntity<Response<TrainerProfileUsernameDTO>> update(@Valid @RequestBody TrainerUpdateDTO dto) {
         TrainerProfileUsernameDTO result = trainerService.update(dto);
         return ResponseMaker.ok(result);
     }
