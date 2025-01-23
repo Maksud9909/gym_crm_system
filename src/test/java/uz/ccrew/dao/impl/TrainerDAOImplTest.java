@@ -1,147 +1,140 @@
 package uz.ccrew.dao.impl;
 
-import uz.ccrew.dao.TrainerDAO;
-import uz.ccrew.dao.TrainingTypeDAO;
-import uz.ccrew.entity.TrainingType;
-import uz.ccrew.entity.User;
-import uz.ccrew.entity.Trainer;
-import uz.ccrew.config.TestAppConfig;
-import uz.ccrew.config.TestHibernateConfig;
-import uz.ccrew.config.TestDataSourceConfig;
-import uz.ccrew.exp.EntityNotFoundException;
-
-import org.junit.jupiter.api.Test;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.junit.jupiter.api.BeforeEach;
-import org.springframework.test.context.jdbc.Sql;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import uz.ccrew.entity.Trainer;
+import uz.ccrew.entity.User;
+import uz.ccrew.exp.EntityNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {
-        TestAppConfig.class,
-        TestDataSourceConfig.class,
-        TestHibernateConfig.class
-})
-@Transactional
-@Sql(scripts = "/training-type-data.sql")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@ExtendWith(MockitoExtension.class)
 class TrainerDAOImplTest {
-//    private Trainer trainer;
-//    @Autowired
-//    private TrainerDAO trainerDAO;
-//    @Autowired
-//    private TrainingTypeDAO trainingTypeDAO;
-//
-//    @BeforeEach
-//    void setUp() {
-//        trainer = buildTrainer(trainingTypeDAO.findById(1L).get());
-//    }
-//
-//    @Test
-//    @Rollback
-//    void create() {
-//        Long id = trainerDAO.create(trainer);
-//        assertNotNull(id, "ID after create() should not be null");
-//    }
-//
-//    @Test
-//    @Rollback
-//    void update() {
-//        Long id = trainerDAO.create(trainer);
-//        trainer.setTrainingType(trainingTypeDAO.findById(2L).get());
-//        trainerDAO.update(trainer);
-//
-//        Optional<Trainer> updatedOpt = trainerDAO.findById(id);
-//        assertTrue(updatedOpt.isPresent());
-//        assertEquals(updatedOpt.get().getTrainingType().getId(), 2L);
-//    }
-//
-//    @Test
-//    @Rollback
-//    void findByUsername() {
-//        trainerDAO.create(trainer);
-//        Optional<Trainer> opt = trainerDAO.findByUsername(trainer.getUser().getUsername());
-//        assertTrue(opt.isPresent());
-//    }
-//
-//    @Test
-//    @Rollback
-//    void changePassword() {
-//        Long id = trainerDAO.create(trainer);
-//        String newPassword = "NewPassword123";
-//        trainerDAO.changePassword(id, newPassword);
-//
-//        Optional<Trainer> updatedOpt = trainerDAO.findById(id);
-//        assertTrue(updatedOpt.isPresent());
-//        assertEquals(newPassword, updatedOpt.get().getUser().getPassword());
-//    }
-//
-//    @Test
-//    @Rollback
-//    void activateDeactivate() {
-//        Long id = trainerDAO.create(trainer);
-////        trainerDAO.activateDeactivate(id, Boolean.FALSE);
-//
-//        Optional<Trainer> updatedOpt = trainerDAO.findById(id);
-//        assertTrue(updatedOpt.isPresent());
-//        assertFalse(updatedOpt.get().getUser().getIsActive());
-//    }
-//
-//    @Test
-//    @Rollback
-//    void findById() {
-//        Long id = trainerDAO.create(trainer);
-//        Optional<Trainer> foundOpt = trainerDAO.findById(id);
-//        assertTrue(foundOpt.isPresent());
-//        assertEquals("trainerUser", foundOpt.get().getUser().getUsername());
-//    }
-//
-//    @Test
-//    @Rollback
-//    void findAll() {
-//        trainerDAO.create(trainer);
-//        List<Trainer> allTrainers = trainerDAO.findAll();
-//        assertEquals(allTrainers.size(), 1L);
-//    }
-//
-//    @Test
-//    @Rollback
-//    void delete() {
-//        Long id = trainerDAO.create(trainer);
-//        trainerDAO.delete(id);
-//
-//        Optional<Trainer> foundOpt = trainerDAO.findById(id);
-//        assertTrue(foundOpt.isEmpty());
-//    }
-//
-//    @Test
-//    @Rollback
-//    void deleteNotFoundThrowsException() {
-//        assertThrows(EntityNotFoundException.class, () -> trainerDAO.delete(9999L));
-//    }
-//
-//    private static Trainer buildTrainer(TrainingType trainingType) {
-//        return Trainer.builder()
-//                .user(
-//                        User.builder()
-//                                .firstName("TrainerFirst")
-//                                .lastName("TrainerLast")
-//                                .username("trainerUser")
-//                                .password("pass")
-//                                .isActive(Boolean.TRUE)
-//                                .build()
-//                )
-//                .trainingType(trainingType)
-//                .build();
-//    }
+
+    @Mock
+    private SessionFactory sessionFactory;
+
+    @Mock
+    private Session session;
+
+    @InjectMocks
+    private TrainerDAOImpl trainerDAO;
+
+    private Trainer trainer;
+
+    @BeforeEach
+    void setUp() {
+        when(sessionFactory.getCurrentSession()).thenReturn(session);
+        trainer = Trainer.builder()
+                .id(1L)
+                .user(User.builder().username("trainer_user").build())
+                .build();
+    }
+
+    @Test
+    void create_ShouldPersistTrainerAndReturnId() {
+        Long resultId = trainerDAO.create(trainer);
+        verify(session, times(1)).persist(trainer);
+        assertEquals(1L, resultId);
+    }
+
+    @Test
+    void update_ShouldUpdateTrainer_WhenExists() {
+        Trainer updatedTrainer = Trainer.builder()
+                .id(1L)
+                .user(User.builder().username("updated_user").build())
+                .build();
+
+        when(session.get(Trainer.class, 1L)).thenReturn(trainer);
+
+        trainerDAO.update(updatedTrainer);
+
+        verify(session, times(1)).merge(updatedTrainer);
+    }
+
+    @Test
+    void update_ShouldThrowException_WhenTrainerDoesNotExist() {
+        Trainer nonExistentTrainer = Trainer.builder().id(999L).build();
+
+        when(session.get(Trainer.class, 999L)).thenReturn(null);
+
+        assertThrows(EntityNotFoundException.class, () -> trainerDAO.update(nonExistentTrainer));
+
+        verify(session, never()).merge(any(Trainer.class));
+    }
+
+    @Test
+    void findByUsername_ShouldReturnOptionalTrainer_WhenExists() {
+        String username = "trainer_user";
+        Query<Trainer> query = mock(Query.class);
+
+        when(session.createQuery("FROM Trainer tr where tr.user.username = :username", Trainer.class))
+                .thenReturn(query);
+        when(query.setParameter("username", username)).thenReturn(query);
+        when(query.uniqueResult()).thenReturn(trainer);
+
+        Optional<Trainer> result = trainerDAO.findByUsername(username);
+
+        assertTrue(result.isPresent());
+        assertEquals(trainer, result.get());
+    }
+
+    @Test
+    void findByUsername_ShouldReturnEmptyOptional_WhenNotFound() {
+        String username = "non_existent_user";
+        Query<Trainer> query = mock(Query.class);
+
+        when(session.createQuery("FROM Trainer tr where tr.user.username = :username", Trainer.class))
+                .thenReturn(query);
+        when(query.setParameter("username", username)).thenReturn(query);
+        when(query.uniqueResult()).thenReturn(null);
+
+        Optional<Trainer> result = trainerDAO.findByUsername(username);
+
+        assertFalse(result.isPresent());
+    }
+
+    @Test
+    void getUnassignedTrainers_ShouldReturnListOfUnassignedTrainers() {
+        String traineeUsername = "trainee_user";
+        List<Trainer> unassignedTrainers = List.of(trainer);
+        Query<Trainer> query = mock(Query.class);
+
+        when(session.createQuery(anyString(), eq(Trainer.class))).thenReturn(query);
+        when(query.setParameter("traineeUsername", traineeUsername)).thenReturn(query);
+        when(query.list()).thenReturn(unassignedTrainers);
+
+        List<Trainer> result = trainerDAO.getUnassignedTrainers(traineeUsername);
+
+        assertEquals(unassignedTrainers.size(), result.size());
+        assertEquals(unassignedTrainers.get(0), result.get(0));
+    }
+
+    @Test
+    void findByTrainerUsername_ShouldReturnListOfTrainers_WhenUsernamesExist() {
+        List<String> usernames = List.of("trainer1", "trainer2");
+        List<Trainer> trainers = List.of(trainer);
+        Query<Trainer> query = mock(Query.class);
+
+        when(session.createQuery("FROM Trainer t WHERE t.user.username IN :usernames", Trainer.class))
+                .thenReturn(query);
+        when(query.setParameter("usernames", usernames)).thenReturn(query);
+        when(query.getResultList()).thenReturn(trainers);
+
+        List<Trainer> result = trainerDAO.findByTrainerUsername(usernames);
+
+        assertEquals(trainers.size(), result.size());
+        assertEquals(trainers.get(0), result.get(0));
+    }
 }

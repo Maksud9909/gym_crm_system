@@ -1,48 +1,75 @@
 package uz.ccrew.utils;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
-import uz.ccrew.config.TestAppConfig;
-import uz.ccrew.config.TestDataSourceConfig;
-import uz.ccrew.config.TestHibernateConfig;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import uz.ccrew.dao.UserDAO;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {
-        TestAppConfig.class,
-        TestDataSourceConfig.class,
-        TestHibernateConfig.class
-})
-@Transactional
-@Sql(scripts = "/user-util-data.sql")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@ExtendWith(MockitoExtension.class)
 class UserUtilsTest {
-    @Autowired
+
+    @Mock
+    private UserDAO userDAO;
+
+    @InjectMocks
     private UserUtils userUtils;
 
-    @Test
-    void generateUniqueUsername() {
-        String firstName = "Maksud";
-        String lastName = "Rustamov";
-        String username = userUtils.generateUniqueUsername(firstName, lastName);
-        assertEquals(username, firstName + "." + lastName);
+    @BeforeEach
+    void setUp() {
+        userUtils = new UserUtils(userDAO);
     }
 
     @Test
-    void generateRandomPassword() {
-        String password = userUtils.generateRandomPassword();
-        assertEquals(10, password.length());
+    void generateUniqueUsername_ShouldReturnBaseUsername_WhenNoConflict() {
+        String firstName = "John";
+        String lastName = "Doe";
+        String expectedUsername = "John.Doe";
 
-        String validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        for (char c : password.toCharArray()) {
-            assertTrue(validChars.contains(String.valueOf(c)));
+        when(userDAO.isUsernameExists(expectedUsername)).thenReturn(false);
+
+        String result = userUtils.generateUniqueUsername(firstName, lastName);
+
+        assertEquals(expectedUsername, result);
+    }
+
+    @Test
+    void generateUniqueUsername_ShouldReturnUniqueUsername_WhenConflictExists() {
+        String firstName = "John";
+        String lastName = "Doe";
+        String baseUsername = "John.Doe";
+
+        when(userDAO.isUsernameExists(baseUsername)).thenReturn(true);
+        when(userDAO.isUsernameExists("John.Doe.1")).thenReturn(false);
+
+        String result = userUtils.generateUniqueUsername(firstName, lastName);
+
+        assertEquals("John.Doe.1", result);
+    }
+
+    @Test
+    void generateRandomPassword_ShouldReturnPasswordOfCorrectLength() {
+        int expectedLength = 10;
+
+        String result = userUtils.generateRandomPassword();
+
+        assertNotNull(result);
+        assertEquals(expectedLength, result.length());
+    }
+
+    @Test
+    void generateRandomPassword_ShouldReturnPasswordWithAllowedCharacters() {
+        String allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        String result = userUtils.generateRandomPassword();
+
+        assertNotNull(result);
+        for (char c : result.toCharArray()) {
+            assertTrue(allowedChars.contains(String.valueOf(c)));
         }
     }
 }
