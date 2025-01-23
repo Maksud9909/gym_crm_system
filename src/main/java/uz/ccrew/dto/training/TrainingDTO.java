@@ -21,8 +21,6 @@ public class TrainingDTO {
     private String trainerUsername;
     @NotBlank(message = "Training name should be not empty")
     private String trainingName;
-    @NotBlank(message = "Training date should be not empty")
     private LocalDate trainingDate;
-    @NotBlank(message = "Training duration should be not empty")
     private Double trainingDuration;
 }
