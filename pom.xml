@@ -17,8 +17,6 @@
         <spring.version>6.1.1</spring.version>
         <spring-boot.version>3.3.2</spring-boot.version>
         <jakarta.annotation.version>2.1.1</jakarta.annotation.version>
-        <slf4j.version>2.0.9</slf4j.version>
-        <logback.version>1.4.12</logback.version>
         <jakarta.servlet.version>5.0.0</jakarta.servlet.version>
         <jetbrains.annotations.version>24.1.0</jetbrains.annotations.version>
         <junit.jupiter.version>5.11.3</junit.jupiter.version>
@@ -44,6 +42,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
+            <version>${spring-boot.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
             <version>${spring-boot.version}</version>
         </dependency>
 

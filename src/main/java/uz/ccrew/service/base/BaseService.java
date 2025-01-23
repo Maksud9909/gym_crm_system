@@ -4,10 +4,10 @@ import uz.ccrew.dto.user.UserCredentials;
 
 import java.util.List;
 
-public interface BaseService<T, U, D> {
-    U create(D entity);
+public interface BaseService<U, C, P> {
+    U create(C entity);
 
-    T findById(Long id, UserCredentials userCredentials);
+    P getProfile(String username);
 
-    List<T> findAll(UserCredentials userCredentials);
+    void activateDeactivate(String username, Boolean isActive);
 }
