@@ -22,7 +22,7 @@ public class Trainer extends BaseEntity {
     private TrainingType trainingType;
     @OneToMany(mappedBy = "trainer", fetch = FetchType.LAZY)
     private List<Training> training = new ArrayList<>();
-    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }

@@ -1,5 +1,6 @@
 package uz.ccrew.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import uz.ccrew.dto.Response;
 import uz.ccrew.dto.ResponseMaker;
 import uz.ccrew.service.TrainingTypeService;
@@ -18,6 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/training-types")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Bearer Authentication")
 @Tag(name = "Training Type Controller", description = "Training Type API")
 public class TrainingTypeController {
     private final TrainingTypeService trainingTypeService;

@@ -1,5 +1,6 @@
 package uz.ccrew.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import uz.ccrew.dto.Response;
 import uz.ccrew.dto.ResponseMaker;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/training")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Bearer Authentication")
 @Tag(name = "Training Controller", description = "Training API")
 public class TrainingController {
     private final TrainingService trainingService;

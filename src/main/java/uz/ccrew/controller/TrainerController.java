@@ -1,5 +1,6 @@
 package uz.ccrew.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import uz.ccrew.dto.Response;
 import uz.ccrew.dto.trainer.*;
@@ -22,6 +23,7 @@ import java.time.LocalDate;
 @RestController
 @RequestMapping("/api/v1/trainer")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Bearer Authentication")
 @Tag(name = "Trainer Controller", description = "Trainer API")
 public class TrainerController {
     private final TrainerService trainerService;
