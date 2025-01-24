@@ -186,6 +186,7 @@ public class TraineeServiceImpl implements TraineeService {
                 })
                 .toList();
 
+        log.info("Found a profile for username={}", username);
         return TraineeProfileDTO.builder()
                 .firstName(trainee.getUser().getFirstName())
                 .lastName(trainee.getUser().getLastName())
