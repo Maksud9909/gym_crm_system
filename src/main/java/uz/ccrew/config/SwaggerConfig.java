@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@OpenAPIDefinition(info = @Info(title = "Match making API", version = "1.0", description = "Match making documentation"))
+@OpenAPIDefinition(info = @Info(title = "Gym crm system API", version = "1.0", description = "Gym crm system documentation"))
 @ConditionalOnProperty(value = "spring.fox.documentation.enabled", havingValue = "true", matchIfMissing = true)
 @SecurityScheme(
         name = "Bearer Authentication",
