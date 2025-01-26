@@ -128,14 +128,4 @@ class TraineeServiceImplTest {
         assertThrows(EntityNotFoundException.class, () -> traineeService.deleteTraineeByUsername("nonexistent_user"));
         verify(traineeDAO, never()).delete(anyLong());
     }
-
-    @Test
-    void activateDeactivate_ShouldActivateTrainee_WhenExists() {
-        when(userDAO.findByUsername("test_user")).thenReturn(Optional.of(user));
-        user.setIsActive(Boolean.FALSE);
-
-        traineeService.activateDeactivate("test_user", Boolean.TRUE);
-
-        verify(userDAO, times(1)).activateDeactivate("test_user", true);
-    }
 }

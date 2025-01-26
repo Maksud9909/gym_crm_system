@@ -1,12 +1,9 @@
 package uz.ccrew.controller;
 
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.validation.Valid;
-import uz.ccrew.dto.Response;
-import uz.ccrew.dto.ResponseMaker;
 import uz.ccrew.service.TrainingService;
 import uz.ccrew.dto.training.TrainingDTO;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @RequestMapping("/api/v1/training")
@@ -26,8 +24,8 @@ public class TrainingController {
 
     @PostMapping("/add")
     @Operation(summary = "Add Training")
-    public ResponseEntity<Response<?>> addTraining(@Valid @RequestBody TrainingDTO dto) {
+    public ResponseEntity<Void> addTraining(@Valid @RequestBody TrainingDTO dto) {
         trainingService.addTraining(dto);
-        return ResponseMaker.ok();
+        return ResponseEntity.ok().build();
     }
 }

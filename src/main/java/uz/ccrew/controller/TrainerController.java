@@ -2,10 +2,7 @@ package uz.ccrew.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
-import uz.ccrew.dto.Response;
 import uz.ccrew.dto.trainer.*;
-import uz.ccrew.dto.ResponseMaker;
-import uz.ccrew.dto.trainer.TrainerUpdateDTO;
 import uz.ccrew.service.TrainerService;
 import uz.ccrew.dto.user.UserCredentials;
 import uz.ccrew.dto.trainer.TrainerTrainingDTO;
@@ -30,47 +27,39 @@ public class TrainerController {
 
     @PostMapping("/create")
     @Operation(summary = "Create a Trainer")
-    public ResponseEntity<Response<UserCredentials>> create(@Valid @RequestBody TrainerCreateDTO dto) {
+    public ResponseEntity<UserCredentials> create(@Valid @RequestBody TrainerCreateDTO dto) {
         UserCredentials result = trainerService.create(dto);
-        return ResponseMaker.ok(result);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/profile/{username}")
     @Operation(summary = "Get Trainer Profile")
-    public ResponseEntity<Response<TrainerProfileDTO>> getProfile(@PathVariable("username") String username) {
+    public ResponseEntity<TrainerProfileDTO> getProfile(@PathVariable("username") String username) {
         TrainerProfileDTO result = trainerService.getProfile(username);
-        return ResponseMaker.ok(result);
+        return ResponseEntity.ok(result);
     }
 
     @PutMapping("/update")
     @Operation(summary = "Update Trainer")
-    public ResponseEntity<Response<TrainerProfileUsernameDTO>> update(@Valid @RequestBody TrainerUpdateDTO dto) {
+    public ResponseEntity<TrainerProfileUsernameDTO> update(@Valid @RequestBody TrainerUpdateDTO dto) {
         TrainerProfileUsernameDTO result = trainerService.update(dto);
-        return ResponseMaker.ok(result);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/trainees/{username}/trainers/unassigned")
     @Operation(summary = "Get not assigned on trainee active trainers")
-    public ResponseEntity<Response<List<TrainerDTO>>> getUnassignedTrainers(@PathVariable("username") String username) {
+    public ResponseEntity<List<TrainerDTO>> getUnassignedTrainers(@PathVariable("username") String username) {
         List<TrainerDTO> result = trainerService.getUnassignedTrainers(username);
-        return ResponseMaker.ok(result);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/{username}/trainings")
     @Operation(summary = "Get Trainer Trainings List")
-    public ResponseEntity<Response<List<TrainerTrainingDTO>>> getTrainerTrainings(@PathVariable("username") String username,
-                                                                                  @RequestParam(name = "periodFrom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate periodFrom,
-                                                                                  @RequestParam(name = "periodTo", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate periodTo,
-                                                                                  @RequestParam(name = "traineeName", required = false) String traineeName) {
+    public ResponseEntity<List<TrainerTrainingDTO>> getTrainerTrainings(@PathVariable("username") String username,
+                                                                        @RequestParam(name = "periodFrom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate periodFrom,
+                                                                        @RequestParam(name = "periodTo", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate periodTo,
+                                                                        @RequestParam(name = "traineeName", required = false) String traineeName) {
         List<TrainerTrainingDTO> result = trainerService.getTrainerTrainings(username, periodFrom, periodTo, traineeName);
-        return ResponseMaker.ok(result);
-    }
-
-    @PatchMapping("/activate/deactivate")
-    @Operation(summary = "Activate/Deactivate profile")
-    public ResponseEntity<Response<?>> activateDeactivate(@RequestParam(name = "username") String username,
-                                                          @RequestParam(name = "isActive", defaultValue = "true") Boolean isActive) {
-        trainerService.activateDeactivate(username, isActive);
-        return ResponseMaker.ok();
+        return ResponseEntity.ok(result);
     }
 }

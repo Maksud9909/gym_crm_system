@@ -102,16 +102,6 @@ class TrainerServiceImplTest {
     }
 
     @Test
-    void activateDeactivate_ShouldActivateTrainer_WhenExists() {
-        when(userDAO.findByUsername("test_user")).thenReturn(Optional.of(user));
-        user.setIsActive(Boolean.FALSE);
-
-        trainerService.activateDeactivate("test_user", Boolean.TRUE);
-
-        verify(userDAO, times(1)).activateDeactivate("test_user", true);
-    }
-
-    @Test
     void updateTrainer_ShouldUpdateTrainer_WhenExists() {
         when(trainerDAO.findByUsername("test_user")).thenReturn(Optional.of(trainer));
 

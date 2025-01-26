@@ -3,7 +3,7 @@ package uz.ccrew.service.impl;
 import org.springframework.transaction.annotation.Transactional;
 import uz.ccrew.dao.UserDAO;
 import uz.ccrew.utils.JwtUtil;
-import uz.ccrew.exp.Unauthorized;
+import uz.ccrew.exp.UnauthorizedException;
 import uz.ccrew.service.AuthService;
 import uz.ccrew.dto.auth.JwtResponse;
 import uz.ccrew.dto.user.UserCredentials;
@@ -24,7 +24,7 @@ public class AuthServiceImpl implements AuthService {
         String password = userCredentials.getPassword();
 
         userDAO.findByUsernameAndPassword(username, password)
-                .orElseThrow(() -> new Unauthorized("Invalid username or password"));
+                .orElseThrow(() -> new UnauthorizedException("Invalid username or password"));
 
         String accessToken = jwtUtil.generateAccessToken(username);
         String refreshToken = jwtUtil.generateRefreshToken(username);

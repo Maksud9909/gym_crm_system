@@ -128,21 +128,6 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     @Transactional
-    public void activateDeactivate(String username, Boolean isActive) {
-        log.info("Activating/deactivating trainee={}", username);
-        Optional<User> user = userDAO.findByUsername(username);
-        if (user.isPresent()) {
-            if (user.get().getIsActive().equals(isActive)) {
-                log.warn("Trainee with ID={} is already in the desired state (isActive={})", username, isActive);
-                return;
-            }
-        }
-        userDAO.activateDeactivate(username, isActive);
-        log.info("Trainee with ID={} is now isActive={}", username, isActive);
-    }
-
-    @Override
-    @Transactional
     public List<TrainerDTO> updateTraineeTrainers(String username, List<String> newTrainers) {
         log.info("Updating trainers for Trainee ID={}", username);
 

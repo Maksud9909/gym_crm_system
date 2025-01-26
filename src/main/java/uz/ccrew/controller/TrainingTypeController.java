@@ -1,8 +1,5 @@
 package uz.ccrew.controller;
 
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import uz.ccrew.dto.Response;
-import uz.ccrew.dto.ResponseMaker;
 import uz.ccrew.service.TrainingTypeService;
 import uz.ccrew.dto.trainingType.TrainingTypeIdDTO;
 
@@ -13,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 import java.util.List;
 
@@ -26,8 +24,8 @@ public class TrainingTypeController {
 
     @GetMapping
     @Operation(summary = "Find all training types")
-    public ResponseEntity<Response<List<TrainingTypeIdDTO>>> getTrainingTypes() {
+    public ResponseEntity<List<TrainingTypeIdDTO>> getTrainingTypes() {
         List<TrainingTypeIdDTO> result = trainingTypeService.findAll();
-        return ResponseMaker.ok(result);
+        return ResponseEntity.ok(result);
     }
 }

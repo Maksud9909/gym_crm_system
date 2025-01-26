@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -27,5 +29,20 @@ public class UserServiceImpl implements UserService {
 
         userDAO.changePassword(user.getId(), dto.getNewPassword());
         log.info("Password successfully changed for user '{}'", dto.getUsername());
+    }
+
+    @Override
+    @Transactional
+    public void activateDeactivate(String username, Boolean isActive) {
+        log.info("Activating/deactivating trainee={}", username);
+        Optional<User> user = userDAO.findByUsername(username);
+        if (user.isPresent()) {
+            if (user.get().getIsActive().equals(isActive)) {
+                log.warn("Trainee with ID={} is already in the desired state (isActive={})", username, isActive);
+                return;
+            }
+        }
+        userDAO.activateDeactivate(username, isActive);
+        log.info("Trainee with ID={} is now isActive={}", username, isActive);
     }
 }

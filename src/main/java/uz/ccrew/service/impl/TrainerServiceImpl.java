@@ -68,21 +68,6 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    @Transactional
-    public void activateDeactivate(String username, Boolean isActive) {
-        log.info("Activating/deactivating trainer={}", username);
-        Optional<User> user = userDAO.findByUsername(username);
-        if (user.isPresent()) {
-            if (user.get().getIsActive().equals(isActive)) {
-                log.warn("Trainer with ID={} is already in the desired state (isActive={})", username, isActive);
-                return;
-            }
-        }
-        userDAO.activateDeactivate(username, isActive);
-        log.info("Trainer with ID={} is now isActive={}", username, isActive);
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public List<TrainerDTO> getUnassignedTrainers(String traineeUsername) {
         log.info("Fetching unassigned trainers for Trainee username={}", traineeUsername);
