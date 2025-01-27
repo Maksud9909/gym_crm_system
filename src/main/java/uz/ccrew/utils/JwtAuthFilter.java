@@ -36,6 +36,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             sendError(response, "Authentication failed");
+            return;
         }
 
         String token = authHeader.substring(7);
@@ -44,6 +45,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             request.setAttribute("username", username);
         } catch (Exception e) {
             sendError(response, "Authentication failed");
+            return;
         }
 
         chain.doFilter(request, response);

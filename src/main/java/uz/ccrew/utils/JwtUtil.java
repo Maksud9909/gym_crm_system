@@ -61,11 +61,11 @@ public class JwtUtil {
                 .getBody();
     }
 
-    private Key getAccessTokenSignInKey() {
+    protected Key getAccessTokenSignInKey() {
         return Keys.hmacShaKeyFor(accessTokenSecretKey.getBytes());
     }
 
-    private Key getRefreshTokenSignInKey() {
+    protected Key getRefreshTokenSignInKey() {
         return Keys.hmacShaKeyFor(refreshTokenSecretKey.getBytes());
     }
 }

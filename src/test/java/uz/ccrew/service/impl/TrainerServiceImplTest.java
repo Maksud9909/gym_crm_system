@@ -7,18 +7,24 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uz.ccrew.dao.TrainerDAO;
+import uz.ccrew.dao.TrainingDAO;
 import uz.ccrew.dao.TrainingTypeDAO;
 import uz.ccrew.dao.UserDAO;
-import uz.ccrew.dto.trainer.TrainerCreateDTO;
-import uz.ccrew.dto.trainer.TrainerUpdateDTO;
+import uz.ccrew.dto.trainee.TraineeShortDTO;
+import uz.ccrew.dto.trainer.*;
 import uz.ccrew.dto.user.UserCredentials;
+import uz.ccrew.entity.Trainee;
 import uz.ccrew.entity.Trainer;
+import uz.ccrew.entity.Training;
 import uz.ccrew.entity.TrainingType;
 import uz.ccrew.entity.User;
 import uz.ccrew.exp.EntityNotFoundException;
 import uz.ccrew.utils.UserUtils;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,10 +34,10 @@ import static org.mockito.Mockito.*;
 class TrainerServiceImplTest {
 
     @Mock
-    private UserDAO userDAO;
+    private TrainerDAO trainerDAO;
 
     @Mock
-    private TrainerDAO trainerDAO;
+    private TrainingDAO trainingDAO;
 
     @Mock
     private TrainingTypeDAO trainingTypeDAO;
@@ -129,5 +135,83 @@ class TrainerServiceImplTest {
                 .build();
 
         assertThrows(EntityNotFoundException.class, () -> trainerService.update(dto));
+    }
+
+    @Test
+    void getUnassignedTrainers_ShouldReturnUnassignedTrainers() {
+        when(trainerDAO.getUnassignedTrainers("traineeUsername"))
+                .thenReturn(List.of(trainer));
+
+        List<TrainerDTO> result = trainerService.getUnassignedTrainers("traineeUsername");
+
+        assertEquals(1, result.size());
+        TrainerDTO trainerDTO = result.get(0);
+        assertEquals("test_user", trainerDTO.getUsername());
+        assertEquals("Test", trainerDTO.getFirstName());
+        assertEquals("User", trainerDTO.getLastName());
+        assertEquals("Yoga", trainerDTO.getTrainingTypeName());
+    }
+
+    @Test
+    void getProfile_ShouldReturnTrainerProfile_WhenTrainerExists() {
+        Trainee trainee = new Trainee();
+        User traineeUser = User.builder().username("traineeUser").firstName("Trainee").lastName("User").build();
+        trainee.setUser(traineeUser);
+
+        Training training = new Training();
+        training.setTrainee(trainee);
+
+        trainer.setTraining(Collections.singletonList(training));
+
+        when(trainerDAO.findByUsername("test_user")).thenReturn(Optional.of(trainer));
+
+        TrainerProfileDTO profile = trainerService.getProfile("test_user");
+
+        assertEquals("Test", profile.getFirstName());
+        assertEquals("User", profile.getLastName());
+        assertEquals("Yoga", profile.getTrainingTypeName());
+        assertEquals(1, profile.getTraineeShortDTOS().size());
+
+        TraineeShortDTO traineeDTO = profile.getTraineeShortDTOS().get(0);
+        assertEquals("traineeUser", traineeDTO.getUsername());
+        assertEquals("Trainee", traineeDTO.getFirstName());
+        assertEquals("User", traineeDTO.getLastName());
+    }
+
+    @Test
+    void getProfile_ShouldThrowException_WhenTrainerDoesNotExist() {
+        when(trainerDAO.findByUsername("nonexistent_user")).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> trainerService.getProfile("nonexistent_user"));
+    }
+
+    @Test
+    void getTrainerTrainings_ShouldReturnTrainings() {
+        Training training = new Training();
+        training.setTrainingName("Yoga Class");
+        training.setTrainingDate(LocalDate.of(2023, 1, 1));
+        training.setTrainingDuration(60.0);
+
+        TrainingType trainingType = new TrainingType();
+        trainingType.setTrainingTypeName("Yoga");
+        training.setTrainingType(trainingType);
+
+        Trainee trainee = new Trainee();
+        User traineeUser = User.builder().firstName("Trainee").build();
+        trainee.setUser(traineeUser);
+        training.setTrainee(trainee);
+
+        when(trainingDAO.getTrainerTrainings("test_user", null, null, null))
+                .thenReturn(List.of(training));
+
+        List<TrainerTrainingDTO> result = trainerService.getTrainerTrainings("test_user", null, null, null);
+
+        assertEquals(1, result.size());
+        TrainerTrainingDTO dto = result.get(0);
+        assertEquals("Yoga Class", dto.getTrainingName());
+        assertEquals(LocalDate.of(2023, 1, 1), dto.getTrainingDate());
+        assertEquals(60.0, dto.getTrainingDuration());
+        assertEquals("Yoga", dto.getTrainingType());
+        assertEquals("Trainee", dto.getTraineeName());
     }
 }

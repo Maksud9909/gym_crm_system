@@ -17,6 +17,7 @@ import uz.ccrew.utils.QueryBuilder;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -96,5 +97,34 @@ class TrainingDAOImplTest {
             assertEquals(1, result.size());
             assertEquals(training, result.get(0));
         }
+    }
+
+    @Test
+    void findById_ShouldReturnTraining_WhenTrainingExists() {
+        when(session.get(Training.class, 1L)).thenReturn(training);
+
+        Optional<Training> result = trainingDAO.findById(1L);
+
+        assertTrue(result.isPresent());
+        assertEquals(1L, result.get().getId());
+        assertEquals("Test Training", result.get().getTrainingName());
+        verify(session, times(1)).get(Training.class, 1L);
+    }
+
+    @Test
+    void findById_ShouldReturnEmptyOptional_WhenTrainingDoesNotExist() {
+        when(session.get(Training.class, 1L)).thenReturn(null);
+
+        Optional<Training> result = trainingDAO.findById(1L);
+
+        assertFalse(result.isPresent());
+        verify(session, times(1)).get(Training.class, 1L);
+    }
+
+    @Test
+    void update_ShouldMergeTraining() {
+        trainingDAO.update(training);
+
+        verify(session, times(1)).merge(training);
     }
 }
