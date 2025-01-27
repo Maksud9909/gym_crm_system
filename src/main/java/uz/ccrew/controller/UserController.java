@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 @RestController
 @RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Bearer Authentication")
 @Tag(name = "User Controller", description = "User API")
 public class UserController {
     private final AuthService authService;
@@ -30,7 +31,6 @@ public class UserController {
 
     @PostMapping("/change-password")
     @Operation(summary = "Change password")
-    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordDTO dto) {
         userService.changePassword(dto);
         return ResponseEntity.ok().build();
@@ -38,7 +38,6 @@ public class UserController {
 
     @PatchMapping("/activate/deactivate")
     @Operation(summary = "Activate/Deactivate profile")
-    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<?> activateDeactivate(@RequestParam(name = "username") String username,
                                                 @RequestParam(name = "isActive", defaultValue = "true") Boolean isActive) {
         userService.activateDeactivate(username, isActive);

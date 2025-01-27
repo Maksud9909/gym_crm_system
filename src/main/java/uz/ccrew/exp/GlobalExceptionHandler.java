@@ -32,6 +32,13 @@ public class GlobalExceptionHandler {
                 .body("Unauthorized");
     }
 
+    @ExceptionHandler({TrainingNotAssociatedException.class})
+    public ResponseEntity<String> handleTrainingNotAssociatedException(TrainingNotAssociatedException ex) {
+        log.error("Training association error: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Training association error");
+    }
+
     @ExceptionHandler({Exception.class})
     private ResponseEntity<String> handle(Exception e) {
         log.error("Exception occurred: {}", e.getMessage());

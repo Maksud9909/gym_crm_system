@@ -6,6 +6,7 @@ import uz.ccrew.entity.*;
 import uz.ccrew.dao.UserDAO;
 import uz.ccrew.dao.TrainerDAO;
 import uz.ccrew.dao.TraineeDAO;
+import uz.ccrew.exp.TrainingNotAssociatedException;
 import uz.ccrew.utils.UserUtils;
 import uz.ccrew.dto.trainer.TrainerDTO;
 import uz.ccrew.service.TraineeService;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -128,30 +130,35 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     @Transactional
-    public List<TrainerDTO> updateTraineeTrainers(String username, List<String> newTrainers) {
-        log.info("Updating trainers for Trainee ID={}", username);
+    public List<TrainerDTO> updateTraineeTrainers(List<UpdateTraineeTrainersDTO> trainersDTOList) {
+        List<TrainerDTO> updatedTrainers = new ArrayList<>();
 
-        if (username == null) {
-            log.warn("Trainee ID is null");
-            throw new IllegalArgumentException("Trainee ID must not be null");
+        for (UpdateTraineeTrainersDTO dto : trainersDTOList) {
+            Trainee trainee = traineeDAO.findByUsername(dto.getTraineeUsername()).orElseThrow(() -> new EntityNotFoundException("Trainee with username=" + dto.getTraineeUsername()));
+            Trainer trainer = trainerDAO.findByUsername(dto.getTrainerUsername()).orElseThrow(() -> new EntityNotFoundException("Trainer with username=" + dto.getTrainerUsername()));
+            Training training = trainingDAO.findById(dto.getTrainingId()).orElseThrow(() -> new EntityNotFoundException("Training with username=" + dto.getTrainerUsername() + " not found"));
+
+            if (!trainee.getTraining().contains(training)) {
+                throw new TrainingNotAssociatedException("Training with ID=" + dto.getTrainingId() + " is not associated with Trainee=" + dto.getTraineeUsername());
+            }
+
+            training.setTrainer(trainer);
+            if (!training.getTrainingType().equals(trainer.getTrainingType())) {
+                training.setTrainingType(trainer.getTrainingType());
+                training.setTrainingName(trainer.getTrainingType().getTrainingTypeName());
+            }
+
+            trainingDAO.update(training);
+
+            updatedTrainers.add(TrainerDTO.builder()
+                    .username(trainer.getUser().getUsername())
+                    .firstName(trainer.getUser().getFirstName())
+                    .lastName(trainer.getUser().getLastName())
+                    .trainingTypeName(trainer.getTrainingType().getTrainingTypeName())
+                    .build());
         }
 
-        if (newTrainers == null || newTrainers.isEmpty()) {
-            log.warn("No trainers provided for update");
-            throw new IllegalArgumentException("Trainer IDs must not be null or empty");
-        }
-
-        traineeDAO.updateTraineeTrainers(username, newTrainers);
-        log.info("Trainers updated successfully for Trainee ID={}", username);
-        List<Trainer> trainers = trainerDAO.findByTrainerUsername(newTrainers);
-        return trainers.stream()
-                .map(trainer -> TrainerDTO.builder()
-                        .username(trainer.getUser().getUsername())
-                        .firstName(trainer.getUser().getFirstName())
-                        .lastName(trainer.getUser().getLastName())
-                        .trainingTypeName(trainer.getTrainingType().getTrainingTypeName())
-                        .build())
-                .toList();
+        return updatedTrainers;
     }
 
     @Override

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Slf4j
 @Getter
@@ -56,5 +57,18 @@ public class TrainingDAOImpl implements TrainingDAO {
                 toDate, traineeName);
         log.debug(HQL_QUERY_LOG, query);
         return query.getResultList();
+    }
+
+    @Override
+    public Optional<Training> findById(Long id) {
+        Session session = getSessionFactory().getCurrentSession();
+        Training training = session.get(Training.class, id);
+        return Optional.ofNullable(training);
+    }
+
+    @Override
+    public void update(Training training) {
+        Session session = getSessionFactory().getCurrentSession();
+        session.merge(training);
     }
 }

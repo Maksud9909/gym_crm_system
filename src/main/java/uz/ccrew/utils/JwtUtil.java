@@ -2,48 +2,39 @@ package uz.ccrew.utils;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.Map;
 import java.util.Date;
-import java.time.ZoneId;
 import java.security.Key;
-import java.util.HashMap;
-import java.time.LocalDateTime;
 import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
 public class JwtUtil {
     @Value("${security.token.access.secret-key}")
-    private String ACCESS_TOKEN_SECRET_KEY;
+    private String accessTokenSecretKey;
     @Value("${security.token.refresh.secret-key}")
-    private String REFRESH_TOKEN_SECRET_KEY;
+    private String refreshTokenSecretKey;
 
     @Value("${security.token.access.time}")
-    private int ACCESS_TOKEN_TIME;
+    private int accessTokenTime;
     @Value("${security.token.refresh.time}")
-    private int REFRESH_TOKEN_TIME;
+    private int refreshTokenTime;
 
     public String generateAccessToken(String username) {
-        return generateToken(new HashMap<>(), username, ACCESS_TOKEN_TIME, getAccessTokenSignInKey());
+        return generateToken(username, accessTokenTime, getAccessTokenSignInKey());
     }
 
     public String generateRefreshToken(String username) {
-        return generateToken(new HashMap<>(), username, REFRESH_TOKEN_TIME, getRefreshTokenSignInKey());
+        return generateToken(username, refreshTokenTime, getRefreshTokenSignInKey());
     }
 
     public String extractAccessTokenUsername(String accessToken) {
         return extractClaim(accessToken, Claims::getSubject, getAccessTokenSignInKey());
-    }
-
-    public String extractRefreshTokenUsername(String refreshToken) {
-        return extractClaim(refreshToken, Claims::getSubject, getRefreshTokenSignInKey());
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver, Key key) {
@@ -51,33 +42,14 @@ public class JwtUtil {
         return claimsResolver.apply(claims);
     }
 
-    private String generateToken(Map<String, Object> extraClaims, String username, long expirationTime, Key key) {
+    private String generateToken(String username, long expirationTime, Key key) {
         return Jwts
                 .builder()
-                .setClaims(extraClaims)
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
-    }
-
-    public boolean isTokenExpired(String token) {
-        Claims claims = extractAllClaims(token, getAccessTokenSignInKey());
-        Date expirationDate = claims.getExpiration();
-        return expirationDate.before(new Date());
-    }
-
-    public LocalDateTime getGeneratedTime(String token) {
-        Claims claims = extractAllClaims(token, getAccessTokenSignInKey());
-        Date issuedAt = claims.getIssuedAt();
-        return LocalDateTime.ofInstant(issuedAt.toInstant(), ZoneId.systemDefault());
-    }
-
-    public String getTokenExpiredMessage(String token) {
-        Claims claims = extractAllClaims(token, getAccessTokenSignInKey());
-        Date expirationDate = claims.getExpiration();
-        return "JWT expired at " + expirationDate + ". Current time " + new Date();
     }
 
     private Claims extractAllClaims(String token, Key key) {
@@ -90,12 +62,10 @@ public class JwtUtil {
     }
 
     private Key getAccessTokenSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(ACCESS_TOKEN_SECRET_KEY);
-        return Keys.hmacShaKeyFor(keyBytes);
+        return Keys.hmacShaKeyFor(accessTokenSecretKey.getBytes());
     }
 
     private Key getRefreshTokenSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(REFRESH_TOKEN_SECRET_KEY);
-        return Keys.hmacShaKeyFor(keyBytes);
+        return Keys.hmacShaKeyFor(refreshTokenSecretKey.getBytes());
     }
 }

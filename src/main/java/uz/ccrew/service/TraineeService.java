@@ -14,7 +14,7 @@ public interface TraineeService extends BaseService<UserCredentials, TraineeCrea
 
     void deleteTraineeByUsername(String username);
 
-    List<TrainerDTO> updateTraineeTrainers(String username, List<String> newTrainers);
+    List<TrainerDTO> updateTraineeTrainers(List<UpdateTraineeTrainersDTO> trainersDTOList);
 
     TraineeProfileUsernameDTO update(TraineeUpdateDTO dto);
 

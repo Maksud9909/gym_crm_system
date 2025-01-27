@@ -53,11 +53,10 @@ public class TraineeController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/trainee/trainers")
+    @PatchMapping("/trainee/trainers")
     @Operation(summary = "Update Trainee's Trainer List")
-    public ResponseEntity<List<TrainerDTO>> updateTraineeTrainers(@RequestParam("username") String username,
-                                                                  @RequestBody List<String> trainers) {
-        List<TrainerDTO> result = traineeService.updateTraineeTrainers(username, trainers);
+    public ResponseEntity<List<TrainerDTO>> updateTraineeTrainers(@RequestBody List<UpdateTraineeTrainersDTO> trainersDTOList) {
+        List<TrainerDTO> result = traineeService.updateTraineeTrainers(trainersDTOList);
         return ResponseEntity.ok(result);
     }
 
