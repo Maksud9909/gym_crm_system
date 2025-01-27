@@ -1,10 +1,10 @@
 package uz.ccrew.dto.auth;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.NotBlank;
 
 @Getter

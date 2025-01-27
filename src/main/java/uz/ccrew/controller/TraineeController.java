@@ -48,7 +48,7 @@ public class TraineeController {
 
     @DeleteMapping("/delete/{username}")
     @Operation(summary = "Delete by username")
-    public ResponseEntity<Void> deleteTraineeByUsername(@PathVariable("username") String username) {
+    public ResponseEntity<?> deleteTraineeByUsername(@PathVariable("username") String username) {
         traineeService.deleteTraineeByUsername(username);
         return ResponseEntity.ok().build();
     }
@@ -62,7 +62,7 @@ public class TraineeController {
 
     @GetMapping("/{username}/trainings")
     @Operation(summary = "Get Trainee Trainings List")
-    public ResponseEntity<List<TraineeTrainingDTO>> getTrainerTrainings(@PathVariable("username") String username,
+    public ResponseEntity<List<TraineeTrainingDTO>> getTraineeTrainings(@PathVariable("username") String username,
                                                                         @RequestParam(name = "periodFrom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate periodFrom,
                                                                         @RequestParam(name = "periodTo", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate periodTo,
                                                                         @RequestParam(name = "trainerName", required = false) String trainerName,

@@ -29,7 +29,7 @@ public class UserController {
         return ResponseEntity.ok(jwtResponse);
     }
 
-    @PostMapping("/change-password")
+    @PatchMapping("/change-password")
     @Operation(summary = "Change password")
     public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordDTO dto) {
         userService.changePassword(dto);

@@ -1,27 +1,32 @@
 package uz.ccrew.service.impl;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import uz.ccrew.dao.TraineeDAO;
-import uz.ccrew.dao.UserDAO;
-import uz.ccrew.dto.trainee.TraineeCreateDTO;
-import uz.ccrew.dto.trainee.TraineeUpdateDTO;
-import uz.ccrew.dto.user.UserCredentials;
-import uz.ccrew.entity.Trainee;
-import uz.ccrew.entity.User;
-import uz.ccrew.exp.EntityNotFoundException;
+import uz.ccrew.dto.trainee.*;
+import uz.ccrew.dto.training.TrainingTrainerUpdateDTO;
+import uz.ccrew.entity.*;
 import uz.ccrew.utils.UserUtils;
+import uz.ccrew.dao.UserDAO;
+import uz.ccrew.dao.TraineeDAO;
+import uz.ccrew.dao.TrainerDAO;
+import uz.ccrew.dao.TrainingDAO;
+import uz.ccrew.dto.user.UserCredentials;
+import uz.ccrew.dto.trainer.TrainerDTO;
+import uz.ccrew.exp.EntityNotFoundException;
+import uz.ccrew.exp.TrainingNotAssociatedException;
 
+import org.mockito.Mock;
+import org.mockito.InjectMocks;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.List;
+import java.util.Optional;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class TraineeServiceImplTest {
@@ -34,6 +39,12 @@ class TraineeServiceImplTest {
 
     @Mock
     private UserUtils userUtils;
+
+    @Mock
+    private TrainerDAO trainerDAO;
+
+    @Mock
+    private TrainingDAO trainingDAO;
 
     @InjectMocks
     private TraineeServiceImpl traineeService;
@@ -128,4 +139,121 @@ class TraineeServiceImplTest {
         assertThrows(EntityNotFoundException.class, () -> traineeService.deleteTraineeByUsername("nonexistent_user"));
         verify(traineeDAO, never()).delete(anyLong());
     }
+
+    @Test
+    void updateTraineeTrainers_SuccessfulUpdate() {
+        UpdateTraineeTrainersDTO dto = UpdateTraineeTrainersDTO.builder()
+                .traineeUsername("validTrainee")
+                .trainingTrainers(List.of(TrainingTrainerUpdateDTO.builder()
+                        .trainingId(1L)
+                        .trainerUsername("validTrainer")
+                        .trainingName("Updated Training Name")
+                        .build()))
+                .build();
+
+        Trainee trainee = new Trainee();
+        Training training = new Training();
+        training.setId(1L);
+        trainee.setTraining(List.of(training));
+
+        Trainer trainer = new Trainer();
+        TrainingType trainingType = new TrainingType();
+        trainingType.setTrainingTypeName("Cardio");
+        trainer.setTrainingType(trainingType);
+        User trainerUser = new User();
+        trainerUser.setUsername("validTrainer");
+        trainerUser.setFirstName("John");
+        trainerUser.setLastName("Doe");
+        trainer.setUser(trainerUser);
+
+        when(traineeDAO.findByUsername("validTrainee")).thenReturn(Optional.of(trainee));
+        when(trainerDAO.findByUsername("validTrainer")).thenReturn(Optional.of(trainer));
+        when(trainingDAO.findById(1L)).thenReturn(Optional.of(training));
+
+        List<TrainerDTO> result = traineeService.updateTraineeTrainers(List.of(dto));
+
+        assertEquals(1, result.size());
+        TrainerDTO trainerDTO = result.get(0);
+        assertEquals("validTrainer", trainerDTO.getUsername());
+        assertEquals("John", trainerDTO.getFirstName());
+        assertEquals("Doe", trainerDTO.getLastName());
+        assertEquals("Cardio", trainerDTO.getTrainingTypeName());
+    }
+
+    @Test
+    void updateTraineeTrainers_ThrowsTrainingNotAssociatedException() {
+        UpdateTraineeTrainersDTO dto = UpdateTraineeTrainersDTO.builder()
+                .traineeUsername("trainee1")
+                .trainingTrainers(List.of(TrainingTrainerUpdateDTO.builder()
+                        .trainingId(1L)
+                        .trainerUsername("trainer1")
+                        .build()))
+                .build();
+        Trainee trainee = new Trainee();
+        trainee.setTraining(new ArrayList<>());
+        Training training = new Training();
+        training.setId(1L);
+        when(traineeDAO.findByUsername("trainee1")).thenReturn(Optional.of(trainee));
+        when(trainingDAO.findById(1L)).thenReturn(Optional.of(training));
+        TrainingNotAssociatedException exception = assertThrows(TrainingNotAssociatedException.class, () -> {
+            traineeService.updateTraineeTrainers(List.of(dto));
+        });
+        assertEquals("Training with ID=1 is not associated with Trainee=trainee1", exception.getMessage());
+    }
+
+
+    @Test
+    void getProfile() {
+        String username = "test_user";
+
+        when(traineeDAO.findByUsername(username)).thenReturn(Optional.of(trainee));
+
+        TraineeProfileDTO result = traineeService.getProfile(username);
+        assertEquals("Test", result.getFirstName());
+    }
+
+    @Test
+    void getTraineeTrainings() {
+        String username = "testUser";
+        LocalDate periodFrom = LocalDate.of(2023, 1, 1);
+        LocalDate periodTo = LocalDate.of(2023, 12, 31);
+        String trainerName = "John Doe";
+        String trainingTypeName = "Cardio";
+
+        User trainerUser = User.builder()
+                .firstName("John")
+                .build();
+
+        Trainer trainer = Trainer.builder()
+                .user(trainerUser)
+                .build();
+
+        TrainingType trainingType = TrainingType.builder()
+                .trainingTypeName("Cardio")
+                .build();
+
+        Training mockTraining = Training.builder()
+                .trainingName("Morning Cardio")
+                .trainingDate(LocalDate.of(2023, 5, 15))
+                .trainingDuration(1.5)
+                .trainer(trainer)
+                .trainingType(trainingType)
+                .build();
+
+        List<Training> mockTrainings = List.of(mockTraining);
+
+        when(trainingDAO.getTraineeTrainings(username, periodFrom, periodTo, trainerName, trainingTypeName))
+                .thenReturn(mockTrainings);
+
+        List<TraineeTrainingDTO> trainingDTOS = traineeService.getTraineeTrainings(username, periodFrom, periodTo, trainerName, trainingTypeName);
+
+        assertEquals(1, trainingDTOS.size());
+        TraineeTrainingDTO dto = trainingDTOS.get(0);
+        assertEquals("Morning Cardio", dto.getTrainingName());
+        assertEquals(LocalDate.of(2023, 5, 15), dto.getTrainingDate());
+        assertEquals("Cardio", dto.getTrainingType());
+        assertEquals(1.5, dto.getTrainingDuration());
+        assertEquals("John", dto.getTrainerName());
+    }
+
 }

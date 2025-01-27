@@ -2,6 +2,7 @@ package uz.ccrew.service.impl;
 
 import uz.ccrew.dao.TrainingDAO;
 import uz.ccrew.dto.trainee.*;
+import uz.ccrew.dto.training.TrainingTrainerUpdateDTO;
 import uz.ccrew.entity.*;
 import uz.ccrew.dao.UserDAO;
 import uz.ccrew.dao.TrainerDAO;
@@ -134,28 +135,44 @@ public class TraineeServiceImpl implements TraineeService {
         List<TrainerDTO> updatedTrainers = new ArrayList<>();
 
         for (UpdateTraineeTrainersDTO dto : trainersDTOList) {
-            Trainee trainee = traineeDAO.findByUsername(dto.getTraineeUsername()).orElseThrow(() -> new EntityNotFoundException("Trainee with username=" + dto.getTraineeUsername()));
-            Trainer trainer = trainerDAO.findByUsername(dto.getTrainerUsername()).orElseThrow(() -> new EntityNotFoundException("Trainer with username=" + dto.getTrainerUsername()));
-            Training training = trainingDAO.findById(dto.getTrainingId()).orElseThrow(() -> new EntityNotFoundException("Training with username=" + dto.getTrainerUsername() + " not found"));
+            // Найти Trainee по username
+            Trainee trainee = traineeDAO.findByUsername(dto.getTraineeUsername())
+                    .orElseThrow(() -> new EntityNotFoundException("Trainee with username=" + dto.getTraineeUsername() + " not found"));
 
-            if (!trainee.getTraining().contains(training)) {
-                throw new TrainingNotAssociatedException("Training with ID=" + dto.getTrainingId() + " is not associated with Trainee=" + dto.getTraineeUsername());
-            }
+            for (TrainingTrainerUpdateDTO trainingUpdate : dto.getTrainingTrainers()) {
+                // Найти Training по ID
+                Training training = trainingDAO.findById(trainingUpdate.getTrainingId())
+                        .orElseThrow(() -> new EntityNotFoundException("Training with ID=" + trainingUpdate.getTrainingId() + " not found"));
 
-            training.setTrainer(trainer);
-            if (!training.getTrainingType().equals(trainer.getTrainingType())) {
+                // Проверить, принадлежит ли Training этому Trainee
+                if (!trainee.getTraining().contains(training)) {
+                    throw new TrainingNotAssociatedException("Training with ID=" + trainingUpdate.getTrainingId() + " is not associated with Trainee=" + dto.getTraineeUsername());
+                }
+
+                // Найти Trainer по username
+                Trainer trainer = trainerDAO.findByUsername(trainingUpdate.getTrainerUsername())
+                        .orElseThrow(() -> new EntityNotFoundException("Trainer with username=" + trainingUpdate.getTrainerUsername() + " not found"));
+
+                // Обновить Trainer и TrainingType в Training
+                training.setTrainer(trainer);
                 training.setTrainingType(trainer.getTrainingType());
-                training.setTrainingName(trainer.getTrainingType().getTrainingTypeName());
+
+                // Обновить TrainingName, если передано новое имя
+                if (trainingUpdate.getTrainingName() != null) {
+                    training.setTrainingName(trainingUpdate.getTrainingName());
+                }
+
+                // Обновить запись Training в базе данных
+                trainingDAO.update(training);
+
+                // Добавить обновленного Trainer в список результата
+                updatedTrainers.add(TrainerDTO.builder()
+                        .username(trainer.getUser().getUsername())
+                        .firstName(trainer.getUser().getFirstName())
+                        .lastName(trainer.getUser().getLastName())
+                        .trainingTypeName(trainer.getTrainingType().getTrainingTypeName())
+                        .build());
             }
-
-            trainingDAO.update(training);
-
-            updatedTrainers.add(TrainerDTO.builder()
-                    .username(trainer.getUser().getUsername())
-                    .firstName(trainer.getUser().getFirstName())
-                    .lastName(trainer.getUser().getLastName())
-                    .trainingTypeName(trainer.getTrainingType().getTrainingTypeName())
-                    .build());
         }
 
         return updatedTrainers;

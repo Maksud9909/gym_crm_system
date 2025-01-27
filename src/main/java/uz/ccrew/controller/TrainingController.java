@@ -24,7 +24,7 @@ public class TrainingController {
 
     @PostMapping("/add")
     @Operation(summary = "Add Training")
-    public ResponseEntity<Void> addTraining(@Valid @RequestBody TrainingDTO dto) {
+    public ResponseEntity<?> addTraining(@Valid @RequestBody TrainingDTO dto) {
         trainingService.addTraining(dto);
         return ResponseEntity.ok().build();
     }
