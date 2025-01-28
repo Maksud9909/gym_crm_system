@@ -3,7 +3,7 @@ package uz.ccrew.dao.impl;
 import lombok.RequiredArgsConstructor;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.dao.TrainerDAO;
-import uz.ccrew.exp.EntityNotFoundException;
+import uz.ccrew.exp.exp.EntityNotFoundException;
 
 import lombok.Getter;
 import org.hibernate.Session;

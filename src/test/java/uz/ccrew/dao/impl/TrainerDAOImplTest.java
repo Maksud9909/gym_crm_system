@@ -11,7 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.entity.User;
-import uz.ccrew.exp.EntityNotFoundException;
+import uz.ccrew.exp.exp.EntityNotFoundException;
 
 import java.util.List;
 import java.util.Optional;

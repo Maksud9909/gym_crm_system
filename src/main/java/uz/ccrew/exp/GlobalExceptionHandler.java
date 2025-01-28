@@ -6,6 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import uz.ccrew.exp.exp.EntityNotFoundException;
+import uz.ccrew.exp.exp.TrainingNotAssociatedException;
+import uz.ccrew.exp.exp.UnauthorizedException;
 
 @Slf4j
 @ControllerAdvice

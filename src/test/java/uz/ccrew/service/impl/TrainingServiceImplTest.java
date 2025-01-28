@@ -14,7 +14,7 @@ import uz.ccrew.entity.Trainee;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.entity.Training;
 import uz.ccrew.entity.TrainingType;
-import uz.ccrew.exp.EntityNotFoundException;
+import uz.ccrew.exp.exp.EntityNotFoundException;
 
 import java.time.LocalDate;
 import java.util.Optional;

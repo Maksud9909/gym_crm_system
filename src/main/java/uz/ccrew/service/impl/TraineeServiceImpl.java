@@ -7,12 +7,12 @@ import uz.ccrew.entity.*;
 import uz.ccrew.dao.UserDAO;
 import uz.ccrew.dao.TrainerDAO;
 import uz.ccrew.dao.TraineeDAO;
-import uz.ccrew.exp.TrainingNotAssociatedException;
+import uz.ccrew.exp.exp.TrainingNotAssociatedException;
 import uz.ccrew.utils.UserUtils;
 import uz.ccrew.dto.trainer.TrainerDTO;
 import uz.ccrew.service.TraineeService;
 import uz.ccrew.dto.user.UserCredentials;
-import uz.ccrew.exp.EntityNotFoundException;
+import uz.ccrew.exp.exp.EntityNotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service

@@ -9,7 +9,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uz.ccrew.dao.TrainerDAO;
 import uz.ccrew.dao.TrainingDAO;
 import uz.ccrew.dao.TrainingTypeDAO;
-import uz.ccrew.dao.UserDAO;
 import uz.ccrew.dto.trainee.TraineeShortDTO;
 import uz.ccrew.dto.trainer.*;
 import uz.ccrew.dto.user.UserCredentials;
@@ -18,7 +17,7 @@ import uz.ccrew.entity.Trainer;
 import uz.ccrew.entity.Training;
 import uz.ccrew.entity.TrainingType;
 import uz.ccrew.entity.User;
-import uz.ccrew.exp.EntityNotFoundException;
+import uz.ccrew.exp.exp.EntityNotFoundException;
 import uz.ccrew.utils.UserUtils;
 
 import java.time.LocalDate;

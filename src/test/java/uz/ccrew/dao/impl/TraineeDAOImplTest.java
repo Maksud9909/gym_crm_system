@@ -2,9 +2,7 @@ package uz.ccrew.dao.impl;
 
 import uz.ccrew.entity.User;
 import uz.ccrew.entity.Trainee;
-import uz.ccrew.entity.Trainer;
-import uz.ccrew.entity.Training;
-import uz.ccrew.exp.EntityNotFoundException;
+import uz.ccrew.exp.exp.EntityNotFoundException;
 
 import org.mockito.Mock;
 import org.mockito.InjectMocks;

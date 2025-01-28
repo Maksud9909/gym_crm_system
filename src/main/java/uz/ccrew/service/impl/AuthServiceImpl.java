@@ -3,7 +3,7 @@ package uz.ccrew.service.impl;
 import org.springframework.transaction.annotation.Transactional;
 import uz.ccrew.dao.UserDAO;
 import uz.ccrew.utils.JwtUtil;
-import uz.ccrew.exp.UnauthorizedException;
+import uz.ccrew.exp.exp.UnauthorizedException;
 import uz.ccrew.service.AuthService;
 import uz.ccrew.dto.auth.JwtResponse;
 import uz.ccrew.dto.user.UserCredentials;

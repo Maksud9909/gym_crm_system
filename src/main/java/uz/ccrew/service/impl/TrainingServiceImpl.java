@@ -8,7 +8,7 @@ import uz.ccrew.dao.TrainingDAO;
 import uz.ccrew.entity.Training;
 import uz.ccrew.service.TrainingService;
 import uz.ccrew.dto.training.TrainingDTO;
-import uz.ccrew.exp.EntityNotFoundException;
+import uz.ccrew.exp.exp.EntityNotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;

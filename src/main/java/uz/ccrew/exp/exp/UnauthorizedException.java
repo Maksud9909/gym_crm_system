@@ -1,4 +1,4 @@
-package uz.ccrew.exp;
+package uz.ccrew.exp.exp;
 
 public class UnauthorizedException extends RuntimeException {
     public UnauthorizedException(String message) {

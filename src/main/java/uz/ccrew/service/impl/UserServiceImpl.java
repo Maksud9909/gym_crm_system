@@ -4,7 +4,7 @@ import uz.ccrew.entity.User;
 import uz.ccrew.dao.UserDAO;
 import uz.ccrew.service.UserService;
 import uz.ccrew.dto.auth.ChangePasswordDTO;
-import uz.ccrew.exp.EntityNotFoundException;
+import uz.ccrew.exp.exp.EntityNotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;

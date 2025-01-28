@@ -9,7 +9,7 @@ import uz.ccrew.dao.UserDAO;
 import uz.ccrew.dto.auth.JwtResponse;
 import uz.ccrew.dto.user.UserCredentials;
 import uz.ccrew.entity.User;
-import uz.ccrew.exp.UnauthorizedException;
+import uz.ccrew.exp.exp.UnauthorizedException;
 import uz.ccrew.utils.JwtUtil;
 
 import java.util.Optional;
