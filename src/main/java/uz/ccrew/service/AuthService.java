@@ -1,7 +1,8 @@
 package uz.ccrew.service;
 
-import uz.ccrew.dto.UserCredentials;
+import uz.ccrew.dto.auth.JwtResponse;
+import uz.ccrew.dto.user.UserCredentials;
 
 public interface AuthService {
-    void verifyUserCredentials(UserCredentials credentials);
+    JwtResponse login(UserCredentials userCredentials);
 }

@@ -1,13 +1,11 @@
 package uz.ccrew.service.base;
 
-import uz.ccrew.dto.UserCredentials;
+import uz.ccrew.dto.user.UserCredentials;
 
 import java.util.List;
 
-public interface BaseService<T> {
-    Long create(T entity);
+public interface BaseService<U, C, P> {
+    U create(C entity);
 
-    T findById(Long id, UserCredentials userCredentials);
-
-    List<T> findAll(UserCredentials userCredentials);
+    P getProfile(String username);
 }

@@ -1,8 +1,9 @@
 package uz.ccrew.service;
 
-import uz.ccrew.dto.UserCredentials;
-import uz.ccrew.entity.TrainingType;
+import uz.ccrew.dto.trainingType.TrainingTypeIdDTO;
+
+import java.util.List;
 
 public interface TrainingTypeService {
-    TrainingType findById(Long id, UserCredentials userCredentials);
+    List<TrainingTypeIdDTO> findAll();
 }

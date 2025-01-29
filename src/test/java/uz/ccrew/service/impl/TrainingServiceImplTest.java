@@ -3,92 +3,112 @@ package uz.ccrew.service.impl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
-import uz.ccrew.config.TestAppConfig;
-import uz.ccrew.config.TestDataSourceConfig;
-import uz.ccrew.config.TestHibernateConfig;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import uz.ccrew.dao.TraineeDAO;
 import uz.ccrew.dao.TrainerDAO;
-import uz.ccrew.dao.TrainingTypeDAO;
-import uz.ccrew.dto.UserCredentials;
+import uz.ccrew.dao.TrainingDAO;
+import uz.ccrew.dto.training.TrainingDTO;
 import uz.ccrew.entity.Trainee;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.entity.Training;
 import uz.ccrew.entity.TrainingType;
-import uz.ccrew.service.TrainingService;
+import uz.ccrew.exp.exp.EntityNotFoundException;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {
-        TestAppConfig.class,
-        TestDataSourceConfig.class,
-        TestHibernateConfig.class
-})
-@Transactional
-@Sql(scripts = "/training-data.sql")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@ExtendWith(MockitoExtension.class)
 class TrainingServiceImplTest {
-    private Training training;
-    private UserCredentials userCredentials;
 
-    @Autowired
-    private TrainerDAO trainerDAO;
-
-    @Autowired
+    @Mock
     private TraineeDAO traineeDAO;
 
-    @Autowired
-    private TrainingTypeDAO trainingTypeDAO;
+    @Mock
+    private TrainerDAO trainerDAO;
 
-    @Autowired
-    private TrainingService trainingService;
+    @Mock
+    private TrainingDAO trainingDAO;
+
+    @InjectMocks
+    private TrainingServiceImpl trainingService;
+
+    private Trainee trainee;
+    private Trainer trainer;
+    private TrainingType trainingType;
 
     @BeforeEach
     void setUp() {
-        userCredentials = new UserCredentials("admin1.admin1", "123");
-        Trainee trainee = traineeDAO.findById(1L).get();
-        Trainer trainer = trainerDAO.findById(1L).get();
-        TrainingType trainingType = trainingTypeDAO.findById(1L).get();
-        training = buildTraining(trainee, trainer, trainingType);
-    }
+        trainingType = new TrainingType();
+        trainingType.setTrainingTypeName("Yoga");
+        trainingType.setId(1L);
 
-    @Test
-    void create() {
-        Long id = trainingService.create(training);
-        assertNotNull(id);
-    }
+        trainee = Trainee.builder()
+                .id(1L)
+                .address("123 Main St")
+                .user(null)
+                .training(null)
+                .build();
 
-    @Test
-    void findById() {
-        Long id = trainingService.create(training);
-        Training foundTraining = trainingService.findById(1L, userCredentials);
-        assertNotNull(foundTraining);
-    }
-
-    @Test
-    void findAll() {
-        trainingService.create(training);
-        List<Training> trainingList = trainingService.findAll(userCredentials);
-        assertEquals(trainingList.size(), 1);
-    }
-
-    private static Training buildTraining(Trainee trainee, Trainer trainer, TrainingType trainingType) {
-        return Training.builder()
-                .trainingDuration(30.0)
-                .trainingName("Training Test Name")
-                .trainingDate(LocalDate.now())
-                .trainee(trainee)
-                .trainer(trainer)
+        trainer = Trainer.builder()
+                .id(1L)
+                .user(null)
                 .trainingType(trainingType)
                 .build();
+    }
+
+    @Test
+    void addTraining_ShouldCreateTraining_WhenValidDataProvided() {
+        when(traineeDAO.findByUsername("trainee_user")).thenReturn(Optional.of(trainee));
+        when(trainerDAO.findByUsername("trainer_user")).thenReturn(Optional.of(trainer));
+
+        TrainingDTO dto = TrainingDTO.builder()
+                .traineeUsername("trainee_user")
+                .trainerUsername("trainer_user")
+                .trainingName("Morning Yoga")
+                .trainingDate(LocalDate.now())
+                .trainingDuration(2.0)
+                .build();
+
+        trainingService.addTraining(dto);
+
+        verify(trainingDAO, times(1)).create(any(Training.class));
+    }
+
+    @Test
+    void addTraining_ShouldThrowException_WhenTraineeNotFound() {
+        when(traineeDAO.findByUsername("nonexistent_trainee")).thenReturn(Optional.empty());
+
+        TrainingDTO dto = TrainingDTO.builder()
+                .traineeUsername("nonexistent_trainee")
+                .trainerUsername("trainer_user")
+                .trainingName("Morning Yoga")
+                .trainingDate(LocalDate.now())
+                .trainingDuration(2.0)
+                .build();
+
+        assertThrows(EntityNotFoundException.class, () -> trainingService.addTraining(dto));
+        verify(trainingDAO, never()).create(any(Training.class));
+    }
+
+    @Test
+    void addTraining_ShouldThrowException_WhenTrainerNotFound() {
+        when(traineeDAO.findByUsername("trainee_user")).thenReturn(Optional.of(trainee));
+        when(trainerDAO.findByUsername("nonexistent_trainer")).thenReturn(Optional.empty());
+
+        TrainingDTO dto = TrainingDTO.builder()
+                .traineeUsername("trainee_user")
+                .trainerUsername("nonexistent_trainer")
+                .trainingName("Morning Yoga")
+                .trainingDate(LocalDate.now())
+                .trainingDuration(2.0)
+                .build();
+
+        assertThrows(EntityNotFoundException.class, () -> trainingService.addTraining(dto));
+        verify(trainingDAO, never()).create(any(Training.class));
     }
 }

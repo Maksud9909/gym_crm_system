@@ -1,228 +1,158 @@
 package uz.ccrew.service.impl;
 
+import lombok.RequiredArgsConstructor;
+import uz.ccrew.dao.TrainingDAO;
 import uz.ccrew.dao.UserDAO;
-import uz.ccrew.dto.UserCredentials;
-import uz.ccrew.entity.User;
+import uz.ccrew.dto.trainer.TrainerUpdateDTO;
+import uz.ccrew.dto.trainee.TraineeShortDTO;
+import uz.ccrew.dto.trainer.*;
+import uz.ccrew.dto.trainer.TrainerTrainingDTO;
+import uz.ccrew.dto.user.UserCredentials;
+import uz.ccrew.entity.*;
 import uz.ccrew.dao.TrainerDAO;
-import uz.ccrew.entity.Trainer;
-import uz.ccrew.service.AuthService;
 import uz.ccrew.utils.UserUtils;
 import uz.ccrew.dao.TrainingTypeDAO;
-import uz.ccrew.entity.TrainingType;
 import uz.ccrew.service.TrainerService;
-import uz.ccrew.exp.EntityNotFoundException;
+import uz.ccrew.exp.exp.EntityNotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class TrainerServiceImpl implements TrainerService {
     private final UserDAO userDAO;
     private final UserUtils userUtils;
     private final TrainerDAO trainerDAO;
+    private final TrainingDAO trainingDAO;
     private final TrainingTypeDAO trainingTypeDAO;
-    private final AuthService authService;
-
-    @Autowired
-    public TrainerServiceImpl(UserDAO userDAO, TrainerDAO trainerDAO, UserUtils userUtils, TrainingTypeDAO trainingTypeDAO, AuthService authService) {
-        this.userDAO = userDAO;
-        this.trainerDAO = trainerDAO;
-        this.userUtils = userUtils;
-        this.trainingTypeDAO = trainingTypeDAO;
-        this.authService = authService;
-        log.debug("TrainerService initialized");
-    }
 
     @Override
     @Transactional
-    public Long create(Trainer trainer) {
-        if (trainer == null) {
+    public UserCredentials create(TrainerCreateDTO dto) {
+        if (dto == null) {
             log.error("Cannot create a null trainer");
             throw new IllegalArgumentException("Trainer cannot be null");
         }
 
-        if (trainer.getUser() == null) {
-            log.error("Cannot create Trainer without User");
-            throw new IllegalArgumentException("Associated User cannot be null");
-        }
-
-        User user = trainer.getUser();
-        if (user.getFirstName() == null || user.getFirstName().trim().isEmpty()) {
-            log.error("User firstName is required");
-            throw new IllegalArgumentException("User firstName cannot be empty");
-        }
-        if (user.getLastName() == null || user.getLastName().trim().isEmpty()) {
-            log.error("User lastName is required");
-            throw new IllegalArgumentException("User lastName cannot be empty");
-        }
-
-        String username = userUtils.generateUniqueUsername(trainer.getUser().getFirstName(), trainer.getUser().getLastName());
+        String username = userUtils.generateUniqueUsername(dto.getFirstName(), dto.getLastName());
         String password = userUtils.generateRandomPassword();
 
         User newUser = User.builder()
                 .username(username)
                 .password(password)
-                .firstName(trainer.getUser().getFirstName())
-                .lastName(trainer.getUser().getLastName())
+                .firstName(dto.getFirstName())
+                .lastName(dto.getLastName())
                 .isActive(Boolean.TRUE)
                 .build();
+        TrainingType trainingType = trainingTypeDAO.findByName(dto.getTrainingTypeName()).orElseThrow(
+                () -> new EntityNotFoundException("Training type not found with name: " + dto.getTrainingTypeName()));
 
-        userDAO.create(newUser);
+        Trainer trainer = Trainer.builder()
+                .trainingType(trainingType)
+                .user(newUser)
+                .build();
 
-        trainer.setUser(newUser);
-        Optional<TrainingType> trainingType = trainingTypeDAO.findById(trainer.getTrainingType().getId());
-        trainingType.ifPresent(trainer::setTrainingType);
-        Long id = trainerDAO.create(trainer);
-        log.info("Trainer created: {}", trainer);
-        return id;
-    }
-
-    @Override
-    @Transactional
-    public void update(Trainer trainer, UserCredentials userCredentials) {
-        authService.verifyUserCredentials(userCredentials);
-
-        if (trainer == null || trainer.getId() == null) {
-            log.error("Trainer or Trainer ID is null");
-            throw new IllegalArgumentException("Trainer and Trainer ID must not be null");
-        }
-
-        Trainer existingTrainer = trainerDAO.findById(trainer.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Trainer with id=" + trainer.getId() + " not found"));
-
-        User existingUser = existingTrainer.getUser();
-        if (existingUser == null) {
-            log.error("Associated User not found for Trainer with id {}", trainer.getId());
-            throw new IllegalArgumentException("User with id=" + trainer.getId() + " not found");
-        }
-
-
-        if (trainer.getUser() != null) {
-            validateAndUpdateUser(existingUser, trainer.getUser());
-        }
-
-        if (trainer.getTrainingType() != null) {
-            existingTrainer.setTrainingType(trainer.getTrainingType());
-        }
-        trainerDAO.update(existingTrainer);
-        log.info("Updated trainer with ID={}", trainer.getId());
-    }
-
-
-    @Override
-    @Transactional(readOnly = true)
-    public Trainer findById(Long id, UserCredentials userCredentials) {
-        authService.verifyUserCredentials(userCredentials);
-        log.info("Fetching trainer for id={}", id);
-        return trainerDAO.findById(id).orElseThrow(() -> new EntityNotFoundException("Trainer with id=" + id + " not found"));
+        trainerDAO.create(trainer);
+        log.info("Trainer created: {}", dto);
+        return UserCredentials.builder()
+                .username(username)
+                .password(password)
+                .build();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Trainer findByUsername(String username, UserCredentials userCredentials) {
-        authService.verifyUserCredentials(userCredentials);
-        log.info("Fetching trainer for username={}", username);
-        Trainer trainer = trainerDAO.findByUsername(username)
-                .orElseThrow(() -> {
-                    log.warn("Trainer with username={} not found", username);
-                    return new EntityNotFoundException(username);
-                });
-        log.info("Found trainer: {}", trainer);
-        return trainer;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Trainer> findAll(UserCredentials userCredentials) {
-        authService.verifyUserCredentials(userCredentials);
-        log.info("Fetching all trainers");
-        return trainerDAO.findAll();
-    }
-
-    @Override
-    @Transactional
-    public void delete(Long id, UserCredentials userCredentials) {
-        authService.verifyUserCredentials(userCredentials);
-        log.info("Deleting trainer={}", id);
-        trainerDAO.delete(id);
-    }
-
-    @Override
-    @Transactional
-    public void changePassword(Long id, String newPassword, UserCredentials userCredentials) {
-        authService.verifyUserCredentials(userCredentials);
-        log.info("Changing password for trainer={}", id);
-        trainerDAO.changePassword(id, newPassword);
-    }
-
-    @Override
-    @Transactional
-    public void activateDeactivate(Long id, Boolean isActive, UserCredentials userCredentials) {
-        authService.verifyUserCredentials(userCredentials);
-        log.info("Activating/deactivating trainer={}", id);
-        User user = userDAO.findById(id);
-        if (user.getIsActive().equals(isActive)) {
-            log.warn("Trainer with ID={} is already in the desired state (isActive={})", id, isActive);
-            return;
-        }
-        trainerDAO.activateDeactivate(id, isActive);
-        log.info("Trainer with ID={} is now isActive={}", id, isActive);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Trainer> getUnassignedTrainers(String traineeUsername, UserCredentials userCredentials) {
-        authService.verifyUserCredentials(userCredentials);
+    public List<TrainerDTO> getUnassignedTrainers(String traineeUsername) {
         log.info("Fetching unassigned trainers for Trainee username={}", traineeUsername);
-        return trainerDAO.getUnassignedTrainers(traineeUsername);
+        List<Trainer> trainers = trainerDAO.getUnassignedTrainers(traineeUsername);
+
+        return trainers.stream()
+                .map(trainer -> TrainerDTO.builder()
+                        .username(trainer.getUser().getUsername())
+                        .firstName(trainer.getUser().getFirstName())
+                        .lastName(trainer.getUser().getLastName())
+                        .trainingTypeName(trainer.getTrainingType().getTrainingTypeName())
+                        .build())
+                .toList();
     }
 
-    private void validateAndUpdateUser(User existingUser, User newUserData) {
-        if (newUserData.getFirstName() != null) {
-            if (newUserData.getFirstName().trim().isEmpty()) {
-                log.error("First name cannot be empty");
-                throw new IllegalArgumentException("First name cannot be empty");
-            }
-            existingUser.setFirstName(newUserData.getFirstName().trim());
-        }
 
-        if (newUserData.getLastName() != null) {
-            if (newUserData.getLastName().trim().isEmpty()) {
-                log.error("Last name cannot be empty");
-                throw new IllegalArgumentException("Last name cannot be empty");
-            }
-            existingUser.setLastName(newUserData.getLastName().trim());
-        }
+    @Override
+    @Transactional(readOnly = true)
+    public TrainerProfileDTO getProfile(String username) {
+        Trainer trainer = trainerDAO.findByUsername(username).orElseThrow(() ->
+                new EntityNotFoundException("Trainer with username=" + username + " not found"));
+        List<TraineeShortDTO> traineeShortDTOS = trainer.getTraining().stream()
+                .map(training -> {
+                    Trainee trainee = training.getTrainee();
+                    return TraineeShortDTO.builder()
+                            .username(trainee.getUser().getUsername())
+                            .firstName(trainee.getUser().getFirstName())
+                            .lastName(trainee.getUser().getLastName())
+                            .build();
+                })
+                .toList();
+        return TrainerProfileDTO.builder()
+                .firstName(trainer.getUser().getFirstName())
+                .lastName(trainer.getUser().getLastName())
+                .trainingTypeName(trainer.getTrainingType().getTrainingTypeName())
+                .traineeShortDTOS(traineeShortDTOS)
+                .isActive(trainer.getUser().getIsActive())
+                .build();
+    }
 
-        if (newUserData.getUsername() != null) {
-            if (newUserData.getUsername().trim().isEmpty()) {
-                log.error("Username cannot be empty");
-                throw new IllegalArgumentException("Username cannot be empty");
-            }
-            if (!existingUser.getUsername().equals(newUserData.getUsername().trim()) &&
-                userDAO.isUsernameExists(newUserData.getUsername().trim())) {
-                log.error("Username {} already exists", newUserData.getUsername());
-                throw new IllegalArgumentException("Username already exists");
-            }
-            existingUser.setUsername(newUserData.getUsername().trim());
-        }
+    @Override
+    @Transactional
+    public TrainerProfileUsernameDTO update(TrainerUpdateDTO dto) {
+        Trainer trainer = trainerDAO.findByUsername(dto.getUsername()).orElseThrow(
+                () -> new EntityNotFoundException("Trainer with username=" + dto.getUsername() + " not found")
+        );
+        trainer.getUser().setFirstName(dto.getFirstName());
+        trainer.getUser().setLastName(dto.getLastName());
+        trainer.getUser().setIsActive(dto.getIsActive());
 
-        if (newUserData.getPassword() != null) {
-            if (newUserData.getPassword().trim().isEmpty()) {
-                log.error("Password cannot be empty");
-                throw new IllegalArgumentException("Password cannot be empty");
-            }
-            existingUser.setPassword(newUserData.getPassword());
-        }
+        trainerDAO.update(trainer);
 
-        if (newUserData.getIsActive() != null) {
-            existingUser.setIsActive(newUserData.getIsActive());
-        }
+        List<TraineeShortDTO> traineeShortDTOS = trainer.getTraining().stream()
+                .map(training -> {
+                    Trainee trainee = training.getTrainee();
+                    return TraineeShortDTO.builder()
+                            .username(trainee.getUser().getUsername())
+                            .firstName(trainee.getUser().getFirstName())
+                            .lastName(trainee.getUser().getLastName())
+                            .build();
+                })
+                .toList();
+
+        return TrainerProfileUsernameDTO.builder()
+                .username(dto.getUsername())
+                .firstName(trainer.getUser().getFirstName())
+                .lastName(trainer.getUser().getLastName())
+                .trainingTypeName(trainer.getTrainingType().getTrainingTypeName())
+                .isActive(trainer.getUser().getIsActive())
+                .traineeShortDTOS(traineeShortDTOS)
+                .build();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TrainerTrainingDTO> getTrainerTrainings(String username, LocalDate fromDate, LocalDate toDate, String traineeName) {
+        List<Training> trainings = trainingDAO.getTrainerTrainings(username, fromDate, toDate, traineeName);
+        return trainings.stream().map(training -> {
+            Trainee trainee = training.getTrainee();
+            return TrainerTrainingDTO.builder()
+                    .trainingName(training.getTrainingName())
+                    .trainingDate(training.getTrainingDate())
+                    .trainingType(training.getTrainingType().getTrainingTypeName())
+                    .trainingDuration(training.getTrainingDuration())
+                    .traineeName(trainee.getUser().getFirstName())
+                    .build();
+        }).toList();
     }
 }

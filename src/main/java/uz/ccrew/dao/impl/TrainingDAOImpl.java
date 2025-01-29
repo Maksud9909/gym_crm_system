@@ -9,37 +9,20 @@ import org.hibernate.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.query.Query;
 import org.hibernate.SessionFactory;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
-import java.util.Optional;
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Slf4j
 @Getter
 @Repository
+@RequiredArgsConstructor
 public class TrainingDAOImpl implements TrainingDAO {
     private final SessionFactory sessionFactory;
     private static final String HQL_QUERY_LOG = "Generated HQL Query: {}";
-    private static final String FIND_ALL = """
-            SELECT t FROM Training t JOIN FETCH t.trainee
-            JOIN FETCH t.trainer
-            JOIN FETCH t.trainingType
-            """;
-    private static final String FIND_BY_ID = """
-            SELECT t FROM Training t
-            JOIN FETCH t.trainee
-            JOIN FETCH t.trainer
-            JOIN FETCH t.trainingType
-            WHERE t.id = :id
-            """;
-
-    @Autowired
-    public TrainingDAOImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-        log.debug("TrainingDAO instantiated");
-    }
 
     @Override
     public Long create(Training training) {
@@ -51,29 +34,14 @@ public class TrainingDAOImpl implements TrainingDAO {
     }
 
     @Override
-    public Optional<Training> findById(Long id) {
-        Session session = getSessionFactory().getCurrentSession();
-        return session.createQuery(FIND_BY_ID, Training.class)
-                .setParameter("id", id)
-                .uniqueResultOptional();
-    }
-
-    @Override
-    public List<Training> findAll() {
-        Session session = getSessionFactory().getCurrentSession();
-        return session.createQuery(FIND_ALL, Training.class)
-                .getResultList();
-    }
-
-    @Override
     public List<Training> getTraineeTrainings(String username,
                                               LocalDate fromDate,
                                               LocalDate toDate,
                                               String trainerName,
-                                              Long trainingTypeId) {
+                                              String trainingTypeName) {
         Session session = getSessionFactory().getCurrentSession();
         Query<Training> query = QueryBuilder.buildAndSetTraineeTrainingsQuery(session, username, fromDate,
-                toDate, trainerName, trainingTypeId);
+                toDate, trainerName, trainingTypeName);
         log.debug(HQL_QUERY_LOG, query);
         return query.getResultList();
     }
@@ -89,5 +57,18 @@ public class TrainingDAOImpl implements TrainingDAO {
                 toDate, traineeName);
         log.debug(HQL_QUERY_LOG, query);
         return query.getResultList();
+    }
+
+    @Override
+    public Optional<Training> findById(Long id) {
+        Session session = getSessionFactory().getCurrentSession();
+        Training training = session.get(Training.class, id);
+        return Optional.ofNullable(training);
+    }
+
+    @Override
+    public void update(Training training) {
+        Session session = getSessionFactory().getCurrentSession();
+        session.merge(training);
     }
 }
