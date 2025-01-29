@@ -167,7 +167,7 @@ class TraineeServiceImplTest {
         when(trainerDAO.findByUsername("validTrainer")).thenReturn(Optional.of(trainer));
         when(trainingDAO.findById(1L)).thenReturn(Optional.of(training));
 
-        List<TrainerDTO> result = traineeService.updateTraineeTrainers(List.of(dto));
+        List<TrainerDTO> result = traineeService.updateTraineeTrainers(dto);
 
         assertEquals(1, result.size());
         TrainerDTO trainerDTO = result.get(0);
@@ -193,7 +193,7 @@ class TraineeServiceImplTest {
         when(traineeDAO.findByUsername("trainee1")).thenReturn(Optional.of(trainee));
         when(trainingDAO.findById(1L)).thenReturn(Optional.of(training));
         TrainingNotAssociatedException exception = assertThrows(TrainingNotAssociatedException.class, () -> {
-            traineeService.updateTraineeTrainers(List.of(dto));
+            traineeService.updateTraineeTrainers(dto);
         });
         assertEquals("Training with ID=1 is not associated with Trainee=trainee1", exception.getMessage());
     }

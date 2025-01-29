@@ -91,12 +91,10 @@ public class TraineeControllerTest {
 
     @Test
     void updateTraineeTrainers() {
-        List<UpdateTraineeTrainersDTO> updateTraineeTrainersDTOList = Collections.singletonList(
+        UpdateTraineeTrainersDTO updateTraineeTrainersDTOList =
                 UpdateTraineeTrainersDTO.builder()
                         .traineeUsername("Test1")
-//                        .trainerUsername("Test2")
-                        .build()
-        );
+                        .build();
 
         List<TrainerDTO> trainerDTOList = Collections.singletonList(
                 TrainerDTO.builder()
