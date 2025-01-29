@@ -9,7 +9,7 @@ import java.sql.Connection;
 import javax.sql.DataSource;
 
 @Component
-public class CustomHealthIndicator implements HealthIndicator {
+public class DBHealthIndicator implements HealthIndicator {
 
     @Autowired
     private DataSource dataSource;
