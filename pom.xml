@@ -17,7 +17,6 @@
         <spring.version>6.1.1</spring.version>
         <spring-boot.version>3.3.2</spring-boot.version>
         <jakarta.annotation.version>2.1.1</jakarta.annotation.version>
-        <jakarta.servlet.version>5.0.0</jakarta.servlet.version>
         <jetbrains.annotations.version>24.1.0</jetbrains.annotations.version>
         <junit.jupiter.version>5.11.3</junit.jupiter.version>
         <lombok.version>1.18.36</lombok.version>
@@ -36,6 +35,7 @@
         <jackson.version>2.15.2</jackson.version>
         <mockito.version>5.2.0</mockito.version>
         <maven.compiler.plugin.version>3.10.1</maven.compiler.plugin.version>
+        <prometheus.version>1.14.3</prometheus.version>
     </properties>
 
     <dependencies>
@@ -107,13 +107,6 @@
         </dependency>
 
         <dependency>
-            <groupId>jakarta.servlet</groupId>
-            <artifactId>jakarta.servlet-api</artifactId>
-            <version>${jakarta.servlet.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>${jetbrains.annotations.version}</version>
@@ -150,12 +143,6 @@
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
             <version>${hibernate.validator.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>jakarta.el</groupId>
-            <artifactId>jakarta.el-api</artifactId>
-            <version>${jakarta.el.version}</version>
         </dependency>
 
         <dependency>
@@ -209,6 +196,12 @@
             <artifactId>jjwt-jackson</artifactId>
             <version>${jjwt.api.version}</version>
             <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <version>${prometheus.version}</version>
         </dependency>
     </dependencies>
 

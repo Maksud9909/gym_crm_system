@@ -32,9 +32,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class TraineeServiceImplTest {
 
     @Mock
-    private UserDAO userDAO;
-
-    @Mock
     private TraineeDAO traineeDAO;
 
     @Mock
