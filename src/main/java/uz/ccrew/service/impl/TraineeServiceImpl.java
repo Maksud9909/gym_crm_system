@@ -94,7 +94,7 @@ public class TraineeServiceImpl implements TraineeService {
                 .datOfBirth(trainee.getDateOfBirth())
                 .address(trainee.getAddress())
                 .isActive(trainee.getUser().getIsActive())
-                .trainerDTOS(trainerDTOS)
+                .trainers(trainerDTOS)
                 .build();
     }
 
@@ -201,7 +201,7 @@ public class TraineeServiceImpl implements TraineeService {
                 .datOfBirth(trainee.getDateOfBirth())
                 .address(trainee.getAddress())
                 .isActive(trainee.getUser().getIsActive())
-                .trainerDTOS(trainerDTOS)
+                .trainers(trainerDTOS)
                 .build();
     }
 }

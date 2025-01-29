@@ -16,5 +16,5 @@ public class TraineeProfileDTO {
     private LocalDate datOfBirth;
     private String address;
     private Boolean isActive;
-    List<TrainerDTO> trainerDTOS;
+    List<TrainerDTO> trainers;
 }

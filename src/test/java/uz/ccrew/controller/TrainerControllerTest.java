@@ -59,7 +59,7 @@ public class TrainerControllerTest {
                 .lastName("Doe")
                 .trainingTypeName("Cardio")
                 .isActive(true)
-                .traineeShortDTOS(Arrays.asList(
+                .trainees(Arrays.asList(
                         new TraineeShortDTO("trainee1", "Jane", "Smith"),
                         new TraineeShortDTO("trainee2", "Mark", "Brown")
                 ))

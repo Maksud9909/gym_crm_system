@@ -1,5 +1,6 @@
 package uz.ccrew.dto.trainee;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,5 +21,5 @@ public class TraineeProfileUsernameDTO {
     private LocalDate datOfBirth;
     private String address;
     private Boolean isActive;
-    List<TrainerDTO> trainerDTOS;
+    List<TrainerDTO> trainers;
 }

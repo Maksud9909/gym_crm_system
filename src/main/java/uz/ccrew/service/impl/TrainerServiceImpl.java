@@ -102,7 +102,7 @@ public class TrainerServiceImpl implements TrainerService {
                 .firstName(trainer.getUser().getFirstName())
                 .lastName(trainer.getUser().getLastName())
                 .trainingTypeName(trainer.getTrainingType().getTrainingTypeName())
-                .traineeShortDTOS(traineeShortDTOS)
+                .trainees(traineeShortDTOS)
                 .isActive(trainer.getUser().getIsActive())
                 .build();
     }
@@ -136,7 +136,7 @@ public class TrainerServiceImpl implements TrainerService {
                 .lastName(trainer.getUser().getLastName())
                 .trainingTypeName(trainer.getTrainingType().getTrainingTypeName())
                 .isActive(trainer.getUser().getIsActive())
-                .traineeShortDTOS(traineeShortDTOS)
+                .trainees(traineeShortDTOS)
                 .build();
     }
 
