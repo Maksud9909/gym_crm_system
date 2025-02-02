@@ -22,7 +22,25 @@ public class MonitoringController {
 
     @GetMapping("/metrics/jvm.heap.committed")
     @Operation(summary = "JVM Heap Commited metrics")
-    public ResponseEntity<Object> getMetrics() {
+    public ResponseEntity<Object> getMetricsHeapCommitted() {
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/metrics/jvm.heap.max")
+    @Operation(summary = "JVM Heap Max metrics")
+    public ResponseEntity<Object> getMetricsHeapMax() {
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/metrics/jvm.heap.usage")
+    @Operation(summary = "JVM Heap Usage metrics")
+    public ResponseEntity<Object> getMetricsHeapUsage() {
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/metrics/jvm.heap.used")
+    @Operation(summary = "JVM Heap Used metrics")
+    public ResponseEntity<Object> getMetricsHeapUsed() {
         return ResponseEntity.ok().build();
     }
 }
