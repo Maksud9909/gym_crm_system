@@ -16,6 +16,9 @@ security:
       time: 200000000
 
 management:
+  health:
+    db:
+      enabled: false
   endpoint:
     health:
       show-details: always

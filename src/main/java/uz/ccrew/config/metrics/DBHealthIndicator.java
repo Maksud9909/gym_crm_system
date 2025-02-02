@@ -1,18 +1,18 @@
 package uz.ccrew.config.metrics;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.boot.actuate.health.Health;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.health.HealthIndicator;
 
 import java.sql.Connection;
 import javax.sql.DataSource;
 
 @Component
+@RequiredArgsConstructor
 public class DBHealthIndicator implements HealthIndicator {
 
-    @Autowired
-    private DataSource dataSource;
+    private final DataSource dataSource;
 
     @Override
     public Health health() {
