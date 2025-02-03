@@ -94,7 +94,7 @@ public class TraineeServiceImpl implements TraineeService {
                 .datOfBirth(trainee.getDateOfBirth())
                 .address(trainee.getAddress())
                 .isActive(trainee.getUser().getIsActive())
-                .trainerDTOS(trainerDTOS)
+                .trainers(trainerDTOS)
                 .build();
     }
 
@@ -130,50 +130,40 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     @Transactional
-    public List<TrainerDTO> updateTraineeTrainers(List<UpdateTraineeTrainersDTO> trainersDTOList) {
+    public List<TrainerDTO> updateTraineeTrainers(UpdateTraineeTrainersDTO trainersDTOList) {
         List<TrainerDTO> updatedTrainers = new ArrayList<>();
 
-        for (UpdateTraineeTrainersDTO dto : trainersDTOList) {
-            // Найти Trainee по username
-            Trainee trainee = traineeDAO.findByUsername(dto.getTraineeUsername())
-                    .orElseThrow(() -> new EntityNotFoundException("Trainee with username=" + dto.getTraineeUsername() + " not found"));
 
-            for (TrainingTrainerUpdateDTO trainingUpdate : dto.getTrainingTrainers()) {
-                // Найти Training по ID
-                Training training = trainingDAO.findById(trainingUpdate.getTrainingId())
-                        .orElseThrow(() -> new EntityNotFoundException("Training with ID=" + trainingUpdate.getTrainingId() + " not found"));
+        Trainee trainee = traineeDAO.findByUsername(trainersDTOList.getTraineeUsername())
+                .orElseThrow(() -> new EntityNotFoundException("Trainee with username=" + trainersDTOList.getTraineeUsername() + " not found"));
 
-                // Проверить, принадлежит ли Training этому Trainee
-                if (!trainee.getTraining().contains(training)) {
-                    throw new TrainingNotAssociatedException("Training with ID=" + trainingUpdate.getTrainingId() + " is not associated with Trainee=" + dto.getTraineeUsername());
-                }
+        for (TrainingTrainerUpdateDTO trainingUpdate : trainersDTOList.getTrainingTrainers()) {
+            Training training = trainingDAO.findById(trainingUpdate.getTrainingId())
+                    .orElseThrow(() -> new EntityNotFoundException("Training with ID=" + trainingUpdate.getTrainingId() + " not found"));
 
-                // Найти Trainer по username
-                Trainer trainer = trainerDAO.findByUsername(trainingUpdate.getTrainerUsername())
-                        .orElseThrow(() -> new EntityNotFoundException("Trainer with username=" + trainingUpdate.getTrainerUsername() + " not found"));
-
-                // Обновить Trainer и TrainingType в Training
-                training.setTrainer(trainer);
-                training.setTrainingType(trainer.getTrainingType());
-
-                // Обновить TrainingName, если передано новое имя
-                if (trainingUpdate.getTrainingName() != null) {
-                    training.setTrainingName(trainingUpdate.getTrainingName());
-                }
-
-                // Обновить запись Training в базе данных
-                trainingDAO.update(training);
-
-                // Добавить обновленного Trainer в список результата
-                updatedTrainers.add(TrainerDTO.builder()
-                        .username(trainer.getUser().getUsername())
-                        .firstName(trainer.getUser().getFirstName())
-                        .lastName(trainer.getUser().getLastName())
-                        .trainingTypeName(trainer.getTrainingType().getTrainingTypeName())
-                        .build());
+            if (!trainee.getTraining().contains(training)) {
+                throw new TrainingNotAssociatedException("Training with ID=" + trainingUpdate.getTrainingId() + " is not associated with Trainee=" + trainersDTOList.getTraineeUsername());
             }
-        }
 
+            Trainer trainer = trainerDAO.findByUsername(trainingUpdate.getTrainerUsername())
+                    .orElseThrow(() -> new EntityNotFoundException("Trainer with username=" + trainingUpdate.getTrainerUsername() + " not found"));
+
+            training.setTrainer(trainer);
+            training.setTrainingType(trainer.getTrainingType());
+
+            if (trainingUpdate.getTrainingName() != null) {
+                training.setTrainingName(trainingUpdate.getTrainingName());
+            }
+
+            trainingDAO.update(training);
+
+            updatedTrainers.add(TrainerDTO.builder()
+                    .username(trainer.getUser().getUsername())
+                    .firstName(trainer.getUser().getFirstName())
+                    .lastName(trainer.getUser().getLastName())
+                    .trainingTypeName(trainer.getTrainingType().getTrainingTypeName())
+                    .build());
+        }
         return updatedTrainers;
     }
 
@@ -201,7 +191,7 @@ public class TraineeServiceImpl implements TraineeService {
                 .datOfBirth(trainee.getDateOfBirth())
                 .address(trainee.getAddress())
                 .isActive(trainee.getUser().getIsActive())
-                .trainerDTOS(trainerDTOS)
+                .trainers(trainerDTOS)
                 .build();
     }
 }

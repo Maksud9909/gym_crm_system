@@ -6,24 +6,3 @@ datasource:
   url: jdbc:postgresql://localhost:5430/postgres?currentSchema=gym_crm_system_dev
   username: postgres
   password: bestuser
-
-# Hibernate-specific transaction configuration
-spring:
-  jpa:
-    open-in-view: false
-
-# JWT
-security:
-  token:
-    access:
-      secret-key: psofsdjfsdlkfkasdnfasdifjasdfjlasdkjflaksdjf
-      time: 2000000000
-    refresh:
-      secret-key: dijfalsjdkfaosifjsoidfkasljdflksajflkasjflasj
-      time: 200000000
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"

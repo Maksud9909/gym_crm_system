@@ -55,7 +55,7 @@ public class TraineeController {
 
     @PatchMapping("/trainee/trainers")
     @Operation(summary = "Update Trainee's Trainer List")
-    public ResponseEntity<List<TrainerDTO>> updateTraineeTrainers(@RequestBody List<UpdateTraineeTrainersDTO> trainersDTOList) {
+    public ResponseEntity<List<TrainerDTO>> updateTraineeTrainers(@RequestBody UpdateTraineeTrainersDTO trainersDTOList) {
         List<TrainerDTO> result = traineeService.updateTraineeTrainers(trainersDTOList);
         return ResponseEntity.ok(result);
     }

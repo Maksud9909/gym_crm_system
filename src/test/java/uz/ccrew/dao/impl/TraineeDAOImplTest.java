@@ -120,37 +120,4 @@ class TraineeDAOImplTest {
         Optional<Trainee> result = traineeDAO.findByUsername(username);
         assertFalse(result.isPresent());
     }
-
-//    @Test
-//    void updateTraineeTrainers_ShouldUpdateTrainers() {
-//        String traineeUsername = "trainee_user";
-//        Training training1 = new Training();
-//        training1.setId(101L);
-//        Training training2 = new Training();
-//        training2.setId(102L);
-//        Trainee trainee = Trainee.builder()
-//                .id(1L)
-//                .training(new ArrayList<>(List.of(training1, training2)))
-//                .build();
-//        Query<Trainee> traineeQuery = mock(Query.class);
-//        when(session.createQuery("FROM Trainee t where t.user.username = :username", Trainee.class))
-//                .thenReturn(traineeQuery);
-//        when(traineeQuery.setParameter("username", traineeUsername)).thenReturn(traineeQuery);
-//        when(traineeQuery.uniqueResult()).thenReturn(trainee);
-//        List<String> newTrainerUsernames = List.of("trainer1", "trainer2");
-//        Trainer trainer1 = new Trainer();
-//        trainer1.setId(201L);
-//        Trainer trainer2 = new Trainer();
-//        trainer2.setId(202L);
-//        List<Trainer> newTrainers = List.of(trainer1, trainer2);
-//        Query<Trainer> trainerQuery = mock(Query.class);
-//        when(session.createQuery("FROM Trainer t WHERE t.user.username IN :usernames", Trainer.class))
-//                .thenReturn(trainerQuery);
-//        when(trainerQuery.setParameter("usernames", newTrainerUsernames)).thenReturn(trainerQuery);
-//        when(trainerQuery.getResultList()).thenReturn(newTrainers);
-//        traineeDAO.updateTraineeTrainers(traineeUsername, newTrainerUsernames);
-//        assertEquals(201L, training1.getTrainer().getId());
-//        assertEquals(202L, training2.getTrainer().getId());
-//        verify(session, times(1)).merge(trainee);
-//    }
 }

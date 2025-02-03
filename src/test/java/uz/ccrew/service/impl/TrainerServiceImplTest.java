@@ -169,9 +169,9 @@ class TrainerServiceImplTest {
         assertEquals("Test", profile.getFirstName());
         assertEquals("User", profile.getLastName());
         assertEquals("Yoga", profile.getTrainingTypeName());
-        assertEquals(1, profile.getTraineeShortDTOS().size());
+        assertEquals(1, profile.getTrainees().size());
 
-        TraineeShortDTO traineeDTO = profile.getTraineeShortDTOS().get(0);
+        TraineeShortDTO traineeDTO = profile.getTrainees().get(0);
         assertEquals("traineeUser", traineeDTO.getUsername());
         assertEquals("Trainee", traineeDTO.getFirstName());
         assertEquals("User", traineeDTO.getLastName());

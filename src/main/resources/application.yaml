@@ -1,3 +1,30 @@
 spring:
   profiles:
     active: dev
+# Hibernate-specific transaction configuration
+  jpa:
+    open-in-view: false
+
+# JWT
+security:
+  token:
+    access:
+      secret-key: psofsdjfsdlkfkasdnfasdifjasdfjlasdkjflaksdjf
+      time: 2000000000
+    refresh:
+      secret-key: dijfalsjdkfaosifjsoidfkasljdflksajflkasjflasj
+      time: 200000000
+
+management:
+  health:
+    db:
+      enabled: false
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics

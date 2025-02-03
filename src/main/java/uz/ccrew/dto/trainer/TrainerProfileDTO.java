@@ -17,5 +17,5 @@ public class TrainerProfileDTO {
     private String lastName;
     private String trainingTypeName;
     private Boolean isActive;
-    private List<TraineeShortDTO> traineeShortDTOS;
+    private List<TraineeShortDTO> trainees;
 }
