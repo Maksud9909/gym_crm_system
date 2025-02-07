@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.test.util.ReflectionTestUtils;
+import uz.ccrew.security.jwt.JwtUtil;
 
 import java.security.Key;
 
@@ -37,25 +38,25 @@ class JwtUtilTest {
         String token = jwtUtil.generateAccessToken(username);
 
         assertNotNull(token);
-        assertDoesNotThrow(() -> jwtUtil.extractAccessTokenUsername(token));
-        assertEquals(username, jwtUtil.extractAccessTokenUsername(token));
+        assertDoesNotThrow(() -> jwtUtil.extractUsernameFromAccessToken(token));
+        assertEquals(username, jwtUtil.extractUsernameFromAccessToken(token));
     }
 
     @Test
-    void extractAccessTokenUsername_ShouldReturnCorrectUsername() {
+    void extractUsername_ShouldReturnCorrectUsernameFromoAccessToken() {
         String username = "testUser";
         String token = jwtUtil.generateAccessToken(username);
 
-        String extractedUsername = jwtUtil.extractAccessTokenUsername(token);
+        String extractedUsername = jwtUtil.extractUsernameFromAccessToken(token);
 
         assertEquals(username, extractedUsername);
     }
 
     @Test
-    void extractAccessTokenUsername_ShouldThrowExceptionForInvalidToken() {
+    void extractFromoAccessToken() {
         String invalidToken = "invalid.token.string";
 
-        assertThrows(Exception.class, () -> jwtUtil.extractAccessTokenUsername(invalidToken));
+        assertThrows(Exception.class, () -> jwtUtil.extractUsernameFromAccessToken(invalidToken));
     }
 
     @Test

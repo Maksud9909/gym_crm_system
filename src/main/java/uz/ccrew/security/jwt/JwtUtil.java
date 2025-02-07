@@ -1,4 +1,4 @@
-package uz.ccrew.utils;
+package uz.ccrew.security.jwt;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Claims;
@@ -33,7 +33,7 @@ public class JwtUtil {
         return generateToken(username, refreshTokenTime, getRefreshTokenSignInKey());
     }
 
-    public String extractAccessTokenUsername(String accessToken) {
+    public String extractUsernameFromAccessToken(String accessToken) {
         return extractClaim(accessToken, Claims::getSubject, getAccessTokenSignInKey());
     }
 
@@ -61,11 +61,23 @@ public class JwtUtil {
                 .getBody();
     }
 
-    protected Key getAccessTokenSignInKey() {
+    public boolean isTokenExpired(String token) {
+        Claims claims = extractAllClaims(token, getAccessTokenSignInKey());
+        Date expiration = claims.getExpiration();
+        return expiration.before(new Date());
+    }
+
+    public String getTokenExpiredMessage(String token) {
+        Claims claims = extractAllClaims(token, getAccessTokenSignInKey());
+        Date expiresAt = claims.getExpiration();
+        return "JWT expired at " + expiresAt + ". Current time " + new Date();
+    }
+
+    public Key getAccessTokenSignInKey() {
         return Keys.hmacShaKeyFor(accessTokenSecretKey.getBytes());
     }
 
-    protected Key getRefreshTokenSignInKey() {
+    public Key getRefreshTokenSignInKey() {
         return Keys.hmacShaKeyFor(refreshTokenSecretKey.getBytes());
     }
 }

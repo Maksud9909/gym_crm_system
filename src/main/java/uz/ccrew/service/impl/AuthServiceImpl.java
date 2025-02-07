@@ -1,21 +1,23 @@
 package uz.ccrew.service.impl;
 
-import org.springframework.transaction.annotation.Transactional;
-import uz.ccrew.dao.UserDAO;
-import uz.ccrew.utils.JwtUtil;
-import uz.ccrew.exp.exp.UnauthorizedException;
 import uz.ccrew.service.AuthService;
 import uz.ccrew.dto.auth.JwtResponse;
+import uz.ccrew.security.jwt.JwtUtil;
 import uz.ccrew.dto.user.UserCredentials;
+import uz.ccrew.security.user.UserDetailsImpl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.Authentication;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
     private final JwtUtil jwtUtil;
-    private final UserDAO userDAO;
+    private final AuthenticationManager authenticationManager;
 
     @Override
     @Transactional(readOnly = true)
@@ -23,15 +25,13 @@ public class AuthServiceImpl implements AuthService {
         String username = userCredentials.getUsername();
         String password = userCredentials.getPassword();
 
-        userDAO.findByUsernameAndPassword(username, password)
-                .orElseThrow(() -> new UnauthorizedException("Invalid username or password"));
-
-        String accessToken = jwtUtil.generateAccessToken(username);
-        String refreshToken = jwtUtil.generateRefreshToken(username);
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(username, password));
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
         return JwtResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
+                .accessToken(jwtUtil.generateAccessToken(userDetails.getUsername()))
+                .refreshToken(jwtUtil.generateRefreshToken(userDetails.getUsername()))
                 .build();
     }
 }

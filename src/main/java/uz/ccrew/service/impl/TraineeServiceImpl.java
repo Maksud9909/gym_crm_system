@@ -1,10 +1,10 @@
 package uz.ccrew.service.impl;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import uz.ccrew.dao.TrainingDAO;
 import uz.ccrew.dto.trainee.*;
 import uz.ccrew.dto.training.TrainingTrainerUpdateDTO;
 import uz.ccrew.entity.*;
-import uz.ccrew.dao.UserDAO;
 import uz.ccrew.dao.TrainerDAO;
 import uz.ccrew.dao.TraineeDAO;
 import uz.ccrew.exp.exp.TrainingNotAssociatedException;
@@ -27,11 +27,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class TraineeServiceImpl implements TraineeService {
-    private final UserDAO userDAO;
     private final UserUtils userUtils;
     private final TraineeDAO traineeDAO;
     private final TrainerDAO trainerDAO;
     private final TrainingDAO trainingDAO;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -41,7 +41,7 @@ public class TraineeServiceImpl implements TraineeService {
 
         User newUser = User.builder()
                 .username(username)
-                .password(password)
+                .password(passwordEncoder.encode(password))
                 .firstName(dto.getFirstName())
                 .lastName(dto.getLastName())
                 .isActive(Boolean.TRUE)
