@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import uz.ccrew.dao.UserDAO;
 import uz.ccrew.dto.auth.ChangePasswordDTO;
 import uz.ccrew.entity.User;
@@ -21,6 +22,9 @@ class UserServiceImplTest {
 
     @Mock
     private UserDAO userDAO;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -47,11 +51,13 @@ class UserServiceImplTest {
                 .newPassword("new_password")
                 .build();
 
-        when(userDAO.findByUsernameAndPassword("test_user", "old_password")).thenReturn(Optional.of(user));
+        when(userDAO.findByUsername("test_user")).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches("old_password", user.getPassword())).thenReturn(true);
+        when(passwordEncoder.encode("new_password")).thenReturn("hashed_new_password");
 
         userService.changePassword(dto);
 
-        verify(userDAO, times(1)).changePassword(user.getId(), "new_password");
+        verify(userDAO, times(1)).changePassword(user.getId(), "hashed_new_password");
     }
 
     @Test

@@ -1,9 +1,7 @@
 package uz.ccrew.security.config;
 
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import uz.ccrew.security.jwt.JWTAuthenticationFilter;
 import uz.ccrew.service.impl.TokenBlacklistService;
+import uz.ccrew.security.jwt.JWTAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
 import jakarta.servlet.http.HttpServletResponse;

@@ -25,8 +25,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void changePassword(ChangePasswordDTO dto) {
-        log.info("Starting password change process for user '{}' at {}",
-                dto.getUsername(), "2025-02-07 14:27:41");
+        log.info("Starting password change process for user '{}'",
+                dto.getUsername());
 
         User user = userDAO.findByUsername(dto.getUsername())
                 .orElseThrow(() -> new EntityNotFoundException(String.format("User '%s' not found at", dto.getUsername())));
