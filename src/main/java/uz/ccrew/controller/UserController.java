@@ -24,6 +24,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/login")
+    @Operation(summary = "Login to account")
     public ResponseEntity<JwtResponse> login(@RequestBody UserCredentials userCredentials) {
         JwtResponse jwtResponse = authService.login(userCredentials);
         return ResponseEntity.ok(jwtResponse);
@@ -41,6 +42,12 @@ public class UserController {
     public ResponseEntity<?> activateDeactivate(@RequestParam(name = "username") String username,
                                                 @RequestParam(name = "isActive", defaultValue = "true") Boolean isActive) {
         userService.activateDeactivate(username, isActive);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/logout")
+    @Operation(summary = "Logout from account")
+    public ResponseEntity<?> logout() {
         return ResponseEntity.ok().build();
     }
 }

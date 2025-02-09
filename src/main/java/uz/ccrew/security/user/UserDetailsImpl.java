@@ -10,8 +10,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public class UserDetailsImpl implements UserDetails {
     private User user;
 

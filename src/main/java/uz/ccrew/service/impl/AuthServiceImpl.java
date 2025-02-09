@@ -1,5 +1,7 @@
 package uz.ccrew.service.impl;
 
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import uz.ccrew.service.AuthService;
 import uz.ccrew.dto.auth.JwtResponse;
 import uz.ccrew.security.jwt.JwtUtil;

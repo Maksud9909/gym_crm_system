@@ -1,5 +1,6 @@
 package uz.ccrew.security.user;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import uz.ccrew.dao.UserDAO;
 
@@ -9,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements org.springframework.security.core.userdetails.UserDetailsService {
     private final UserDAO userDAO;
@@ -16,11 +18,8 @@ public class UserDetailsServiceImpl implements org.springframework.security.core
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) {
-        return new UserDetailsImpl(
-                userDAO.findByUsername(username)
-                        .orElseThrow(() -> new UsernameNotFoundException(
-                                String.format("User '%s' not found", username)
-                        ))
+        return new UserDetailsImpl(userDAO.findByUsername(username).orElseThrow(() ->
+                new UsernameNotFoundException(String.format("User '%s' not found", username)))
         );
     }
 }
