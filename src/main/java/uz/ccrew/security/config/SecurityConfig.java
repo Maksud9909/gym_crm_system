@@ -1,7 +1,7 @@
 package uz.ccrew.security.config;
 
 import uz.ccrew.service.impl.TokenBlacklistService;
-import uz.ccrew.security.jwt.JWTAuthenticationFilter;
+import uz.ccrew.security.jwt.JwtAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,7 +23,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final TokenBlacklistService tokenBlacklistService;
-    private final JWTAuthenticationFilter authenticationFilter;
+    private final JwtAuthenticationFilter authenticationFilter;
     private final CustomAuthenticationProvider authenticationProvider;
 
     private static final String[] PUBLIC_ENDPOINTS = {

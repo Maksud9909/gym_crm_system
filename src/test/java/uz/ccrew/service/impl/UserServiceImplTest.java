@@ -1,21 +1,22 @@
 package uz.ccrew.service.impl;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
+import uz.ccrew.dao.UserDAO;
+import uz.ccrew.entity.User;
+import uz.ccrew.dto.auth.ChangePasswordDTO;
+import uz.ccrew.exp.exp.EntityNotFoundException;
+
 import org.mockito.Mock;
+import org.mockito.InjectMocks;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import uz.ccrew.dao.UserDAO;
-import uz.ccrew.dto.auth.ChangePasswordDTO;
-import uz.ccrew.entity.User;
-import uz.ccrew.exp.exp.EntityNotFoundException;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {

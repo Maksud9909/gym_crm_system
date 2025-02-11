@@ -2,7 +2,8 @@ package uz.ccrew.exp;
 
 import uz.ccrew.exp.exp.EntityNotFoundException;
 import uz.ccrew.exp.exp.TrainingNotAssociatedException;
-import uz.ccrew.exp.exp.unauthorized.UnauthorizedException;
+import uz.ccrew.exp.exp.unauthorized.TokenExpiredException;
+import uz.ccrew.exp.exp.unauthorized.BlacklistedTokenException;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -30,11 +31,11 @@ public class GlobalExceptionHandler {
                 .body("Requested parameter is invalid");
     }
 
-    @ExceptionHandler({UnauthorizedException.class})
-    private ResponseEntity<String> handleUnauthorized(UnauthorizedException ex) {
-        log.error("Unauthorized occurred: {}", ex.getMessage());
+    @ExceptionHandler({BlacklistedTokenException.class})
+    private ResponseEntity<String> handleUnauthorized(BlacklistedTokenException ex) {
+        log.error("Token is blacklisted occurred: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body("Unauthorized");
+                .body("Token is blacklisted. Please log in again.");
     }
 
     @ExceptionHandler({TrainingNotAssociatedException.class})
@@ -42,6 +43,13 @@ public class GlobalExceptionHandler {
         log.error("Training association error: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Training association error");
+    }
+
+    @ExceptionHandler({TokenExpiredException.class})
+    public ResponseEntity<String> handleTokenExpiredException(TokenExpiredException ex) {
+        log.error("TokenExpiredException occurred: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body("Token expired, please renew your token");
     }
 
     @ExceptionHandler({LockedException.class})

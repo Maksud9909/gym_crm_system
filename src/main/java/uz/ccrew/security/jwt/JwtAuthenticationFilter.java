@@ -1,6 +1,6 @@
 package uz.ccrew.security.jwt;
 
-import uz.ccrew.exp.exp.unauthorized.UnauthorizedException;
+import uz.ccrew.exp.exp.unauthorized.BlacklistedTokenException;
 import uz.ccrew.security.user.UserDetailsImpl;
 import uz.ccrew.security.user.UserDetailsServiceImpl;
 import uz.ccrew.exp.exp.unauthorized.TokenExpiredException;
@@ -25,7 +25,7 @@ import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
-public class JWTAuthenticationFilter extends OncePerRequestFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Qualifier("handlerExceptionResolver")
     @Autowired
     private HandlerExceptionResolver exceptionResolver;
@@ -47,16 +47,15 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             final String token = bearerToken.substring(7);
 
             if (tokenBlacklistService.isBlacklisted(token)) {
-                exceptionResolver.resolveException(request, response, null, new UnauthorizedException("Token is invalid"));
-                System.out.println("Blacklisted token detected: " + token);
+                exceptionResolver.resolveException(request, response, null, new BlacklistedTokenException("Token is black listed"));
                 return;
             }
-
 
             if (jwtUtil.isTokenExpired(token)) {
                 exceptionResolver.resolveException(request, response, null, new TokenExpiredException(jwtUtil.getTokenExpiredMessage(token)));
                 return;
             }
+
             String username = jwtUtil.extractUsernameFromAccessToken(token);
             if (username == null || SecurityContextHolder.getContext() == null) {
                 filterChain.doFilter(request, response);
@@ -67,7 +66,10 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     userDetails, null, userDetails.getAuthorities());
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            System.out.println("Before setting authentication: " + SecurityContextHolder.getContext().getAuthentication());
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            System.out.println("After setting authentication: " + SecurityContextHolder.getContext().getAuthentication());
+
 
             filterChain.doFilter(request, response);
         } catch (Exception e) {
