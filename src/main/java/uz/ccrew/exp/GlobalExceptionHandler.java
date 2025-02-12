@@ -1,5 +1,6 @@
 package uz.ccrew.exp;
 
+import uz.ccrew.dto.error.ErrorResponse;
 import uz.ccrew.exp.exp.EntityNotFoundException;
 import uz.ccrew.exp.exp.TrainingNotAssociatedException;
 import uz.ccrew.exp.exp.unauthorized.TokenExpiredException;
@@ -13,56 +14,56 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
+import java.time.LocalDateTime;
+
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({EntityNotFoundException.class})
-    public ResponseEntity<?> handleNotFound(EntityNotFoundException ex) {
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFound(EntityNotFoundException ex) {
         log.error("EntityNotFoundException occurred: {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("Requested resource not found");
+        return buildErrorResponse(HttpStatus.NOT_FOUND, "Requested resource not found");
     }
 
-    @ExceptionHandler({MethodArgumentNotValidException.class})
-    public ResponseEntity<String> handleValidation(MethodArgumentNotValidException ex) {
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
         log.error("MethodArgumentNotValidException occurred: {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Requested parameter is invalid");
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, "Requested parameter is invalid");
     }
 
-    @ExceptionHandler({BlacklistedTokenException.class})
-    private ResponseEntity<String> handleUnauthorized(BlacklistedTokenException ex) {
+    @ExceptionHandler(BlacklistedTokenException.class)
+    public ResponseEntity<ErrorResponse> handleUnauthorized(BlacklistedTokenException ex) {
         log.error("Token is blacklisted occurred: {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body("Token is blacklisted. Please log in again.");
+        return buildErrorResponse(HttpStatus.UNAUTHORIZED, "Token is blacklisted. Please log in again.");
     }
 
-    @ExceptionHandler({TrainingNotAssociatedException.class})
-    public ResponseEntity<String> handleTrainingNotAssociatedException(TrainingNotAssociatedException ex) {
+    @ExceptionHandler(TrainingNotAssociatedException.class)
+    public ResponseEntity<ErrorResponse> handleTrainingNotAssociatedException(TrainingNotAssociatedException ex) {
         log.error("Training association error: {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Training association error");
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, "Training association error");
     }
 
-    @ExceptionHandler({TokenExpiredException.class})
-    public ResponseEntity<String> handleTokenExpiredException(TokenExpiredException ex) {
+    @ExceptionHandler(TokenExpiredException.class)
+    public ResponseEntity<ErrorResponse> handleTokenExpiredException(TokenExpiredException ex) {
         log.error("TokenExpiredException occurred: {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body("Token expired, please renew your token");
+        return buildErrorResponse(HttpStatus.UNAUTHORIZED, "Token expired, please renew your token");
     }
 
-    @ExceptionHandler({LockedException.class})
-    public ResponseEntity<String> handleLockedException(LockedException ex) {
+    @ExceptionHandler(LockedException.class)
+    public ResponseEntity<ErrorResponse> handleLockedException(LockedException ex) {
         log.error("LockedException occurred: {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Account is blocked for 5 minutes because of 3 login fails");
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, "Account is blocked for 5 minutes because of 3 login fails");
     }
 
-    @ExceptionHandler({Exception.class})
-    private ResponseEntity<String> handle(Exception e) {
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGeneralException(Exception e) {
         log.error("Exception occurred: {}", e.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Internal Server Error");
+        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error");
+    }
+
+    private ResponseEntity<ErrorResponse> buildErrorResponse(HttpStatus status, String message) {
+        ErrorResponse errorResponse = new ErrorResponse(status.value(), message, LocalDateTime.now());
+        return ResponseEntity.status(status).body(errorResponse);
     }
 }
