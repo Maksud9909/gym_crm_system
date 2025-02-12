@@ -28,9 +28,3 @@ management:
     web:
       exposure:
         include: health, metrics
-
-cors:
-  allowed-origins: "/**"
-  allowed-methods: "GET"
-  allowed-headers: "*"
-  allow-credentials: true

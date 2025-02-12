@@ -69,8 +69,6 @@ class UserServiceImplTest {
                 .newPassword("new_password")
                 .build();
 
-        when(userDAO.findByUsernameAndPassword("nonexistent_user", "wrong_password")).thenReturn(Optional.empty());
-
         assertThrows(EntityNotFoundException.class, () -> userService.changePassword(dto));
 
         verify(userDAO, never()).changePassword(anyLong(), anyString());
@@ -83,8 +81,6 @@ class UserServiceImplTest {
                 .oldPassword("wrong_password")
                 .newPassword("new_password")
                 .build();
-
-        when(userDAO.findByUsernameAndPassword("test_user", "wrong_password")).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> userService.changePassword(dto));
 
