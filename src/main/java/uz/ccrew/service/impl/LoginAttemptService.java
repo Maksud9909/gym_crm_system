@@ -1,7 +1,6 @@
 package uz.ccrew.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import lombok.RequiredArgsConstructor;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
@@ -12,8 +11,8 @@ import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class LoginAttemptService {
+    private static final int MAX_ATTEMPT = 3;
     private final LoadingCache<String, Integer> attemptsCache;
 
     public LoginAttemptService() {
@@ -27,28 +26,27 @@ public class LoginAttemptService {
                 });
     }
 
-    public void loginSucceeded(String username) {
-        attemptsCache.invalidate(username);
-        log.info("Login succeeded for user {}", username);
+    public void loginFailed(String ip) {
+        int attempts = 0;
+        try {
+            attempts = attemptsCache.get(ip);
+        } catch (ExecutionException ignored) {}
+
+        attempts++;
+        attemptsCache.put(ip, attempts);
+        log.warn("Login failed for IP: {} (attempt {}/{})", ip, attempts, MAX_ATTEMPT);
     }
 
-    public void loginFailed(String username) {
-        int attempts;
+    public boolean isBlocked(String ip) {
         try {
-            attempts = attemptsCache.get(username) + 1;
-        } catch (ExecutionException e) {
-            attempts = 1;
-        }
-        attemptsCache.put(username, attempts);
-
-        log.warn("Login failed for user {}", username);
-    }
-
-    public boolean isBlocked(String username) {
-        try {
-            return attemptsCache.get(username) >= 3;
+            return attemptsCache.get(ip) >= MAX_ATTEMPT;
         } catch (ExecutionException e) {
             return false;
         }
+    }
+
+    public void loginSucceeded(String ip) {
+        attemptsCache.invalidate(ip);
+        log.info("Login succeeded for IP: {}", ip);
     }
 }

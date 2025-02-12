@@ -1,6 +1,7 @@
 package uz.ccrew.service.impl;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -54,7 +55,7 @@ class AuthServiceImplTest {
         when(jwtUtil.generateAccessToken("test_user")).thenReturn("access_token");
         when(jwtUtil.generateRefreshToken("test_user")).thenReturn("refresh_token");
 
-        JwtResponse response = authService.login(userCredentials);
+        JwtResponse response = authService.login(userCredentials, new MockHttpServletRequest());
 
         assertNotNull(response);
         assertEquals("access_token", response.getAccessToken());
@@ -77,7 +78,7 @@ class AuthServiceImplTest {
 
         BadCredentialsException exception = assertThrows(
                 BadCredentialsException.class,
-                () -> authService.login(credentials)
+                () -> authService.login(credentials, new MockHttpServletRequest())
         );
 
         assertEquals("Invalid username or password", exception.getMessage());

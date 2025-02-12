@@ -9,6 +9,7 @@ import uz.ccrew.dto.auth.ChangePasswordDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +26,8 @@ public class UserController {
 
     @PostMapping("/login")
     @Operation(summary = "Login to account")
-    public ResponseEntity<JwtResponse> login(@RequestBody UserCredentials userCredentials) {
-        JwtResponse jwtResponse = authService.login(userCredentials);
+    public ResponseEntity<JwtResponse> login(@RequestBody UserCredentials userCredentials, HttpServletRequest request) {
+        JwtResponse jwtResponse = authService.login(userCredentials, request);
         return ResponseEntity.ok(jwtResponse);
     }
 

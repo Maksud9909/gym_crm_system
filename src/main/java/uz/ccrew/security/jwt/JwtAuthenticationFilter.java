@@ -1,10 +1,12 @@
 package uz.ccrew.security.jwt;
 
-import uz.ccrew.exp.exp.unauthorized.BlacklistedTokenException;
 import uz.ccrew.security.user.UserDetailsImpl;
+import uz.ccrew.service.impl.TokenBlacklistService;
 import uz.ccrew.security.user.UserDetailsServiceImpl;
 import uz.ccrew.exp.exp.unauthorized.TokenExpiredException;
+import uz.ccrew.exp.exp.unauthorized.BlacklistedTokenException;
 
+import lombok.extern.slf4j.Slf4j;
 import jakarta.servlet.FilterChain;
 import lombok.RequiredArgsConstructor;
 import jakarta.servlet.ServletException;
@@ -19,11 +21,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import uz.ccrew.service.impl.TokenBlacklistService;
 
 import java.io.IOException;
 
 @Component
+@Slf4j
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Qualifier("handlerExceptionResolver")
@@ -73,6 +75,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             filterChain.doFilter(request, response);
         } catch (Exception e) {
+            log.error("Exception in JwtAuthenticationFilter", e);
             exceptionResolver.resolveException(request, response, null, new BadCredentialsException("Bad credentials"));
         }
     }
