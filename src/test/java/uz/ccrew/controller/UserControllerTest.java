@@ -1,5 +1,6 @@
 package uz.ccrew.controller;
 
+import org.springframework.mock.web.MockHttpServletRequest;
 import uz.ccrew.service.AuthService;
 import uz.ccrew.service.UserService;
 import uz.ccrew.dto.auth.JwtResponse;
@@ -28,10 +29,11 @@ class UserControllerTest {
 
     @Test
     void login() {
+        MockHttpServletRequest request = new MockHttpServletRequest();
         JwtResponse jwtResponse = new JwtResponse("123", "123");
         UserCredentials userCredentials = new UserCredentials("username", "password");
-        when(authService.login(userCredentials)).thenReturn(jwtResponse);
-        ResponseEntity<JwtResponse> response = userController.login(userCredentials);
+        when(authService.login(userCredentials,request)).thenReturn(jwtResponse);
+        ResponseEntity<JwtResponse> response = userController.login(userCredentials, request);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(response.getBody(), jwtResponse);
     }

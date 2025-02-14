@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.authentication.BadCredentialsException;
 
 import java.util.Optional;
 
@@ -18,16 +20,21 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserDAO userDAO;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
     public void changePassword(ChangePasswordDTO dto) {
-        log.info("Changing password for user '{}'", dto.getUsername());
+        log.info("Starting password change process for user '{}'",
+                dto.getUsername());
 
-        User user = userDAO.findByUsernameAndPassword(dto.getUsername(), dto.getOldPassword())
-                .orElseThrow(() -> new EntityNotFoundException("Invalid username or password"));
+        User user = userDAO.findByUsername(dto.getUsername())
+                .orElseThrow(() -> new EntityNotFoundException(String.format("User '%s' not found at", dto.getUsername())));
+        validateOldPassword(user, dto.getOldPassword());
 
-        userDAO.changePassword(user.getId(), dto.getNewPassword());
+        String encodedPassword = passwordEncoder.encode(dto.getNewPassword());
+        userDAO.changePassword(user.getId(), encodedPassword);
+
         log.info("Password successfully changed for user '{}'", dto.getUsername());
     }
 
@@ -44,5 +51,15 @@ public class UserServiceImpl implements UserService {
         }
         userDAO.activateDeactivate(username, isActive);
         log.info("Trainee with ID={} is now isActive={}", username, isActive);
+    }
+
+    private void validateOldPassword(User user, String oldPassword) {
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            log.warn("Invalid old password attempt for user '{}'",
+                    user.getUsername());
+            throw new BadCredentialsException(String.format(
+                    "Invalid old password for user '%s'", user.getUsername()
+            ));
+        }
     }
 }

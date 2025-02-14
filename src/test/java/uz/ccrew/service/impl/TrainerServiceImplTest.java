@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import uz.ccrew.dao.TrainerDAO;
 import uz.ccrew.dao.TrainingDAO;
 import uz.ccrew.dao.TrainingTypeDAO;
@@ -44,6 +45,9 @@ class TrainerServiceImplTest {
     @Mock
     private UserUtils userUtils;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     @InjectMocks
     private TrainerServiceImpl trainerService;
 
@@ -78,6 +82,7 @@ class TrainerServiceImplTest {
     void createTrainer_ShouldReturnUserCredentials_WhenValidDataProvided() {
         when(userUtils.generateUniqueUsername("Jane", "Doe")).thenReturn("Jane.Doe");
         when(userUtils.generateRandomPassword()).thenReturn("password123");
+        when(passwordEncoder.encode("password123")).thenReturn("hashed_password123");
         when(trainingTypeDAO.findByName("Yoga")).thenReturn(Optional.of(trainingType));
 
         TrainerCreateDTO dto = TrainerCreateDTO.builder()

@@ -1,26 +1,31 @@
 package uz.ccrew.service.impl;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import uz.ccrew.dao.UserDAO;
-import uz.ccrew.dto.auth.ChangePasswordDTO;
 import uz.ccrew.entity.User;
+import uz.ccrew.dto.auth.ChangePasswordDTO;
 import uz.ccrew.exp.exp.EntityNotFoundException;
+
+import org.mockito.Mock;
+import org.mockito.InjectMocks;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
 
     @Mock
     private UserDAO userDAO;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -47,11 +52,13 @@ class UserServiceImplTest {
                 .newPassword("new_password")
                 .build();
 
-        when(userDAO.findByUsernameAndPassword("test_user", "old_password")).thenReturn(Optional.of(user));
+        when(userDAO.findByUsername("test_user")).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches("old_password", user.getPassword())).thenReturn(true);
+        when(passwordEncoder.encode("new_password")).thenReturn("hashed_new_password");
 
         userService.changePassword(dto);
 
-        verify(userDAO, times(1)).changePassword(user.getId(), "new_password");
+        verify(userDAO, times(1)).changePassword(user.getId(), "hashed_new_password");
     }
 
     @Test
@@ -61,8 +68,6 @@ class UserServiceImplTest {
                 .oldPassword("wrong_password")
                 .newPassword("new_password")
                 .build();
-
-        when(userDAO.findByUsernameAndPassword("nonexistent_user", "wrong_password")).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> userService.changePassword(dto));
 
@@ -76,8 +81,6 @@ class UserServiceImplTest {
                 .oldPassword("wrong_password")
                 .newPassword("new_password")
                 .build();
-
-        when(userDAO.findByUsernameAndPassword("test_user", "wrong_password")).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> userService.changePassword(dto));
 

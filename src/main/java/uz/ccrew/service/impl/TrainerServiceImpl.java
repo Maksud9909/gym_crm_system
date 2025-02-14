@@ -1,6 +1,7 @@
 package uz.ccrew.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import uz.ccrew.dao.TrainingDAO;
 import uz.ccrew.dao.UserDAO;
 import uz.ccrew.dto.trainer.TrainerUpdateDTO;
@@ -31,6 +32,7 @@ public class TrainerServiceImpl implements TrainerService {
     private final TrainerDAO trainerDAO;
     private final TrainingDAO trainingDAO;
     private final TrainingTypeDAO trainingTypeDAO;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -45,7 +47,7 @@ public class TrainerServiceImpl implements TrainerService {
 
         User newUser = User.builder()
                 .username(username)
-                .password(password)
+                .password(passwordEncoder.encode(password))
                 .firstName(dto.getFirstName())
                 .lastName(dto.getLastName())
                 .isActive(Boolean.TRUE)

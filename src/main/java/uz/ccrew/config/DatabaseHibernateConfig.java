@@ -1,5 +1,6 @@
 package uz.ccrew.config;
 
+import lombok.extern.slf4j.Slf4j;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +14,7 @@ import javax.sql.DataSource;
 import java.util.Properties;
 import java.beans.PropertyVetoException;
 
+@Slf4j
 @Configuration
 @EnableTransactionManagement
 public class DatabaseHibernateConfig {
@@ -34,7 +36,7 @@ public class DatabaseHibernateConfig {
             dataSource.setJdbcUrl(dbUrl);
             dataSource.setUser(dbUsername);
             dataSource.setPassword(dbPassword);
-            System.out.println("DataSource configured successfully: " + dataSource.getJdbcUrl());
+            log.info("DataSource configured successfully: {}", dataSource.getJdbcUrl());
         } catch (PropertyVetoException e) {
             throw new RuntimeException(e);
         }

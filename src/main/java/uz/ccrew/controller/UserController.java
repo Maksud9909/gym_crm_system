@@ -9,6 +9,7 @@ import uz.ccrew.dto.auth.ChangePasswordDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +25,9 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<JwtResponse> login(@RequestBody UserCredentials userCredentials) {
-        JwtResponse jwtResponse = authService.login(userCredentials);
+    @Operation(summary = "Login to account")
+    public ResponseEntity<JwtResponse> login(@RequestBody UserCredentials userCredentials, HttpServletRequest request) {
+        JwtResponse jwtResponse = authService.login(userCredentials, request);
         return ResponseEntity.ok(jwtResponse);
     }
 
@@ -41,6 +43,12 @@ public class UserController {
     public ResponseEntity<?> activateDeactivate(@RequestParam(name = "username") String username,
                                                 @RequestParam(name = "isActive", defaultValue = "true") Boolean isActive) {
         userService.activateDeactivate(username, isActive);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/logout")
+    @Operation(summary = "Logout from account")
+    public ResponseEntity<?> logout() {
         return ResponseEntity.ok().build();
     }
 }

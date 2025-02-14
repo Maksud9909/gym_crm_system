@@ -25,6 +25,7 @@ import java.time.LocalDate;
 public class TraineeController {
     private final TraineeService traineeService;
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/create")
     @Operation(summary = "Create a Trainee")
     public ResponseEntity<UserCredentials> create(@Valid @RequestBody TraineeCreateDTO dto) {

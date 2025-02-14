@@ -1,5 +1,6 @@
 package uz.ccrew.service.impl;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import uz.ccrew.dto.trainee.*;
 import uz.ccrew.dto.training.TrainingTrainerUpdateDTO;
 import uz.ccrew.entity.*;
@@ -43,6 +44,9 @@ class TraineeServiceImplTest {
     @Mock
     private TrainingDAO trainingDAO;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     @InjectMocks
     private TraineeServiceImpl traineeService;
 
@@ -72,6 +76,7 @@ class TraineeServiceImplTest {
     void createTrainee_ShouldReturnUserCredentials_WhenValidDataProvided() {
         when(userUtils.generateUniqueUsername("John", "Doe")).thenReturn("John.Doe");
         when(userUtils.generateRandomPassword()).thenReturn("password123");
+        when(passwordEncoder.encode("password123")).thenReturn("password123");
 
         TraineeCreateDTO dto = TraineeCreateDTO.builder()
                 .firstName("John")
