@@ -2,7 +2,7 @@ package uz.ccrew.security.jwt;
 
 import uz.ccrew.security.user.UserDetailsImpl;
 import uz.ccrew.service.impl.TokenBlacklistService;
-import uz.ccrew.security.user.UserDetailsServiceImpl;
+import uz.ccrew.service.impl.UserDetailsServiceImpl;
 import uz.ccrew.exp.exp.unauthorized.TokenExpiredException;
 import uz.ccrew.exp.exp.unauthorized.BlacklistedTokenException;
 
@@ -68,10 +68,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     userDetails, null, userDetails.getAuthorities());
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            System.out.println("Before setting authentication: " + SecurityContextHolder.getContext().getAuthentication());
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            System.out.println("After setting authentication: " + SecurityContextHolder.getContext().getAuthentication());
-
 
             filterChain.doFilter(request, response);
         } catch (Exception e) {

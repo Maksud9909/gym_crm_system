@@ -1,5 +1,6 @@
 package uz.ccrew.security.config;
 
+import uz.ccrew.security.CorsProperties;
 import uz.ccrew.service.impl.TokenBlacklistService;
 import uz.ccrew.security.jwt.JwtAuthenticationFilter;
 
@@ -18,15 +19,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 
-import java.util.List;
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+    private final CorsProperties corsProperties;
     private final TokenBlacklistService tokenBlacklistService;
     private final JwtAuthenticationFilter authenticationFilter;
     private final CustomAuthenticationProvider authenticationProvider;
+
 
     private static final String[] PUBLIC_ENDPOINTS = {
             "/api/v1/trainee/create",
@@ -70,10 +71,10 @@ public class SecurityConfig {
         httpSecurity
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(List.of("http://localhost:3000"));
-                    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-                    config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-                    config.setAllowCredentials(true);
+                    config.setAllowedOrigins(corsProperties.getAllowedOrigins());
+                    config.setAllowedMethods(corsProperties.getAllowedMethods());
+                    config.setAllowedHeaders(corsProperties.getAllowedHeaders());
+                    config.setAllowCredentials(corsProperties.isAllowCredentials());
                     return config;
                 }))
                 .csrf(AbstractHttpConfigurer::disable)

@@ -4,7 +4,7 @@ import uz.ccrew.entity.User;
 import uz.ccrew.security.jwt.JwtUtil;
 import uz.ccrew.security.user.UserDetailsImpl;
 import uz.ccrew.service.impl.TokenBlacklistService;
-import uz.ccrew.security.user.UserDetailsServiceImpl;
+import uz.ccrew.service.impl.UserDetailsServiceImpl;
 import uz.ccrew.security.jwt.JwtAuthenticationFilter;
 
 import org.mockito.Mock;
