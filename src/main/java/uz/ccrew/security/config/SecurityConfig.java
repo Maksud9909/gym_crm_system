@@ -28,13 +28,11 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter authenticationFilter;
     private final CustomAuthenticationProvider authenticationProvider;
 
-
     private static final String[] PUBLIC_ENDPOINTS = {
             "/api/v1/trainee/create",
             "/api/v1/trainer/create",
             "/api/v1/user/login"
     };
-
 
     private static final String[] SWAGGER_WHITELIST = {
             "/v2/api-docs",
