@@ -1,6 +1,5 @@
 package uz.ccrew.dto.training;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -11,7 +10,6 @@ import java.time.LocalDate;
 
 @Builder
 @Getter
-@NotNull
 @NoArgsConstructor
 @AllArgsConstructor
 public class TrainingDTO {

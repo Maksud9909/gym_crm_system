@@ -23,6 +23,12 @@ import java.util.Optional;
 public class TrainingDAOImpl implements TrainingDAO {
     private final SessionFactory sessionFactory;
     private static final String HQL_QUERY_LOG = "Generated HQL Query: {}";
+    private static final String FIND_BY_TRAINER_USERNAME_AND_TRAINING_YEAR_AND_MONTH = "SELECT t FROM Training t " +
+                                                                                       "JOIN t.trainer tr " +
+                                                                                       "JOIN tr.user u " +
+                                                                                       "WHERE u.username = :username " +
+                                                                                       "AND YEAR(t.trainingDate) = :year " +
+                                                                                       "AND MONTH(t.trainingDate) = :month";
 
     @Override
     public Long create(Training training) {
@@ -70,5 +76,21 @@ public class TrainingDAOImpl implements TrainingDAO {
     public void update(Training training) {
         Session session = getSessionFactory().getCurrentSession();
         session.merge(training);
+    }
+
+    @Override
+    public void delete(Training training) {
+        Session session = getSessionFactory().getCurrentSession();
+        session.remove(training);
+    }
+
+    @Override
+    public List<Training> findByTrainerUsernameAndTrainingYearAndMonth(String trainerUsername, int year, int month) {
+        Session session = getSessionFactory().getCurrentSession();
+        return session.createQuery(FIND_BY_TRAINER_USERNAME_AND_TRAINING_YEAR_AND_MONTH, Training.class)
+                .setParameter("username", trainerUsername)
+                .setParameter("year", year)
+                .setParameter("month", month)
+                .getResultList();
     }
 }

@@ -17,10 +17,10 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "trainings")
 public class Training extends BaseEntity {
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "trainee_id", nullable = false)
     private Trainee trainee;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "trainer_id", nullable = false)
     private Trainer trainer;
     @Column(name = "training_name", nullable = false)

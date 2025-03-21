@@ -1,4 +1,4 @@
-package uz.ccrew.config;
+package uz.ccrew.config.interceptor;
 
 import org.slf4j.MDC;
 import jakarta.servlet.http.HttpServletRequest;
