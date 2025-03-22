@@ -9,17 +9,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uz.ccrew.dao.TraineeDAO;
 import uz.ccrew.dao.TrainerDAO;
 import uz.ccrew.dao.TrainingDAO;
+import uz.ccrew.dto.training.TrainerMonthlySummaryDTO;
 import uz.ccrew.dto.training.TrainingDTO;
-import uz.ccrew.entity.Trainee;
-import uz.ccrew.entity.Trainer;
-import uz.ccrew.entity.Training;
-import uz.ccrew.entity.TrainingType;
+import uz.ccrew.entity.*;
 import uz.ccrew.exp.exp.EntityNotFoundException;
+import uz.ccrew.service.TrainerWorkloadClient;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,12 +34,16 @@ class TrainingServiceImplTest {
     @Mock
     private TrainingDAO trainingDAO;
 
+    @Mock
+    private TrainerWorkloadClient trainerWorkloadClient;
+
     @InjectMocks
     private TrainingServiceImpl trainingService;
 
     private Trainee trainee;
     private Trainer trainer;
     private TrainingType trainingType;
+    private Training training;
 
     @BeforeEach
     void setUp() {
@@ -56,9 +60,43 @@ class TrainingServiceImplTest {
 
         trainer = Trainer.builder()
                 .id(1L)
-                .user(null)
+                .user(User.builder()
+                        .username("test")
+                        .lastName("test")
+                        .isActive(Boolean.TRUE)
+                        .build())
                 .trainingType(trainingType)
                 .build();
+
+        training = Training.builder()
+                .id(1L)
+                .trainer(trainer)
+                .trainingDate(LocalDate.now())
+                .trainingDuration(2.0)
+                .build();
+    }
+
+    @Test
+    void getMonthlyWorkload_ShouldReturnSummary_WhenTrainingsExist() {
+        when(trainingDAO.findByTrainerUsernameAndTrainingYearAndMonth("trainer_user", 2025, 3))
+                .thenReturn(List.of(training));
+
+        TrainerMonthlySummaryDTO summary = trainingService.getMonthlyWorkload("trainer_user", 2025, 3);
+
+        assertNotNull(summary);
+        assertEquals("test", summary.getTrainerUsername());
+        assertEquals(2.0, summary.getTotalDuration());
+    }
+
+
+    @Test
+    void deleteTraining_ShouldDeleteTraining_WhenTrainingExists() {
+        when(trainingDAO.findById(1L)).thenReturn(Optional.of(training));
+
+        trainingService.deleteTraining(1L);
+
+        verify(trainingDAO, times(1)).delete(training);
+        verify(trainerWorkloadClient, times(1)).sendTrainingData(any());
     }
 
     @Test

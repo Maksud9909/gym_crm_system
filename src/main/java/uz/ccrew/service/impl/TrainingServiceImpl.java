@@ -1,7 +1,5 @@
 package uz.ccrew.service.impl;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import uz.ccrew.entity.User;
 import uz.ccrew.entity.Trainee;
 import uz.ccrew.entity.Trainer;
