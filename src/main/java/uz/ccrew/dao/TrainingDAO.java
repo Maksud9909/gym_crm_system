@@ -18,6 +18,4 @@ public interface TrainingDAO extends BaseDAO<Training> {
     void update(Training training);
 
     void delete(Training training);
-
-    List<Training> findByTrainerUsernameAndTrainingYearAndMonth(String trainerUsername, int trainingYear, int month);
 }

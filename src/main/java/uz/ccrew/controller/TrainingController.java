@@ -2,7 +2,7 @@ package uz.ccrew.controller;
 
 import uz.ccrew.service.TrainingService;
 import uz.ccrew.dto.training.TrainingDTO;
-import uz.ccrew.dto.training.TrainerMonthlySummaryDTO;
+import uz.ccrew.dto.training.summary.TrainerMonthlySummaryDTO;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/training")
@@ -35,8 +37,8 @@ public class TrainingController {
     }
 
     @GetMapping("/monthly/workload/{username}")
-    public ResponseEntity<TrainerMonthlySummaryDTO> getMonthlyWorkload(@PathVariable("username") String username, @RequestParam("year") int year, @RequestParam("month") int month) {
-        TrainerMonthlySummaryDTO result = trainingService.getMonthlyWorkload(username, year, month);
+    public ResponseEntity<List<TrainerMonthlySummaryDTO>> getMonthlyWorkload(@PathVariable("username") String username) {
+        List<TrainerMonthlySummaryDTO> result = trainingService.getMonthlyWorkload(username);
         return ResponseEntity.ok(result);
     }
 }

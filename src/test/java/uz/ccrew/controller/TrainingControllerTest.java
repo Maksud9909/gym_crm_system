@@ -1,6 +1,6 @@
 package uz.ccrew.controller;
 
-import uz.ccrew.dto.training.TrainerMonthlySummaryDTO;
+import uz.ccrew.dto.training.summary.TrainerMonthlySummaryDTO;
 import uz.ccrew.service.TrainingService;
 import uz.ccrew.dto.training.TrainingDTO;
 
@@ -13,6 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -52,16 +54,14 @@ public class TrainingControllerTest {
     @Test
     void getMonthlyWorkload() {
         String username = "trainer123";
-        int year = 2025;
-        int month = 3;
-        TrainerMonthlySummaryDTO mockSummary = new TrainerMonthlySummaryDTO();
+        List<TrainerMonthlySummaryDTO> mockSummary = new ArrayList<>();
 
-        when(trainingService.getMonthlyWorkload(username, year, month)).thenReturn(mockSummary);
+        when(trainingService.getMonthlyWorkload(username)).thenReturn(mockSummary);
 
-        ResponseEntity<TrainerMonthlySummaryDTO> response = trainingController.getMonthlyWorkload(username, year, month);
+        ResponseEntity<List<TrainerMonthlySummaryDTO>> response = trainingController.getMonthlyWorkload(username);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(mockSummary, response.getBody());
-        verify(trainingService, times(1)).getMonthlyWorkload(username, year, month);
+        verify(trainingService, times(1)).getMonthlyWorkload(username);
     }
 }

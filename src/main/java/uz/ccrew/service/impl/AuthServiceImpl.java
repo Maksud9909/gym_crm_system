@@ -1,6 +1,5 @@
 package uz.ccrew.service.impl;
 
-import org.springframework.security.core.context.SecurityContextHolder;
 import uz.ccrew.service.AuthService;
 import uz.ccrew.dto.auth.JwtResponse;
 import uz.ccrew.security.jwt.JwtUtil;
@@ -43,25 +42,12 @@ public class AuthServiceImpl implements AuthService {
 
             loginAttemptService.loginSucceeded(ip);
 
-            // Генерируем токены
-            String accessToken = jwtUtil.generateAccessToken(userDetails.getUsername());
-            String refreshToken = jwtUtil.generateRefreshToken(userDetails.getUsername());
-
-            // Создаем новый объект Authentication, в котором в credentials сохраняется accessToken
-            Authentication authWithToken = new UsernamePasswordAuthenticationToken(
-                    authentication.getPrincipal(), // объект пользователя
-                    accessToken,                   // сохраняем токен в credentials
-                    authentication.getAuthorities()
-            );
-            // Устанавливаем новый Authentication в SecurityContext
-            SecurityContextHolder.getContext().setAuthentication(authWithToken);
-
             return JwtResponse.builder()
-                    .accessToken(accessToken)
-                    .refreshToken(refreshToken)
+                    .accessToken(jwtUtil.generateAccessToken(userDetails.getUsername()))
+                    .refreshToken(jwtUtil.generateRefreshToken(userDetails.getUsername()))
                     .build();
         } catch (Exception e) {
-            log.error("Login failed for user {}: {}", userCredentials.getUsername(), e.getMessage());
+            log.error("Login failed for user{}: {}", userCredentials.getUsername(), e.getMessage());
             loginAttemptService.loginFailed(ip);
             throw e;
         }

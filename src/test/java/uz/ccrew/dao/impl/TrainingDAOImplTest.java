@@ -140,29 +140,4 @@ class TrainingDAOImplTest {
 
         verify(session, times(1)).merge(training);
     }
-
-    @Test
-    void findByTrainerUsernameAndTrainingYearAndMonth_ShouldReturnListOfTrainings() {
-        String trainerUsername = "trainer_user";
-        int year = 2025;
-        int month = 3;
-
-        Query<Training> query = mock(Query.class);
-        when(session.createQuery(FIND_BY_TRAINER_USERNAME_AND_TRAINING_YEAR_AND_MONTH, Training.class)).thenReturn(query);
-        when(query.setParameter("username", trainerUsername)).thenReturn(query);
-        when(query.setParameter("year", year)).thenReturn(query);
-        when(query.setParameter("month", month)).thenReturn(query);
-        when(query.getResultList()).thenReturn(List.of(training));
-
-        List<Training> result = trainingDAO.findByTrainerUsernameAndTrainingYearAndMonth(trainerUsername, year, month);
-
-        assertEquals(1, result.size());
-        assertEquals(training, result.get(0));
-        verify(session, times(1)).createQuery(FIND_BY_TRAINER_USERNAME_AND_TRAINING_YEAR_AND_MONTH, Training.class);
-        verify(query, times(1)).setParameter("username", trainerUsername);
-        verify(query, times(1)).setParameter("year", year);
-        verify(query, times(1)).setParameter("month", month);
-        verify(query, times(1)).getResultList();
-    }
-
 }

@@ -1,6 +1,6 @@
 package uz.ccrew.service.impl;
 
-import uz.ccrew.entity.User;
+import org.springframework.http.ResponseEntity;
 import uz.ccrew.entity.Trainee;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.dao.TraineeDAO;
@@ -13,7 +13,7 @@ import uz.ccrew.dto.training.TrainingDTO;
 import uz.ccrew.service.TrainerWorkloadClient;
 import uz.ccrew.dto.training.TrainerWorkloadDTO;
 import uz.ccrew.exp.exp.EntityNotFoundException;
-import uz.ccrew.dto.training.TrainerMonthlySummaryDTO;
+import uz.ccrew.dto.training.summary.TrainerMonthlySummaryDTO;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -107,48 +106,21 @@ public class TrainingServiceImpl implements TrainingService {
 
 
     @Override
-    @Transactional(readOnly = true)
-    public TrainerMonthlySummaryDTO getMonthlyWorkload(String username, int year, int month) {
-        List<Training> trainings = trainingDAO.findByTrainerUsernameAndTrainingYearAndMonth(username, year, month);
+    @CircuitBreaker(name = "trainerWorkloadCB", fallbackMethod = "fallGetMonthlyWorkload")
+    public List<TrainerMonthlySummaryDTO> getMonthlyWorkload(String username) {
+        ResponseEntity<List<TrainerMonthlySummaryDTO>> trainerMonthlySummaryDTOS = trainerWorkloadClient.getMonthlyWorkload(username);
+        return trainerMonthlySummaryDTOS.getBody();
+    }
 
-        if (trainings.isEmpty()) {
-            Optional<Trainer> trainerOptional = trainerDAO.findByUsername(username);
-            if (trainerOptional.isPresent()) {
-                Trainer trainer = trainerOptional.get();
-                return TrainerMonthlySummaryDTO.builder()
-                        .trainerUsername(username)
-                        .trainerFirstName(trainer.getUser().getFirstName())
-                        .trainerLastName(trainer.getUser().getLastName())
-                        .years(year)
-                        .months(month)
-                        .totalDuration(0.0)
-                        .build();
-            }
-        }
-
-        Training firstTraining = trainings.getFirst();
-        User user = firstTraining.getTrainer().getUser();
-
-        double totalDuration = trainings.stream()
-                .mapToDouble(Training::getTrainingDuration)
-                .sum();
-
-        return TrainerMonthlySummaryDTO.builder()
-                .trainerUsername(user.getUsername())
-                .trainerFirstName(user.getFirstName())
-                .trainerLastName(user.getLastName())
-                .isActive(user.getIsActive())
-                .years(year)
-                .months(month)
-                .totalDuration(totalDuration)
-                .build();
+    private void fallbackGetMonthlyWorkload(String username, Throwable ex) {
+        log.error("Fallback triggered: trainer-workload-service is unavailable for getting Monthly Workload", ex);
     }
 
     private void fallbackSendTrainingData(TrainingDTO dto, Throwable ex) {
-        log.error("Fallback triggered: trainer-workload-service is unavailable", ex);
+        log.error("Fallback triggered: trainer-workload-service is unavailable for sending Training data", ex);
     }
 
     private void fallbackDeleteTrainingData(Long id, Throwable ex) {
-        log.error("Fallback triggered: trainer-workload-service is unavailable", ex);
+        log.error("Fallback triggered: trainer-workload-service is unavailable for deleting Training data", ex);
     }
 }

@@ -1,10 +1,12 @@
-package uz.ccrew.dto.training;
+package uz.ccrew.dto.training.summary;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.experimental.SuperBuilder;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,7 +18,5 @@ public class TrainerMonthlySummaryDTO {
     private String trainerFirstName;
     private String trainerLastName;
     private boolean isActive;
-    private int years;
-    private int months;
-    private double totalDuration;
+    List<YearsDTO> years;
 }

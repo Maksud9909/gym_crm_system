@@ -6,16 +6,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import uz.ccrew.dao.TraineeDAO;
 import uz.ccrew.dao.TrainerDAO;
 import uz.ccrew.dao.TrainingDAO;
-import uz.ccrew.dto.training.TrainerMonthlySummaryDTO;
+import uz.ccrew.dto.training.summary.TrainerMonthlySummaryDTO;
 import uz.ccrew.dto.training.TrainingDTO;
 import uz.ccrew.entity.*;
 import uz.ccrew.exp.exp.EntityNotFoundException;
 import uz.ccrew.service.TrainerWorkloadClient;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,6 +47,7 @@ class TrainingServiceImplTest {
     private Trainer trainer;
     private TrainingType trainingType;
     private Training training;
+    private TrainerMonthlySummaryDTO trainerMonthlySummaryDTO;
 
     @BeforeEach
     void setUp() {
@@ -74,20 +78,15 @@ class TrainingServiceImplTest {
                 .trainingDate(LocalDate.now())
                 .trainingDuration(2.0)
                 .build();
+
+        trainerMonthlySummaryDTO.builder()
+                .trainerUsername("test")
+                .trainerLastName("test")
+                .trainerFirstName("test")
+                .isActive(Boolean.TRUE)
+                .years(new ArrayList<>())
+                .build();
     }
-
-    @Test
-    void getMonthlyWorkload_ShouldReturnSummary_WhenTrainingsExist() {
-        when(trainingDAO.findByTrainerUsernameAndTrainingYearAndMonth("trainer_user", 2025, 3))
-                .thenReturn(List.of(training));
-
-        TrainerMonthlySummaryDTO summary = trainingService.getMonthlyWorkload("trainer_user", 2025, 3);
-
-        assertNotNull(summary);
-        assertEquals("test", summary.getTrainerUsername());
-        assertEquals(2.0, summary.getTotalDuration());
-    }
-
 
     @Test
     void deleteTraining_ShouldDeleteTraining_WhenTrainingExists() {
@@ -148,5 +147,12 @@ class TrainingServiceImplTest {
 
         assertThrows(EntityNotFoundException.class, () -> trainingService.addTraining(dto));
         verify(trainingDAO, never()).create(any(Training.class));
+    }
+
+    @Test
+    void getMonthlyWorkload() {
+        ResponseEntity<List<TrainerMonthlySummaryDTO>> summaryDTO = new ResponseEntity<>(HttpStatusCode.valueOf(200));
+        when(trainerWorkloadClient.getMonthlyWorkload(trainer.getUser().getUsername())).thenReturn(summaryDTO);
+        trainingService.getMonthlyWorkload(trainer.getUser().getUsername());
     }
 }
