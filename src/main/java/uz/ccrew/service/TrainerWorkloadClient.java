@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 
 @FeignClient(name = "trainer-workload-service",
-        url = "http://localhost:8081",
         path = "api/v1/trainings/workload")
 public interface TrainerWorkloadClient {
 
