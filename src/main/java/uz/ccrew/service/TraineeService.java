@@ -8,6 +8,7 @@ import uz.ccrew.service.base.BaseAdvancedUserService;
 import uz.ccrew.service.base.BaseService;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface TraineeService extends BaseService<UserCredentials, TraineeCreateDTO, TraineeProfileDTO> {
@@ -18,5 +19,5 @@ public interface TraineeService extends BaseService<UserCredentials, TraineeCrea
 
     TraineeProfileUsernameDTO update(TraineeUpdateDTO dto);
 
-    List<TraineeTrainingDTO> getTraineeTrainings(String username, LocalDate periodFrom, LocalDate periodTo, String trainerName, String trainingTypeName);
+    List<TraineeTrainingDTO> getTraineeTrainings(String username, LocalDateTime periodFrom, LocalDateTime periodTo, String trainerName, String trainingTypeName);
 }

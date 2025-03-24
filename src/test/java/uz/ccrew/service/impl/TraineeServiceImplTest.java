@@ -21,6 +21,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.time.LocalDate;
@@ -217,8 +218,8 @@ class TraineeServiceImplTest {
     @Test
     void getTraineeTrainings() {
         String username = "testUser";
-        LocalDate periodFrom = LocalDate.of(2023, 1, 1);
-        LocalDate periodTo = LocalDate.of(2023, 12, 31);
+        LocalDateTime periodFrom = LocalDateTime.of(2023, 1, 1, 5, 22);
+        LocalDateTime periodTo = LocalDateTime.of(2023, 12, 31, 10, 22);
         String trainerName = "John Doe";
         String trainingTypeName = "Cardio";
 
@@ -236,7 +237,7 @@ class TraineeServiceImplTest {
 
         Training mockTraining = Training.builder()
                 .trainingName("Morning Cardio")
-                .trainingDate(LocalDate.of(2023, 5, 15))
+                .trainingDate(LocalDateTime.of(2023, 5, 15, 2, 2))
                 .trainingDuration(1.5)
                 .trainer(trainer)
                 .trainingType(trainingType)
@@ -252,7 +253,7 @@ class TraineeServiceImplTest {
         assertEquals(1, trainingDTOS.size());
         TraineeTrainingDTO dto = trainingDTOS.get(0);
         assertEquals("Morning Cardio", dto.getTrainingName());
-        assertEquals(LocalDate.of(2023, 5, 15), dto.getTrainingDate());
+        assertEquals(LocalDateTime.of(2023, 5, 15, 2, 2), dto.getTrainingDate());
         assertEquals("Cardio", dto.getTrainingType());
         assertEquals(1.5, dto.getTrainingDuration());
         assertEquals("John", dto.getTrainerName());

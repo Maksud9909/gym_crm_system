@@ -21,6 +21,7 @@ import uz.ccrew.exp.exp.EntityNotFoundException;
 import uz.ccrew.service.TrainerWorkloadClient;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -80,7 +81,7 @@ class TrainingServiceImplTest {
         training = Training.builder()
                 .id(1L)
                 .trainer(trainer)
-                .trainingDate(LocalDate.now())
+                .trainingDate(LocalDateTime.now())
                 .trainingDuration(2.0)
                 .build();
 
@@ -109,7 +110,7 @@ class TrainingServiceImplTest {
                 .traineeUsername("trainee_user")
                 .trainerUsername("trainer_user")
                 .trainingName("Morning Yoga")
-                .trainingDate(LocalDate.now())
+                .trainingDate(LocalDateTime.now())
                 .trainingDuration(2.0)
                 .build();
 
@@ -126,7 +127,7 @@ class TrainingServiceImplTest {
                 .traineeUsername("nonexistent_trainee")
                 .trainerUsername("trainer_user")
                 .trainingName("Morning Yoga")
-                .trainingDate(LocalDate.now())
+                .trainingDate(LocalDateTime.now())
                 .trainingDuration(2.0)
                 .build();
 
@@ -143,7 +144,7 @@ class TrainingServiceImplTest {
                 .traineeUsername("trainee_user")
                 .trainerUsername("nonexistent_trainer")
                 .trainingName("Morning Yoga")
-                .trainingDate(LocalDate.now())
+                .trainingDate(LocalDateTime.now())
                 .trainingDuration(2.0)
                 .build();
 

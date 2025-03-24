@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class TrainingControllerTest {
     @Test
     void addTraining() {
         TrainingDTO trainingDTO = TrainingDTO.builder()
-                .trainingDate(LocalDate.now())
+                .trainingDate(LocalDateTime.now())
                 .trainingDuration(90.0)
                 .trainingName("Training Name")
                 .traineeUsername("Trainee username")

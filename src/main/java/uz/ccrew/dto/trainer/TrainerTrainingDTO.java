@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 @Builder
@@ -14,7 +15,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class TrainerTrainingDTO {
     private String trainingName;
-    private LocalDate trainingDate;
+    private LocalDateTime trainingDate;
     private String trainingType;
     private Double trainingDuration;
     private String traineeName;

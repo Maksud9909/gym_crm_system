@@ -6,13 +6,14 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class QueryBuilder {
 
     public static Query<Training> buildAndSetTraineeTrainingsQuery(Session session,
                                                                    String username,
-                                                                   LocalDate fromDate,
-                                                                   LocalDate toDate,
+                                                                   LocalDateTime fromDate,
+                                                                   LocalDateTime toDate,
                                                                    String trainerName,
                                                                    String trainingTypeName) {
         StringBuilder queryBuilder = new StringBuilder(
@@ -57,8 +58,8 @@ public class QueryBuilder {
 
     public static Query<Training> buildAndSetTrainerTrainingsQuery(Session session,
                                                                    String username,
-                                                                   LocalDate fromDate,
-                                                                   LocalDate toDate,
+                                                                   LocalDateTime fromDate,
+                                                                   LocalDateTime toDate,
                                                                    String traineeName) {
         StringBuilder queryBuilder = new StringBuilder(
                 "SELECT t FROM Training t " +

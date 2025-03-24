@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.NotBlank;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Builder
 @Getter
@@ -24,7 +24,7 @@ public class TrainerWorkloadDTO {
     private String trainerLastName;
     private boolean isActive;
     @NotNull(message = "Training date should not be null")
-    private LocalDate trainingDate;
+    private LocalDateTime trainingDate;
     @NotNull(message = "Training duration should not be null")
     private Double trainingDuration;
     @NotNull(message = "Action type should not be null")

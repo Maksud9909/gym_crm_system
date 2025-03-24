@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import jakarta.validation.constraints.NotBlank;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Builder
 @Getter
@@ -19,6 +19,6 @@ public class TrainingDTO {
     private String trainerUsername;
     @NotBlank(message = "Training name should be not empty")
     private String trainingName;
-    private LocalDate trainingDate;
+    private LocalDateTime trainingDate;
     private Double trainingDuration;
 }
