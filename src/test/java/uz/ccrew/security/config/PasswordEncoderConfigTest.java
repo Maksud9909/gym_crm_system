@@ -9,7 +9,8 @@ class PasswordEncoderConfigTest {
     @Test
     void passwordEncoder() {
         PasswordEncoderConfig config = new PasswordEncoderConfig();
-        String encodedPassword = config.passwordEncoder().encode("test");
-        assertTrue(config.passwordEncoder().matches("test", encodedPassword));
+        String rawPassword = "password";
+        String encodedPassword = config.passwordEncoder().encode("password");
+        assertTrue(config.passwordEncoder().matches(rawPassword, encodedPassword));
     }
 }
