@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -75,52 +76,18 @@ public class TrainingServiceImpl implements TrainingService {
     }
 
     @Override
-    @Transactional
-    @CircuitBreaker(name = "trainerWorkloadCB", fallbackMethod = "fallbackDeleteTrainingData")
-    public void deleteTraining(Long trainingId) {
-        Training training = trainingDAO.findById(trainingId)
-                .orElseThrow(() -> new EntityNotFoundException("Training with id=" + trainingId + " not found"));
-
-        Trainer trainer = training.getTrainer();
-
-        TrainerWorkloadDTO workloadDTO = new TrainerWorkloadDTO(
-                trainer.getUser().getUsername(),
-                trainer.getUser().getFirstName(),
-                trainer.getUser().getLastName(),
-                trainer.getUser().getIsActive(),
-                training.getTrainingDate(),
-                training.getTrainingDuration(),
-                ActionType.DELETE
-        );
-
-        trainingDAO.delete(training);
-
-        try {
-            log.info("Sending training data to trainer-workload-service to Action-Type DELETE");
-            trainerWorkloadClient.sendTrainingData(workloadDTO);
-            log.info("Successfully sent training data to trainer-workload-service for Action-Type DELETE");
-        } catch (Exception e) {
-            log.error("Failed to send DELETE request to trainer-workload-service", e);
-        }
-    }
-
-
-    @Override
-    @CircuitBreaker(name = "trainerWorkloadCB", fallbackMethod = "fallGetMonthlyWorkload")
+    @CircuitBreaker(name = "trainerWorkloadCB", fallbackMethod = "fallbackGetMonthlyWorkload")
     public List<TrainerMonthlySummaryDTO> getMonthlyWorkload(String username) {
         ResponseEntity<List<TrainerMonthlySummaryDTO>> trainerMonthlySummaryDTOS = trainerWorkloadClient.getMonthlyWorkload(username);
         return trainerMonthlySummaryDTOS.getBody();
     }
 
-    private void fallbackGetMonthlyWorkload(String username, Throwable ex) {
+    private List<TrainerMonthlySummaryDTO> fallbackGetMonthlyWorkload(String username, Throwable ex) {
         log.error("Fallback triggered: trainer-workload-service is unavailable for getting Monthly Workload", ex);
+        return Collections.emptyList();
     }
 
     private void fallbackSendTrainingData(TrainingDTO dto, Throwable ex) {
         log.error("Fallback triggered: trainer-workload-service is unavailable for sending Training data", ex);
-    }
-
-    private void fallbackDeleteTrainingData(Long id, Throwable ex) {
-        log.error("Fallback triggered: trainer-workload-service is unavailable for deleting Training data", ex);
     }
 }

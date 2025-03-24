@@ -131,7 +131,7 @@ class TraineeServiceImplTest {
 
         traineeService.deleteTraineeByUsername("test_user");
 
-        verify(traineeDAO, times(1)).delete(1L);
+        verify(traineeDAO, times(1)).delete(trainee);
     }
 
     @Test
@@ -139,7 +139,7 @@ class TraineeServiceImplTest {
         when(traineeDAO.findByUsername("nonexistent_user")).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> traineeService.deleteTraineeByUsername("nonexistent_user"));
-        verify(traineeDAO, never()).delete(anyLong());
+        verify(traineeDAO, never()).delete(trainee);
     }
 
     @Test
@@ -257,5 +257,4 @@ class TraineeServiceImplTest {
         assertEquals(1.5, dto.getTrainingDuration());
         assertEquals("John", dto.getTrainerName());
     }
-
 }

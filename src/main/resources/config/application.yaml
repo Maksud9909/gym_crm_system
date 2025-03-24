@@ -64,3 +64,14 @@ resilience4j:
           - java.net.SocketTimeoutException
           - feign.RetryableException
           - org.springframework.cloud.client.circuitbreaker.NoFallbackAvailableException
+      traineeCB:
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10000
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 10
+        recordExceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - java.net.ConnectException
+          - java.net.SocketTimeoutException
+          - feign.RetryableException
+          - org.springframework.cloud.client.circuitbreaker.NoFallbackAvailableException

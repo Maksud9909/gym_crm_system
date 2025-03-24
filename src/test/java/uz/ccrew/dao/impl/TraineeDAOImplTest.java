@@ -55,22 +55,19 @@ class TraineeDAOImplTest {
 
     @Test
     void delete_ShouldDeleteTrainee_WhenTraineeExists() {
-        MutationQuery mutationQuery = mock(MutationQuery.class);
-        when(session.createMutationQuery(anyString())).thenReturn(mutationQuery);
-        when(mutationQuery.setParameter(eq("id"), anyLong())).thenReturn(mutationQuery);
-        when(mutationQuery.executeUpdate()).thenReturn(1);
-        traineeDAO.delete(1L);
-        verify(session, times(1)).flush();
-        verify(session, times(1)).clear();
+        traineeDAO.delete(trainee);
+        verify(session, times(1)).remove(trainee);
     }
 
     @Test
     void delete_ShouldThrowException_WhenTraineeNotFound() {
-        MutationQuery mutationQuery = mock(MutationQuery.class);
-        when(session.createMutationQuery(anyString())).thenReturn(mutationQuery);
-        when(mutationQuery.setParameter(eq("id"), anyLong())).thenReturn(mutationQuery);
-        when(mutationQuery.executeUpdate()).thenReturn(0);
-        assertThrows(EntityNotFoundException.class, () -> traineeDAO.delete(1L));
+        doThrow(new EntityNotFoundException("Trainee not found")).when(session).remove(any(Trainee.class));
+
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
+            traineeDAO.delete(trainee);
+        });
+
+        assertEquals("Trainee not found", thrown.getMessage());
     }
 
     @Test

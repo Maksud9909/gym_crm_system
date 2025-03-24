@@ -88,15 +88,6 @@ class TrainingServiceImplTest {
                 .build();
     }
 
-    @Test
-    void deleteTraining_ShouldDeleteTraining_WhenTrainingExists() {
-        when(trainingDAO.findById(1L)).thenReturn(Optional.of(training));
-
-        trainingService.deleteTraining(1L);
-
-        verify(trainingDAO, times(1)).delete(training);
-        verify(trainerWorkloadClient, times(1)).sendTrainingData(any());
-    }
 
     @Test
     void addTraining_ShouldCreateTraining_WhenValidDataProvided() {

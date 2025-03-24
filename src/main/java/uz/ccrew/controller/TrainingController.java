@@ -29,13 +29,6 @@ public class TrainingController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/delete/{id}")
-    @Operation(summary = "Delete Training")
-    public ResponseEntity<?> deleteTraining(@PathVariable("id") Long id) {
-        trainingService.deleteTraining(id);
-        return ResponseEntity.ok().build();
-    }
-
     @GetMapping("/monthly/workload/{username}")
     public ResponseEntity<List<TrainerMonthlySummaryDTO>> getMonthlyWorkload(@PathVariable("username") String username) {
         List<TrainerMonthlySummaryDTO> result = trainingService.getMonthlyWorkload(username);

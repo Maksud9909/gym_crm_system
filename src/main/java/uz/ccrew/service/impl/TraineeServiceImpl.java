@@ -1,13 +1,17 @@
 package uz.ccrew.service.impl;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import uz.ccrew.dao.TrainingDAO;
 import uz.ccrew.dto.trainee.*;
+import uz.ccrew.dto.training.TrainerWorkloadDTO;
 import uz.ccrew.dto.training.TrainingTrainerUpdateDTO;
 import uz.ccrew.entity.*;
 import uz.ccrew.dao.TrainerDAO;
 import uz.ccrew.dao.TraineeDAO;
+import uz.ccrew.enums.ActionType;
 import uz.ccrew.exp.exp.TrainingNotAssociatedException;
+import uz.ccrew.service.TrainerWorkloadClient;
 import uz.ccrew.utils.UserUtils;
 import uz.ccrew.dto.trainer.TrainerDTO;
 import uz.ccrew.service.TraineeService;
@@ -32,6 +36,7 @@ public class TraineeServiceImpl implements TraineeService {
     private final TrainerDAO trainerDAO;
     private final TrainingDAO trainingDAO;
     private final PasswordEncoder passwordEncoder;
+    private final TrainerWorkloadClient trainerWorkloadClient;
 
     @Override
     @Transactional
@@ -117,6 +122,7 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     @Transactional
+    @CircuitBreaker(name = "traineeCB", fallbackMethod = "fallbackDeleteTrainingData")
     public void deleteTraineeByUsername(String username) {
         log.info("Deleting trainee by username={}", username);
         Trainee trainee = traineeDAO.findByUsername(username)
@@ -124,7 +130,25 @@ public class TraineeServiceImpl implements TraineeService {
                     log.error("Trainee with username={} not found", username);
                     return new EntityNotFoundException("Trainee with username=" + username + " not found");
                 });
-        traineeDAO.delete(trainee.getId());
+
+        List<Training> traineeTrainings = new ArrayList<>(trainee.getTraining());
+
+        if (!traineeTrainings.isEmpty()) {
+            for (Training training : traineeTrainings) {
+                TrainerWorkloadDTO trainerWorkloadDTO = TrainerWorkloadDTO.builder()
+                        .trainerUsername(training.getTrainer().getUser().getUsername())
+                        .trainerFirstName(training.getTrainer().getUser().getFirstName())
+                        .trainerLastName(training.getTrainer().getUser().getLastName())
+                        .isActive(training.getTrainer().getUser().getIsActive())
+                        .trainingDuration(training.getTrainingDuration())
+                        .trainingDate(training.getTrainingDate())
+                        .actionType(ActionType.DELETE)
+                        .build();
+                trainingDAO.delete(training);
+                trainerWorkloadClient.sendTrainingData(trainerWorkloadDTO);
+            }
+        }
+        traineeDAO.delete(trainee);
         log.info("Trainee with username={} deleted successfully", username);
     }
 
@@ -193,5 +217,10 @@ public class TraineeServiceImpl implements TraineeService {
                 .isActive(trainee.getUser().getIsActive())
                 .trainers(trainerDTOS)
                 .build();
+    }
+
+
+    private void fallbackDeleteTrainingData(String username, Throwable ex) {
+        log.error("Fallback triggered: trainer-workload-service is unavailable for deleting Training data", ex);
     }
 }

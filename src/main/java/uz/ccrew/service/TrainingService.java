@@ -8,7 +8,5 @@ import java.util.List;
 public interface TrainingService {
     void addTraining(TrainingDTO dto);
 
-    void deleteTraining(Long trainingId);
-
     List<TrainerMonthlySummaryDTO> getMonthlyWorkload(String username);
 }

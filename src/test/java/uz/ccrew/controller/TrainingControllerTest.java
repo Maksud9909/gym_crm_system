@@ -1,8 +1,8 @@
 package uz.ccrew.controller;
 
-import uz.ccrew.dto.training.summary.TrainerMonthlySummaryDTO;
 import uz.ccrew.service.TrainingService;
 import uz.ccrew.dto.training.TrainingDTO;
+import uz.ccrew.dto.training.summary.TrainerMonthlySummaryDTO;
 
 import org.mockito.Mock;
 import org.mockito.InjectMocks;
@@ -12,9 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,16 +39,6 @@ public class TrainingControllerTest {
         ResponseEntity<?> response = trainingController.addTraining(trainingDTO);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         verify(trainingService, times(1)).addTraining(trainingDTO);
-    }
-
-    @Test
-    void deleteTraining() {
-        Long trainingId = 1L;
-
-        ResponseEntity<?> response = trainingController.deleteTraining(trainingId);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        verify(trainingService, times(1)).deleteTraining(trainingId);
     }
 
     @Test

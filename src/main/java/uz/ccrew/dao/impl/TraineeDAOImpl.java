@@ -20,10 +20,7 @@ import java.util.Optional;
 public class TraineeDAOImpl implements TraineeDAO {
     private final SessionFactory sessionFactory;
     private static final String NOT_FOUND_LOG = "Trainee with {} not found";
-    private static final String DELETE_BY_ID = "DELETE FROM Trainee t WHERE t.id = :id";
     private static final String FIND_TRAINEE_BY_USERNAME = "FROM Trainee t where t.user.username = :username";
-    private static final String FIND_TRAINER_BY_USERNAME = "FROM Trainer t WHERE t.user.username = :usernames";
-    public static final String FIND_TRAINING_BY_ID = "FROM Training t WHERE t.id = :id";
 
     @Override
     public Long create(Trainee trainee) {
@@ -34,20 +31,10 @@ public class TraineeDAOImpl implements TraineeDAO {
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(Trainee trainee) {
         Session session = getSessionFactory().getCurrentSession();
-        int deletedCount = session.createMutationQuery(DELETE_BY_ID)
-                .setParameter("id", id)
-                .executeUpdate();
-        session.flush();
-        session.clear();
-
-        if (deletedCount > 0) {
-            log.info("Deleted Trainee with ID:{}", id);
-        } else {
-            log.error("Trainee with ID:{} not found for delete", id);
-            throw new EntityNotFoundException("Trainee with ID:" + id + " not found for delete");
-        }
+        session.remove(trainee);
+        log.info("Deleted Trainer:{} with ID:{}", trainee, trainee.getId());
     }
 
     @Override
