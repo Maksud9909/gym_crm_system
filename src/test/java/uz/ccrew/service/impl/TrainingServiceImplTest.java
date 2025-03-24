@@ -6,13 +6,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import uz.ccrew.dao.TraineeDAO;
 import uz.ccrew.dao.TrainerDAO;
 import uz.ccrew.dao.TrainingDAO;
+import uz.ccrew.dto.training.summary.MonthsDTO;
 import uz.ccrew.dto.training.summary.TrainerMonthlySummaryDTO;
 import uz.ccrew.dto.training.TrainingDTO;
+import uz.ccrew.dto.training.summary.YearsDTO;
 import uz.ccrew.entity.*;
 import uz.ccrew.exp.exp.EntityNotFoundException;
 import uz.ccrew.service.TrainerWorkloadClient;
@@ -20,10 +23,12 @@ import uz.ccrew.service.TrainerWorkloadClient;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.http.HttpStatus.OK;
 
 @ExtendWith(MockitoExtension.class)
 class TrainingServiceImplTest {
@@ -79,12 +84,18 @@ class TrainingServiceImplTest {
                 .trainingDuration(2.0)
                 .build();
 
-        trainerMonthlySummaryDTO.builder()
+        trainerMonthlySummaryDTO = TrainerMonthlySummaryDTO.builder()
                 .trainerUsername("test")
                 .trainerLastName("test")
                 .trainerFirstName("test")
                 .isActive(Boolean.TRUE)
-                .years(new ArrayList<>())
+                .years(List.of(YearsDTO.builder()
+                        .year(2025)
+                        .months(List.of(MonthsDTO.builder()
+                                .month("January")
+                                .totalDuration(60)
+                                .build()))
+                        .build()))
                 .build();
     }
 
@@ -142,8 +153,10 @@ class TrainingServiceImplTest {
 
     @Test
     void getMonthlyWorkload() {
-        ResponseEntity<List<TrainerMonthlySummaryDTO>> summaryDTO = new ResponseEntity<>(HttpStatusCode.valueOf(200));
-        when(trainerWorkloadClient.getMonthlyWorkload(trainer.getUser().getUsername())).thenReturn(summaryDTO);
-        trainingService.getMonthlyWorkload(trainer.getUser().getUsername());
+        ResponseEntity<List<TrainerMonthlySummaryDTO>> summaryDTO = ResponseEntity.ok(List.of(trainerMonthlySummaryDTO));
+        when(trainerWorkloadClient.getMonthlyWorkload(trainerMonthlySummaryDTO.getTrainerUsername()))
+                .thenReturn(ResponseEntity.ok(List.of(trainerMonthlySummaryDTO)));
+        List<TrainerMonthlySummaryDTO> summaryDTOS = trainingService.getMonthlyWorkload(trainerMonthlySummaryDTO.getTrainerUsername());
+        assertEquals(summaryDTO.getBody(), summaryDTOS);
     }
 }
