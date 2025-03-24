@@ -1,22 +1,22 @@
 package uz.ccrew.dto.training.summary;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import lombok.experimental.SuperBuilder;
+import lombok.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import java.util.List;
 
 @Getter
 @Setter
-@SuperBuilder
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonPropertyOrder({"trainerUsername", "trainerFirstName", "trainerLastName", "isActive", "years"})
 public class TrainerMonthlySummaryDTO {
     private String trainerUsername;
     private String trainerFirstName;
     private String trainerLastName;
+    @JsonProperty("isActive")
     private boolean isActive;
     List<YearsDTO> years;
 }

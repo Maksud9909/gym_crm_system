@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 
 @FeignClient(name = "trainer-workload-service",
-        path = "api/v1/trainings/workload")
+        path = "/api/v1/trainers")
 public interface TrainerWorkloadClient {
 
-    @PostMapping("/process")
+    @PostMapping("/")
     ResponseEntity<String> sendTrainingData(@RequestBody TrainerWorkloadDTO trainingDTO);
 
-    @GetMapping("{username}")
+    @GetMapping("/{username}/workload")
     ResponseEntity<List<TrainerMonthlySummaryDTO>> getMonthlyWorkload(@PathVariable("username") String username);
 }

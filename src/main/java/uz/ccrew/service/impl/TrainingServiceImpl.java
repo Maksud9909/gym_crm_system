@@ -1,6 +1,5 @@
 package uz.ccrew.service.impl;
 
-import org.springframework.http.ResponseEntity;
 import uz.ccrew.entity.Trainee;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.dao.TraineeDAO;
@@ -18,11 +17,13 @@ import uz.ccrew.dto.training.summary.TrainerMonthlySummaryDTO;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -78,8 +79,12 @@ public class TrainingServiceImpl implements TrainingService {
     @Override
     @CircuitBreaker(name = "trainerWorkloadCB", fallbackMethod = "fallbackGetMonthlyWorkload")
     public List<TrainerMonthlySummaryDTO> getMonthlyWorkload(String username) {
-        ResponseEntity<List<TrainerMonthlySummaryDTO>> trainerMonthlySummaryDTOS = trainerWorkloadClient.getMonthlyWorkload(username);
-        return trainerMonthlySummaryDTOS.getBody();
+        ResponseEntity<List<TrainerMonthlySummaryDTO>> response = trainerWorkloadClient.getMonthlyWorkload(username);
+        if (Objects.requireNonNull(response.getBody()).isEmpty()) {
+            log.info("No trainer workload found for username: {}", username);
+            return Collections.emptyList();
+        }
+        return response.getBody();
     }
 
     private List<TrainerMonthlySummaryDTO> fallbackGetMonthlyWorkload(String username, Throwable ex) {
