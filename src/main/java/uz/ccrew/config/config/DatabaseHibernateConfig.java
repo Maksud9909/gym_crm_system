@@ -1,4 +1,4 @@
-package uz.ccrew.config;
+package uz.ccrew.config.config;
 
 import lombok.extern.slf4j.Slf4j;
 import com.mchange.v2.c3p0.ComboPooledDataSource;

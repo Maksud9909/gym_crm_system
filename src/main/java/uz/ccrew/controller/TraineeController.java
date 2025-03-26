@@ -15,7 +15,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 import java.util.List;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/v1/trainee")
@@ -26,7 +26,7 @@ public class TraineeController {
     private final TraineeService traineeService;
 
     @CrossOrigin(origins = "http://localhost:3000")
-    @PostMapping("/create")
+    @PostMapping("/")
     @Operation(summary = "Create a Trainee")
     public ResponseEntity<UserCredentials> create(@Valid @RequestBody TraineeCreateDTO dto) {
         UserCredentials result = traineeService.create(dto);
@@ -40,14 +40,14 @@ public class TraineeController {
         return ResponseEntity.ok(result);
     }
 
-    @PutMapping("/update")
+    @PutMapping("/")
     @Operation(summary = "Update Trainee")
     public ResponseEntity<TraineeProfileUsernameDTO> update(@Valid @RequestBody TraineeUpdateDTO dto) {
         TraineeProfileUsernameDTO result = traineeService.update(dto);
         return ResponseEntity.ok(result);
     }
 
-    @DeleteMapping("/delete/{username}")
+    @DeleteMapping("/{username}")
     @Operation(summary = "Delete by username")
     public ResponseEntity<?> deleteTraineeByUsername(@PathVariable("username") String username) {
         traineeService.deleteTraineeByUsername(username);
@@ -64,8 +64,8 @@ public class TraineeController {
     @GetMapping("/{username}/trainings")
     @Operation(summary = "Get Trainee Trainings List")
     public ResponseEntity<List<TraineeTrainingDTO>> getTraineeTrainings(@PathVariable("username") String username,
-                                                                        @RequestParam(name = "periodFrom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate periodFrom,
-                                                                        @RequestParam(name = "periodTo", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate periodTo,
+                                                                        @RequestParam(name = "periodFrom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime periodFrom,
+                                                                        @RequestParam(name = "periodTo", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime periodTo,
                                                                         @RequestParam(name = "trainerName", required = false) String trainerName,
                                                                         @RequestParam(name = "trainingTypeName", required = false) String trainingTypeName) {
         List<TraineeTrainingDTO> result = traineeService.getTraineeTrainings(username, periodFrom, periodTo, trainerName, trainingTypeName);

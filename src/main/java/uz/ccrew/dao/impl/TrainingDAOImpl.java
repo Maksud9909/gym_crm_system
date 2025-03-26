@@ -12,6 +12,7 @@ import org.hibernate.SessionFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.time.LocalDate;
 import java.util.Optional;
@@ -35,8 +36,8 @@ public class TrainingDAOImpl implements TrainingDAO {
 
     @Override
     public List<Training> getTraineeTrainings(String username,
-                                              LocalDate fromDate,
-                                              LocalDate toDate,
+                                              LocalDateTime fromDate,
+                                              LocalDateTime toDate,
                                               String trainerName,
                                               String trainingTypeName) {
         Session session = getSessionFactory().getCurrentSession();
@@ -49,8 +50,8 @@ public class TrainingDAOImpl implements TrainingDAO {
 
     @Override
     public List<Training> getTrainerTrainings(String username,
-                                              LocalDate fromDate,
-                                              LocalDate toDate,
+                                              LocalDateTime fromDate,
+                                              LocalDateTime toDate,
                                               String traineeName) {
         Session session = getSessionFactory().getCurrentSession();
         Query<Training> query = QueryBuilder.buildAndSetTrainerTrainingsQuery(session, username, fromDate,
@@ -70,5 +71,11 @@ public class TrainingDAOImpl implements TrainingDAO {
     public void update(Training training) {
         Session session = getSessionFactory().getCurrentSession();
         session.merge(training);
+    }
+
+    @Override
+    public void delete(Training training) {
+        Session session = getSessionFactory().getCurrentSession();
+        session.remove(training);
     }
 }

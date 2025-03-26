@@ -59,4 +59,10 @@ class UserControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         verify(userService, times(1)).activateDeactivate(username, isActive);
     }
+
+    @Test
+    void logout(){
+        ResponseEntity<?> response = userController.logout();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
 }

@@ -16,6 +16,7 @@ import uz.ccrew.entity.Trainer;
 import uz.ccrew.utils.QueryBuilder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,6 +36,12 @@ class TrainingDAOImplTest {
     private TrainingDAOImpl trainingDAO;
 
     private Training training;
+    private static final String FIND_BY_TRAINER_USERNAME_AND_TRAINING_YEAR_AND_MONTH = "SELECT t FROM Training t " +
+                                                                                       "JOIN t.trainer tr " +
+                                                                                       "JOIN tr.user u " +
+                                                                                       "WHERE u.username = :username " +
+                                                                                       "AND YEAR(t.trainingDate) = :year " +
+                                                                                       "AND MONTH(t.trainingDate) = :month";
 
     @BeforeEach
     void setUp() {
@@ -42,11 +49,18 @@ class TrainingDAOImplTest {
         training = Training.builder()
                 .id(1L)
                 .trainingName("Test Training")
-                .trainingDate(LocalDate.now())
+                .trainingDate(LocalDateTime.now())
                 .trainingDuration(2.0)
                 .trainee(Trainee.builder().id(1L).build())
                 .trainer(Trainer.builder().id(1L).build())
                 .build();
+    }
+
+    @Test
+    void delete_ShouldRemoveTraining() {
+        trainingDAO.delete(training);
+
+        verify(session, times(1)).remove(training);
     }
 
     @Test
@@ -59,8 +73,8 @@ class TrainingDAOImplTest {
     @Test
     void getTraineeTrainings_ShouldReturnListOfTrainings() {
         String username = "trainee_user";
-        LocalDate fromDate = LocalDate.now().minusDays(5);
-        LocalDate toDate = LocalDate.now();
+        LocalDateTime fromDate = LocalDateTime.now().minusDays(5);
+        LocalDateTime toDate = LocalDateTime.now();
         String trainerName = "trainer_name";
         String trainingTypeName = "type_name";
 
@@ -81,8 +95,8 @@ class TrainingDAOImplTest {
     @Test
     void getTrainerTrainings_ShouldReturnListOfTrainings() {
         String username = "trainer_user";
-        LocalDate fromDate = LocalDate.now().minusDays(5);
-        LocalDate toDate = LocalDate.now();
+        LocalDateTime fromDate = LocalDateTime.now().minusDays(5);
+        LocalDateTime toDate = LocalDateTime.now();
         String traineeName = "trainee_name";
 
         Query<Training> query = mock(Query.class);

@@ -4,6 +4,14 @@ spring:
   # Hibernate-specific transaction configuration
   jpa:
     open-in-view: false
+  cloud:
+    compatibility-verifier:
+      enabled: false
+    openfeign:
+      circuitbreaker:
+        enabled: true
+  application:
+    name: gym-crm-system
 
 # JWT
 security:
@@ -34,3 +42,36 @@ cors:
   allowed-methods: "GET,POST,PUT,DELETE,OPTIONS"
   allowed-headers: "Authorization,Content-Type"
   allow-credentials: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      trainerWorkloadCB:
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10000
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 10
+        recordExceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - java.net.ConnectException
+          - java.net.SocketTimeoutException
+          - feign.RetryableException
+          - org.springframework.cloud.client.circuitbreaker.NoFallbackAvailableException
+      traineeCB:
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10000
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 10
+        recordExceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - java.net.ConnectException
+          - java.net.SocketTimeoutException
+          - feign.RetryableException
+          - org.springframework.cloud.client.circuitbreaker.NoFallbackAvailableException

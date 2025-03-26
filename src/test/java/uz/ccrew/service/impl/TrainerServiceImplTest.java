@@ -22,6 +22,7 @@ import uz.ccrew.exp.exp.EntityNotFoundException;
 import uz.ccrew.utils.UserUtils;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -193,7 +194,7 @@ class TrainerServiceImplTest {
     void getTrainerTrainings_ShouldReturnTrainings() {
         Training training = new Training();
         training.setTrainingName("Yoga Class");
-        training.setTrainingDate(LocalDate.of(2023, 1, 1));
+        training.setTrainingDate(LocalDateTime.of(2023, 1, 1, 10 ,10));
         training.setTrainingDuration(60.0);
 
         TrainingType trainingType = new TrainingType();
@@ -213,7 +214,7 @@ class TrainerServiceImplTest {
         assertEquals(1, result.size());
         TrainerTrainingDTO dto = result.get(0);
         assertEquals("Yoga Class", dto.getTrainingName());
-        assertEquals(LocalDate.of(2023, 1, 1), dto.getTrainingDate());
+        assertEquals(LocalDateTime.of(2023, 1, 1, 10, 10), dto.getTrainingDate());
         assertEquals(60.0, dto.getTrainingDuration());
         assertEquals("Yoga", dto.getTrainingType());
         assertEquals("Trainee", dto.getTraineeName());

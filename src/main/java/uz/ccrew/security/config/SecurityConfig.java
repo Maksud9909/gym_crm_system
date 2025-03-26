@@ -29,8 +29,8 @@ public class SecurityConfig {
     private final CustomAuthenticationProvider authenticationProvider;
 
     private static final String[] PUBLIC_ENDPOINTS = {
-            "/api/v1/trainee/create",
-            "/api/v1/trainer/create",
+            "/api/v1/trainee/",
+            "/api/v1/trainer/",
             "/api/v1/user/login"
     };
 

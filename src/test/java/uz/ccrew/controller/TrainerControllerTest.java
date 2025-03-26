@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Arrays;
 import java.time.LocalDate;
@@ -116,13 +117,13 @@ public class TrainerControllerTest {
     @Test
     void testGetTrainerTrainings() {
         String username = "johndoe";
-        LocalDate periodFrom = LocalDate.of(2023, 1, 1);
-        LocalDate periodTo = LocalDate.of(2023, 12, 31);
+        LocalDateTime periodFrom = LocalDateTime.of(2023, 1, 1, 1, 0, 0);
+        LocalDateTime periodTo = LocalDateTime.of(2023, 12, 31, 23, 59, 59);
         String traineeName = "Jane Smith";
 
         List<TrainerTrainingDTO> mockTrainings = Arrays.asList(
-                new TrainerTrainingDTO("Training 1", LocalDate.of(2023, 5, 10), "Cardio", 1.5, "Jane Smith"),
-                new TrainerTrainingDTO("Training 2", LocalDate.of(2023, 6, 15), "Pilates", 2.0, "Mark Brown")
+                new TrainerTrainingDTO("Training 1", LocalDateTime.of(2023, 5, 10,12,22), "Cardio", 1.5, "Jane Smith"),
+                new TrainerTrainingDTO("Training 2", LocalDateTime.of(2023, 6, 15, 13, 22), "Pilates", 2.0, "Mark Brown")
         );
 
         when(trainerService.getTrainerTrainings(username, periodFrom, periodTo, traineeName)).thenReturn(mockTrainings);

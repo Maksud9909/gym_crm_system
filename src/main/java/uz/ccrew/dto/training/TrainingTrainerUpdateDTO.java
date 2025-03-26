@@ -1,13 +1,11 @@
 package uz.ccrew.dto.training;
 
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Getter
-@NotNull
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

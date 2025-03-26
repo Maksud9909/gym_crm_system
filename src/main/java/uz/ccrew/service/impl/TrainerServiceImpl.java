@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -144,7 +145,7 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<TrainerTrainingDTO> getTrainerTrainings(String username, LocalDate fromDate, LocalDate toDate, String traineeName) {
+    public List<TrainerTrainingDTO> getTrainerTrainings(String username, LocalDateTime fromDate, LocalDateTime toDate, String traineeName) {
         List<Training> trainings = trainingDAO.getTrainerTrainings(username, fromDate, toDate, traineeName);
         return trainings.stream().map(training -> {
             Trainee trainee = training.getTrainee();

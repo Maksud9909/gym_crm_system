@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.time.LocalDate;
 
@@ -25,7 +26,7 @@ import java.time.LocalDate;
 public class TrainerController {
     private final TrainerService trainerService;
 
-    @PostMapping("/create")
+    @PostMapping("/")
     @Operation(summary = "Create a Trainer")
     public ResponseEntity<UserCredentials> create(@Valid @RequestBody TrainerCreateDTO dto) {
         UserCredentials result = trainerService.create(dto);
@@ -39,7 +40,7 @@ public class TrainerController {
         return ResponseEntity.ok(result);
     }
 
-    @PutMapping("/update")
+    @PutMapping("/")
     @Operation(summary = "Update Trainer")
     public ResponseEntity<TrainerProfileUsernameDTO> update(@Valid @RequestBody TrainerUpdateDTO dto) {
         TrainerProfileUsernameDTO result = trainerService.update(dto);
@@ -56,8 +57,8 @@ public class TrainerController {
     @GetMapping("/{username}/trainings")
     @Operation(summary = "Get Trainer Trainings List")
     public ResponseEntity<List<TrainerTrainingDTO>> getTrainerTrainings(@PathVariable("username") String username,
-                                                                        @RequestParam(name = "periodFrom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate periodFrom,
-                                                                        @RequestParam(name = "periodTo", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate periodTo,
+                                                                        @RequestParam(name = "periodFrom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime periodFrom,
+                                                                        @RequestParam(name = "periodTo", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime periodTo,
                                                                         @RequestParam(name = "traineeName", required = false) String traineeName) {
         List<TrainerTrainingDTO> result = trainerService.getTrainerTrainings(username, periodFrom, periodTo, traineeName);
         return ResponseEntity.ok(result);

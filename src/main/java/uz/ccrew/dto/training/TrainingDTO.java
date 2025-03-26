@@ -1,17 +1,15 @@
 package uz.ccrew.dto.training;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import jakarta.validation.constraints.NotBlank;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Builder
 @Getter
-@NotNull
 @NoArgsConstructor
 @AllArgsConstructor
 public class TrainingDTO {
@@ -21,6 +19,6 @@ public class TrainingDTO {
     private String trainerUsername;
     @NotBlank(message = "Training name should be not empty")
     private String trainingName;
-    private LocalDate trainingDate;
+    private LocalDateTime trainingDate;
     private Double trainingDuration;
 }

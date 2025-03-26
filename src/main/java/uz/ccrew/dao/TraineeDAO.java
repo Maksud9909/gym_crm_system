@@ -4,5 +4,5 @@ import uz.ccrew.entity.Trainee;
 import uz.ccrew.dao.base.BaseAdvancedDAO;
 
 public interface TraineeDAO extends BaseAdvancedDAO<Trainee> {
-    void delete(Long id);
+    void delete(Trainee trainee);
 }
