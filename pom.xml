@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>uz.ccrew</groupId>
-    <artifactId>gym_crm_system</artifactId>
+    <artifactId>gymcrmsystem</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
