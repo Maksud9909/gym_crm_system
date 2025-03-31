@@ -12,6 +12,9 @@ spring:
         enabled: true
   application:
     name: gym-crm-system
+  activemq:
+    user: test
+    password: test
 
 # JWT
 security:

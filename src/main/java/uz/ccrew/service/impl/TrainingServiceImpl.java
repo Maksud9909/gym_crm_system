@@ -1,5 +1,6 @@
 package uz.ccrew.service.impl;
 
+import org.springframework.jms.core.JmsTemplate;
 import uz.ccrew.entity.Trainee;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.dao.TraineeDAO;
@@ -32,6 +33,7 @@ public class TrainingServiceImpl implements TrainingService {
     private final TraineeDAO traineeDAO;
     private final TrainerDAO trainerDAO;
     private final TrainingDAO trainingDAO;
+    private final JmsTemplate jmsTemplate;
     private final TrainerWorkloadClient trainerWorkloadClient;
 
     @Override
@@ -68,7 +70,8 @@ public class TrainingServiceImpl implements TrainingService {
 
         try {
             log.info("Sending training data to trainer-workload-service for Action-Type ADD");
-            trainerWorkloadClient.sendTrainingData(workloadDTO);
+            jmsTemplate.convertAndSend("trainer.workload.queue", workloadDTO);
+//            trainerWorkloadClient.sendTrainingData(workloadDTO);
             log.info("Successfully sent training data to trainer-workload-service for Action-Type ADD");
         } catch (Exception e) {
             log.error("Failed to send training data to trainer-workload-service", e);
