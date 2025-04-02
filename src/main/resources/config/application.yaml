@@ -7,15 +7,14 @@ spring:
   cloud:
     compatibility-verifier:
       enabled: false
-    openfeign:
-      circuitbreaker:
-        enabled: true
   application:
     name: gym-crm-system
   activemq:
     user: test
     password: test
-
+    broker-url: tcp://localhost:61616
+    packages:
+      trust-all: true
 # JWT
 security:
   token:
@@ -46,13 +45,6 @@ cors:
   allowed-headers: "Authorization,Content-Type"
   allow-credentials: true
 
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
-    register-with-eureka: true
-    fetch-registry: true
-
 resilience4j:
   circuitbreaker:
     instances:
@@ -65,7 +57,6 @@ resilience4j:
           - org.springframework.web.client.HttpServerErrorException
           - java.net.ConnectException
           - java.net.SocketTimeoutException
-          - feign.RetryableException
           - org.springframework.cloud.client.circuitbreaker.NoFallbackAvailableException
       traineeCB:
         failureRateThreshold: 50
@@ -76,5 +67,4 @@ resilience4j:
           - org.springframework.web.client.HttpServerErrorException
           - java.net.ConnectException
           - java.net.SocketTimeoutException
-          - feign.RetryableException
           - org.springframework.cloud.client.circuitbreaker.NoFallbackAvailableException

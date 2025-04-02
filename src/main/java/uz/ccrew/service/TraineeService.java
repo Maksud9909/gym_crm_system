@@ -3,11 +3,8 @@ package uz.ccrew.service;
 import uz.ccrew.dto.trainee.*;
 import uz.ccrew.dto.trainer.TrainerDTO;
 import uz.ccrew.dto.user.UserCredentials;
-import uz.ccrew.entity.Trainee;
-import uz.ccrew.service.base.BaseAdvancedUserService;
 import uz.ccrew.service.base.BaseService;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
