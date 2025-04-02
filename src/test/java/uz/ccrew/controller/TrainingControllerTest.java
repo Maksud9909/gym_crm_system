@@ -2,7 +2,7 @@ package uz.ccrew.controller;
 
 import uz.ccrew.service.TrainingService;
 import uz.ccrew.dto.training.TrainingDTO;
-import uz.ccrew.dto.training.summary.TrainerMonthlySummaryDTO;
+import uz.ccrew.dto.summary.TrainerMonthlySummaryDTO;
 
 import org.mockito.Mock;
 import org.mockito.InjectMocks;
@@ -14,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 import static org.mockito.Mockito.*;

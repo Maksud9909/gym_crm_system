@@ -1,11 +1,9 @@
-package uz.ccrew.dto.training.summary;
+package uz.ccrew.dto.summary;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Getter
@@ -13,7 +11,8 @@ import java.util.List;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class YearsDTO {
+@EqualsAndHashCode
+public class YearsDTO implements Serializable {
     private int year;
     List<MonthsDTO> months;
 }

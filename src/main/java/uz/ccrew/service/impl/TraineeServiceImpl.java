@@ -1,6 +1,7 @@
 package uz.ccrew.service.impl;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import uz.ccrew.dao.TrainingDAO;
 import uz.ccrew.dto.trainee.*;
@@ -11,7 +12,6 @@ import uz.ccrew.dao.TrainerDAO;
 import uz.ccrew.dao.TraineeDAO;
 import uz.ccrew.enums.ActionType;
 import uz.ccrew.exp.exp.TrainingNotAssociatedException;
-import uz.ccrew.service.TrainerWorkloadClient;
 import uz.ccrew.utils.UserUtils;
 import uz.ccrew.dto.trainer.TrainerDTO;
 import uz.ccrew.service.TraineeService;
@@ -23,10 +23,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
+import java.time.LocalDateTime;
 
 @Slf4j
 @Service
@@ -37,7 +36,7 @@ public class TraineeServiceImpl implements TraineeService {
     private final TrainerDAO trainerDAO;
     private final TrainingDAO trainingDAO;
     private final PasswordEncoder passwordEncoder;
-    private final TrainerWorkloadClient trainerWorkloadClient;
+    private final JmsTemplate jmsTemplate;
 
     @Override
     @Transactional
@@ -146,7 +145,7 @@ public class TraineeServiceImpl implements TraineeService {
                         .actionType(ActionType.DELETE)
                         .build();
                 trainingDAO.delete(training);
-                trainerWorkloadClient.sendTrainingData(trainerWorkloadDTO);
+                jmsTemplate.convertAndSend("trainer.workload.queue", trainerWorkloadDTO);
             }
         }
         traineeDAO.delete(trainee);

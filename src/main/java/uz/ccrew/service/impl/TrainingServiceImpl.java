@@ -1,5 +1,10 @@
 package uz.ccrew.service.impl;
 
+import jakarta.jms.Destination;
+import jakarta.jms.Message;
+import jakarta.jms.ObjectMessage;
+import lombok.SneakyThrows;
+import org.apache.activemq.command.ActiveMQQueue;
 import org.springframework.jms.core.JmsTemplate;
 import uz.ccrew.entity.Trainee;
 import uz.ccrew.entity.Trainer;
@@ -10,21 +15,19 @@ import uz.ccrew.entity.Training;
 import uz.ccrew.enums.ActionType;
 import uz.ccrew.service.TrainingService;
 import uz.ccrew.dto.training.TrainingDTO;
-import uz.ccrew.service.TrainerWorkloadClient;
 import uz.ccrew.dto.training.TrainerWorkloadDTO;
 import uz.ccrew.exp.exp.EntityNotFoundException;
-import uz.ccrew.dto.training.summary.TrainerMonthlySummaryDTO;
+import uz.ccrew.dto.summary.TrainerMonthlySummaryDTO;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -34,7 +37,6 @@ public class TrainingServiceImpl implements TrainingService {
     private final TrainerDAO trainerDAO;
     private final TrainingDAO trainingDAO;
     private final JmsTemplate jmsTemplate;
-    private final TrainerWorkloadClient trainerWorkloadClient;
 
     @Override
     @Transactional
@@ -71,7 +73,6 @@ public class TrainingServiceImpl implements TrainingService {
         try {
             log.info("Sending training data to trainer-workload-service for Action-Type ADD");
             jmsTemplate.convertAndSend("trainer.workload.queue", workloadDTO);
-//            trainerWorkloadClient.sendTrainingData(workloadDTO);
             log.info("Successfully sent training data to trainer-workload-service for Action-Type ADD");
         } catch (Exception e) {
             log.error("Failed to send training data to trainer-workload-service", e);
@@ -81,13 +82,28 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Override
     @CircuitBreaker(name = "trainerWorkloadCB", fallbackMethod = "fallbackGetMonthlyWorkload")
+    @SneakyThrows
     public List<TrainerMonthlySummaryDTO> getMonthlyWorkload(String username) {
-        ResponseEntity<List<TrainerMonthlySummaryDTO>> response = trainerWorkloadClient.getMonthlyWorkload(username);
-        if (Objects.requireNonNull(response.getBody()).isEmpty()) {
-            log.info("No trainer workload found for username: {}", username);
+        Destination replyQueue = new ActiveMQQueue("trainer.workload.reply." + UUID.randomUUID());
+
+        log.info("Sending request for username: {} with reply queue: {}", username, replyQueue);
+
+        jmsTemplate.convertAndSend("trainer.workload.request", username, msg -> {
+            msg.setJMSReplyTo(replyQueue);
+            return msg;
+        });
+
+        jmsTemplate.setReceiveTimeout(5000);
+        Message replyMessage = jmsTemplate.receive(replyQueue);
+
+        if (replyMessage instanceof ObjectMessage objectMessage) {
+            List<TrainerMonthlySummaryDTO> reply = (List<TrainerMonthlySummaryDTO>) objectMessage.getObject();
+            log.info("Received reply for username: {} -> {}", username, reply);
+            return reply;
+        } else {
+            log.error("No valid reply received for username: {}", username);
             return Collections.emptyList();
         }
-        return response.getBody();
     }
 
     private List<TrainerMonthlySummaryDTO> fallbackGetMonthlyWorkload(String username, Throwable ex) {
