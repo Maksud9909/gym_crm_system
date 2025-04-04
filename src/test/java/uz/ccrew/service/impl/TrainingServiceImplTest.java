@@ -145,13 +145,4 @@ class TrainingServiceImplTest {
         assertThrows(EntityNotFoundException.class, () -> trainingService.addTraining(dto));
         verify(trainingDAO, never()).create(any(Training.class));
     }
-
-//    @Test
-//    void getMonthlyWorkload() {
-//        ResponseEntity<List<TrainerMonthlySummaryDTO>> summaryDTO = ResponseEntity.ok(List.of(trainerMonthlySummaryDTO));
-//        when(trainerWorkloadClient.getMonthlyWorkload(trainerMonthlySummaryDTO.getTrainerUsername()))
-//                .thenReturn(ResponseEntity.ok(List.of(trainerMonthlySummaryDTO)));
-//        List<TrainerMonthlySummaryDTO> summaryDTOS = trainingService.getMonthlyWorkload(trainerMonthlySummaryDTO.getTrainerUsername());
-//        assertEquals(summaryDTO.getBody(), summaryDTOS);
-//    }
 }
