@@ -5,6 +5,8 @@ import jakarta.jms.Message;
 import jakarta.jms.ObjectMessage;
 import lombok.SneakyThrows;
 import org.apache.activemq.command.ActiveMQQueue;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jms.core.JmsTemplate;
 import uz.ccrew.entity.Trainee;
 import uz.ccrew.entity.Trainer;
@@ -13,6 +15,7 @@ import uz.ccrew.dao.TrainerDAO;
 import uz.ccrew.dao.TrainingDAO;
 import uz.ccrew.entity.Training;
 import uz.ccrew.enums.ActionType;
+import uz.ccrew.service.TrainerWorkloadClient;
 import uz.ccrew.service.TrainingService;
 import uz.ccrew.dto.training.TrainingDTO;
 import uz.ccrew.dto.training.TrainerWorkloadDTO;
@@ -27,7 +30,7 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -37,6 +40,9 @@ public class TrainingServiceImpl implements TrainingService {
     private final TrainerDAO trainerDAO;
     private final TrainingDAO trainingDAO;
     private final JmsTemplate jmsTemplate;
+    private final TrainerWorkloadClient trainerWorkloadClient;
+    @Value("${messaging.queues.trainerWorkloadQueue}")
+    private String queueName;
 
     @Override
     @Transactional
@@ -72,7 +78,7 @@ public class TrainingServiceImpl implements TrainingService {
 
         try {
             log.info("Sending training data to trainer-workload-service for Action-Type ADD");
-            jmsTemplate.convertAndSend("trainer.workload.queue", workloadDTO);
+            jmsTemplate.convertAndSend(queueName, workloadDTO);
             log.info("Successfully sent training data to trainer-workload-service for Action-Type ADD");
         } catch (Exception e) {
             log.error("Failed to send training data to trainer-workload-service", e);
@@ -82,28 +88,13 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Override
     @CircuitBreaker(name = "trainerWorkloadCB", fallbackMethod = "fallbackGetMonthlyWorkload")
-    @SneakyThrows
     public List<TrainerMonthlySummaryDTO> getMonthlyWorkload(String username) {
-        Destination replyQueue = new ActiveMQQueue("trainer.workload.reply." + UUID.randomUUID());
-
-        log.info("Sending request for username: {} with reply queue: {}", username, replyQueue);
-
-        jmsTemplate.convertAndSend("trainer.workload.request", username, msg -> {
-            msg.setJMSReplyTo(replyQueue);
-            return msg;
-        });
-
-        jmsTemplate.setReceiveTimeout(5000);
-        Message replyMessage = jmsTemplate.receive(replyQueue);
-
-        if (replyMessage instanceof ObjectMessage objectMessage) {
-            List<TrainerMonthlySummaryDTO> reply = (List<TrainerMonthlySummaryDTO>) objectMessage.getObject();
-            log.info("Received reply for username: {} -> {}", username, reply);
-            return reply;
-        } else {
-            log.error("No valid reply received for username: {}", username);
+        ResponseEntity<List<TrainerMonthlySummaryDTO>> response = trainerWorkloadClient.getMonthlyWorkload(username);
+        if (Objects.requireNonNull(response.getBody()).isEmpty()) {
+            log.info("No trainer workload found for username: {}", username);
             return Collections.emptyList();
         }
+        return response.getBody();
     }
 
     private List<TrainerMonthlySummaryDTO> fallbackGetMonthlyWorkload(String username, Throwable ex) {

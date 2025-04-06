@@ -45,6 +45,12 @@ cors:
   allowed-headers: "Authorization,Content-Type"
   allow-credentials: true
 
+messaging:
+  queues:
+    trainerWorkloadRequest: trainer.workload.request
+    trainerWorkloadQueue: trainer.workload.queue
+
+
 resilience4j:
   circuitbreaker:
     instances:

@@ -1,6 +1,7 @@
 package uz.ccrew.service.impl;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import uz.ccrew.dao.TrainingDAO;
@@ -37,6 +38,8 @@ public class TraineeServiceImpl implements TraineeService {
     private final TrainingDAO trainingDAO;
     private final PasswordEncoder passwordEncoder;
     private final JmsTemplate jmsTemplate;
+    @Value("${messaging.queues.trainerWorkloadQueue}")
+    private String trainerWorkloadQueue;
 
     @Override
     @Transactional
@@ -145,7 +148,7 @@ public class TraineeServiceImpl implements TraineeService {
                         .actionType(ActionType.DELETE)
                         .build();
                 trainingDAO.delete(training);
-                jmsTemplate.convertAndSend("trainer.workload.queue", trainerWorkloadDTO);
+                jmsTemplate.convertAndSend(trainerWorkloadQueue, trainerWorkloadDTO);
             }
         }
         traineeDAO.delete(trainee);
