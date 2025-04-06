@@ -1,10 +1,5 @@
 package uz.ccrew.service.impl;
 
-import jakarta.jms.Destination;
-import jakarta.jms.Message;
-import jakarta.jms.ObjectMessage;
-import lombok.SneakyThrows;
-import org.apache.activemq.command.ActiveMQQueue;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jms.core.JmsTemplate;

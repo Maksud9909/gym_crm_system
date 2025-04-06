@@ -3,15 +3,18 @@ package uz.ccrew.service.impl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.test.util.ReflectionTestUtils;
 import uz.ccrew.dao.TraineeDAO;
 import uz.ccrew.dao.TrainerDAO;
 import uz.ccrew.dao.TrainingDAO;
 import uz.ccrew.dto.summary.MonthsDTO;
 import uz.ccrew.dto.summary.TrainerMonthlySummaryDTO;
+import uz.ccrew.dto.training.TrainerWorkloadDTO;
 import uz.ccrew.dto.training.TrainingDTO;
 import uz.ccrew.dto.summary.YearsDTO;
 import uz.ccrew.entity.*;
@@ -58,7 +61,7 @@ class TrainingServiceImplTest {
         trainee = Trainee.builder()
                 .id(1L)
                 .address("123 Main St")
-                .user(null)
+                .user(new User())
                 .training(null)
                 .build();
 
@@ -75,6 +78,7 @@ class TrainingServiceImplTest {
         training = Training.builder()
                 .id(1L)
                 .trainer(trainer)
+                .trainee(trainee)
                 .trainingDate(LocalDateTime.now())
                 .trainingDuration(2.0)
                 .build();
@@ -92,8 +96,28 @@ class TrainingServiceImplTest {
                                 .build()))
                         .build()))
                 .build();
+
+        ReflectionTestUtils.setField(trainingService, "queueName", "trainer.workload.queue");
     }
 
+    @Test
+    void testAddTraining_sendsMessageToQueue() {
+        when(traineeDAO.findByUsername(trainee.getUser().getUsername())).thenReturn(Optional.of(trainee));
+        when(trainerDAO.findByUsername(trainer.getUser().getUsername())).thenReturn(Optional.of(trainer));
+        TrainingDTO trainingDTO = TrainingDTO.builder()
+                .trainerUsername(trainer.getUser().getUsername())
+                .traineeUsername(trainee.getUser().getUsername())
+                .trainingName(training.getTrainingName())
+                .trainingDuration(training.getTrainingDuration())
+                .trainingDate(training.getTrainingDate())
+                .build();
+        trainingService.addTraining(trainingDTO);
+        ArgumentCaptor<TrainerWorkloadDTO> captor = ArgumentCaptor.forClass(TrainerWorkloadDTO.class);
+
+        verify(jmsTemplate).convertAndSend(eq("trainer.workload.queue"), captor.capture());
+        TrainerWorkloadDTO trainerWorkloadDTO = captor.getValue();
+        assertEquals(trainer.getUser().getUsername(), trainerWorkloadDTO.getTrainerUsername());
+    }
 
     @Test
     void addTraining_ShouldCreateTraining_WhenValidDataProvided() {

@@ -47,7 +47,6 @@ cors:
 
 messaging:
   queues:
-    trainerWorkloadRequest: trainer.workload.request
     trainerWorkloadQueue: trainer.workload.queue
 
 
