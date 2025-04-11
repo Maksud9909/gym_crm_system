@@ -1,6 +1,5 @@
 package uz.ccrew.service.impl;
 
-import org.springframework.jms.core.JmsTemplate;
 import uz.ccrew.entity.Trainee;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.dao.TraineeDAO;
@@ -18,6 +17,7 @@ import uz.ccrew.dto.training.summary.TrainerMonthlySummaryDTO;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
