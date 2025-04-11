@@ -3,6 +3,6 @@ server:
 
 # DataSource
 datasource:
-  url: jdbc:postgresql://localhost:5430/postgres?currentSchema=gym_crm_system_dev
+  url: jdbc:postgresql://localhost:5432/postgres?currentSchema=gym_crm_system_dev
   username: postgres
   password: Rr1980ana

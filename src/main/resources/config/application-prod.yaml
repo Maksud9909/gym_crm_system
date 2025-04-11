@@ -5,4 +5,4 @@ server:
 datasource:
   url: jdbc:postgresql://localhost:5430/postgres?currentSchema=gym_crm_system_prod
   username: postgres
-  password: bestuser
+  password: Rr1980ana

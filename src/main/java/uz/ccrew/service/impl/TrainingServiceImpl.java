@@ -1,5 +1,8 @@
 package uz.ccrew.service.impl;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.jms.core.JmsTemplate;
 import uz.ccrew.entity.Trainee;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.dao.TraineeDAO;
