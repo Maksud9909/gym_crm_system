@@ -2,7 +2,7 @@ package uz.ccrew.controller;
 
 import uz.ccrew.service.TrainingService;
 import uz.ccrew.dto.training.TrainingDTO;
-import uz.ccrew.dto.training.summary.TrainerMonthlySummaryDTO;
+import uz.ccrew.dto.summary.TrainerMonthlySummaryDTO;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

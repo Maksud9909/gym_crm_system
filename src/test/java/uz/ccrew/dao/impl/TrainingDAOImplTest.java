@@ -15,7 +15,6 @@ import uz.ccrew.entity.Trainee;
 import uz.ccrew.entity.Trainer;
 import uz.ccrew.utils.QueryBuilder;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;

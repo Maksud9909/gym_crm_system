@@ -7,18 +7,16 @@ import uz.ccrew.dao.TrainerDAO;
 import uz.ccrew.dao.TrainingDAO;
 import uz.ccrew.entity.Training;
 import uz.ccrew.enums.ActionType;
+import uz.ccrew.service.TrainerWorkloadClient;
 import uz.ccrew.service.TrainingService;
 import uz.ccrew.dto.training.TrainingDTO;
-import uz.ccrew.service.TrainerWorkloadClient;
 import uz.ccrew.dto.training.TrainerWorkloadDTO;
 import uz.ccrew.exp.exp.EntityNotFoundException;
-import uz.ccrew.dto.training.summary.TrainerMonthlySummaryDTO;
+import uz.ccrew.dto.summary.TrainerMonthlySummaryDTO;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.jms.core.JmsTemplate;
-import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
@@ -35,6 +33,8 @@ public class TrainingServiceImpl implements TrainingService {
     private final TrainingDAO trainingDAO;
     private final JmsTemplate jmsTemplate;
     private final TrainerWorkloadClient trainerWorkloadClient;
+    @Value("${messaging.queues.trainerWorkloadQueue}")
+    private String queueName;
 
     @Override
     @Transactional
@@ -70,8 +70,7 @@ public class TrainingServiceImpl implements TrainingService {
 
         try {
             log.info("Sending training data to trainer-workload-service for Action-Type ADD");
-            jmsTemplate.convertAndSend("trainer.workload.queue", workloadDTO);
-//            trainerWorkloadClient.sendTrainingData(workloadDTO);
+            jmsTemplate.convertAndSend(queueName, workloadDTO);
             log.info("Successfully sent training data to trainer-workload-service for Action-Type ADD");
         } catch (Exception e) {
             log.error("Failed to send training data to trainer-workload-service", e);

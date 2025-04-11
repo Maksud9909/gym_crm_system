@@ -1,7 +1,7 @@
 package uz.ccrew.service;
 
 import uz.ccrew.dto.training.TrainingDTO;
-import uz.ccrew.dto.training.summary.TrainerMonthlySummaryDTO;
+import uz.ccrew.dto.summary.TrainerMonthlySummaryDTO;
 
 import java.util.List;
 
