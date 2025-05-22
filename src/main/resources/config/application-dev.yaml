@@ -1,8 +1,7 @@
 server:
   port: 8080
 
-# DataSource
 datasource:
-  url: jdbc:postgresql://localhost:5432/postgres?currentSchema=gym_crm_system_dev
-  username: postgres
-  password: Rr1980ana
+  url: jdbc:postgresql://localhost:5432/gym_crm_system?currentSchema=gym_crm_system_dev
+  username: admin
+  password: admin
