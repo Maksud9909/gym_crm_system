@@ -1,4 +1,7 @@
 spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/gym_crm_system
   profiles:
     active: dev
   # Hibernate-specific transaction configuration
