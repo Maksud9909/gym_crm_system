@@ -1,8 +1,14 @@
 spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/gym_crm_system
   profiles:
     active: dev
   # Hibernate-specific transaction configuration
   jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
     open-in-view: false
   cloud:
     compatibility-verifier:
